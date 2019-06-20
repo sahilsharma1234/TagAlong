@@ -222,7 +222,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
                 if (getIntent().getExtras().getString(Constants.START_RIDE).equalsIgnoreCase("Current Ride")) {
 
                 } else {
-                    Toast.makeText(context, getIntent().getExtras().getString(Constants.START_RIDE), Toast.LENGTH_SHORT).show();
+                     Toast.makeText(context, getIntent().getExtras().getString(Constants.START_RIDE), Toast.LENGTH_SHORT).show();
                 }
 //                handleCurrentRideLayoutClick();
                 handleCurrentAndUpcomingRideLayoutClick();
