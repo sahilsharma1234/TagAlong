@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.CurrentRideFragment">
+
+    <include
+        android:id="@+id/toolbar_current_ride"
+        layout="@layout/toolbar_shadow" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_current_ride">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_grey_color">
+
+            <TextView
+                android:id="@+id/ride_details_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ride_reqsted_driver_confirm"
+                android:layout_margin="15dp"
+                android:textSize="12sp"/>
+
+            <include android:id="@+id/ride_lyt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ride_details_text"
+                layout="@layout/layout_requested_ride_details"/>
+
+            <RelativeLayout
+                android:id="@+id/rel1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ride_lyt"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:elevation="2dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:text="@string/estimated_cost_of_the_ride"/>
+
+                <TextView
+                    android:id="@+id/estimated_cost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$ 80.50"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_centerInParent="true"
+                    android:textColor="@android:color/black"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/timeline_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rel1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Create post"
+                android:textSize="14sp" />
+
+            <include
+                android:id="@+id/upload_pic_lyt"
+                layout="@layout/upload_pic_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/timeline_text1"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:id="@+id/onBoard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/upload_pic_lyt"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:text="OnBoard"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/onBoardRecView"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@id/onBoard"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white"
+                android:padding="15dp"
+                android:scrollbarSize=".5dp"
+                android:scrollbars="horizontal">
+
+            </android.support.v7.widget.RecyclerView>
+
+
+            <TextView
+                android:id="@+id/timeline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/onBoardRecView"
+                android:text="Timeline"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/timeline_recView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/timeline_text"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white"
+                android:scrollbarSize=".5dp"
+                android:scrollbars="horizontal">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</RelativeLayout>

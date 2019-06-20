@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".activities.RecoveryActivity">
+
+    <include android:id="@+id/toolbar_recovery" layout="@layout/toolbar"/>
+
+    <TextView
+        android:id="@+id/title_recovery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_below="@id/toolbar_recovery"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/black"
+        android:text="Set password for your account"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:elevation="4dp"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:paddingTop="15dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleDrawable="@drawable/ic_eye_onxhdpi"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#000000"
+                android:textColor="#000000"
+                android:textColorHint="#000000">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/enterPassword"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_lockxhdpi"
+                    android:singleLine="true"
+                    android:hint="Enter Password"
+                    android:drawablePadding="10dp"
+                    android:maxLength="8"
+                    app:backgroundTint="#bf9b30"
+                    android:inputType="textPassword"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleDrawable="@drawable/ic_eye_onxhdpi"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#000000"
+                android:textColor="#000000"
+                android:textColorHint="#000000">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/reenterPsswrd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:drawableStart="@drawable/ic_lockxhdpi"
+                    android:hint="Re enter password"
+                    android:drawablePadding="10dp"
+                    android:maxLength="8"
+                    android:inputType="textPassword"
+                    app:backgroundTint="#bf9b30"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/savePassword"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button_shape_signin"
+        android:layout_marginBottom="50dp"
+        android:textColor="@android:color/white"
+        android:text="Save"/>
+
+    <RelativeLayout
+        android:id="@+id/lytBarRecovery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clickable="true"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

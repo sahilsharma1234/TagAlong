@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#bf9b30</color>
+
+    <color name="colorGold">#bf9b30</color>
+    <color name="darker_gray">#aaa</color>
+    <color name="black">#000000</color>
+    <color name="grey">#bebebe</color>
+
+    <color name="drawer_text_color">#9a9a9a</color>
+
+    <color name="light_grey_color">#fafafa</color>
+
+    <color name="payment_btn_color">#2C2D81</color>
+    <color name="green">#43a047</color>
+    <color name="light_green">#d9ecda</color>
+    <color name="orange_color">#ff6e40</color>
+    <color name="color_option_menu">#FF3990</color>
+    <color name="filter_label_normal">#8A8889</color>
+    <color name="filter_label_selected">#221F20</color>
+    <color name="color_g_plus">#dd4b39</color>
+
+</resources>

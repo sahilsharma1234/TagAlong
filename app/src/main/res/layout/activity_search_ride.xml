@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fafafa"
+    tools:context=".activities.SearchRideActivity">
+
+    <include
+        android:id="@+id/toolbar_searchride"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/toolbar_shadow"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_searchride">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            >
+
+            <RelativeLayout
+                android:id="@+id/startLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/background_elevation"
+                android:elevation="3dp"
+                android:layout_marginRight="15dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/et_start_trip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:textSize="16sp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:layout_centerVertical="true"
+                    android:hint="Start of trip"
+                    android:drawablePadding="10dp"
+                    android:drawableRight="@drawable/ic_start_ride_point_xhdpi"
+                    android:imeOptions="actionDone"
+                    android:layout_alignParentLeft="true"
+                    android:textColorHint="@android:color/black"/>
+
+                <ImageView
+                    android:id="@+id/startPin"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/endTrip"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/startLayout"
+                android:layout_marginLeft="15dp"
+                android:elevation="3dp"
+                android:background="@drawable/background_elevation"
+                android:layout_marginRight="15dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/et_end_trip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:textSize="16sp"
+                    android:singleLine="true"
+                    android:backgroundTint="@android:color/transparent"
+                    android:layout_centerVertical="true"
+                    android:hint="End of trip"
+                    android:imeOptions="actionDone"
+                    android:drawablePadding="10dp"
+                    android:drawableRight="@drawable/ic_end_ride_point_xhdpi"
+                    android:layout_alignParentLeft="true"
+                    android:textColorHint="@android:color/black"/>
+
+                <ImageView
+                    android:id="@+id/endPin"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rideTimeDetails"
+                android:layout_below="@id/endTrip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:background="@drawable/background_elevation"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/rideDetailsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:textSize="14sp"
+                        android:text="@string/when_do_you_want_to_leave"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/nowTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:text="Now "/>
+
+                        <CheckBox
+                            android:id="@+id/nowCheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/nowTextView"
+                            />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/laterTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:text="Later"/>
+
+                        <CheckBox
+                            android:id="@+id/laterCheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/laterTextView"
+                            android:layout_marginLeft="20dp"
+                            />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/dateLayout"
+                    android:layout_below="@id/rideDetailsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"
+                        android:text="DD MM YYYY"/>
+
+                    <TextView
+                        android:id="@+id/changeDateTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CHANGE"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginRight="10dp"
+                        android:layout_alignParentRight="true"
+                        android:textColor="@color/colorGold"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/timeLyt"
+                    android:layout_below="@id/dateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"
+                        android:text="HH : MM"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/preferences"
+                android:layout_below="@id/rideTimeDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:background="@drawable/background_elevation"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:textSize="14sp"
+                        android:text="@string/change_ride_needs"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:text="Seats selected "/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="20dp"
+                            android:layout_alignParentRight="true">
+
+                            <Spinner
+                                android:id="@+id/seats_spinner"
+                                android:layout_width="2dp"
+                                android:layout_height="wrap_content"
+                                style="@android:style/Widget.Spinner"
+                                android:background="@null"
+                                android:layout_centerInParent="true"
+                                ></Spinner>
+
+                            <TextView
+                                android:id="@+id/seat_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorGold"
+                                android:textStyle="normal"
+                                android:minWidth="40dp"
+                                android:layout_centerInParent="true"
+                                android:background="@android:color/white"
+                                android:textSize="16sp"
+                                android:gravity="center"
+                                android:text="One"/>
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/grey"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:text="@string/carrying_bags"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="20dp"
+                            android:layout_alignParentRight="true"
+                            >
+
+                            <!-- <Spinner
+                                 android:id="@+id/bags_spinner"
+                                 android:layout_width="2dp"
+                                 android:layout_height="wrap_content"
+                                 style="@android:style/Widget.Spinner"
+                                 android:background="@null"
+                                 android:layout_centerInParent="true"
+                                 ></Spinner>-->
+
+                            <CheckBox
+                                android:id="@+id/bags_carrying"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                />
+
+                            <!-- <TextView
+                                 android:id="@+id/bags_count"
+                                 android:layout_width="wrap_content"
+                                 android:minWidth="40dp"
+                                 android:layout_height="wrap_content"
+                                 android:textColor="@color/colorGold"
+                                 android:textStyle="normal"
+                                 android:gravity="center"
+                                 android:layout_centerInParent="true"
+                                 android:background="@android:color/white"
+                                 android:textSize="16sp"
+                                 android:text="1"/>-->
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/grey"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:text="@string/travelling_with_kids"/>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="20dp"
+                            android:layout_alignParentRight="true">
+
+                            <!-- <Spinner
+                                 android:id="@+id/kids_spinner"
+                                 android:layout_width="2dp"
+                                 android:layout_height="wrap_content"
+                                 style="@android:style/Widget.Spinner"
+                                 android:background="@null"
+                                 android:layout_centerInParent="true"
+                                 ></Spinner>-->
+
+                            <CheckBox
+                                android:id="@+id/kids_travelling"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                />
+
+                            <!-- <TextView
+                                 android:id="@+id/kids_count"
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:minWidth="40dp"
+                                 android:textColor="@color/colorGold"
+                                 android:background="@android:color/white"
+                                 android:textStyle="normal"
+                                 android:textSize="16sp"
+                                 android:layout_centerInParent="true"
+                                 android:gravity="center"
+                                 android:text="No"/>-->
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/search_rides"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/preferences"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/button_shape_signin"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="15dp"
+                android:textColor="@android:color/white"
+                android:text="SEARCH"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/startTripRecylr"
+                android:layout_width="match_parent"
+                android:paddingLeft="15dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_grey_color"
+                android:visibility="gone"
+                android:layout_below="@id/startLayout">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/endRecyclr"
+                android:layout_width="match_parent"
+                android:paddingLeft="15dp"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/endTrip">
+
+            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+    <RelativeLayout
+        android:id="@+id/lytBarSearchride"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clickable="true"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

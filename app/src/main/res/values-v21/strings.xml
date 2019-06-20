@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="change_ride_needs">Change your ride needs</string>
+    <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBiAvCToSLEv3LMfW6gFI0PTvHM4s8nq18</string>-->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyChV_kPPwQkFZ_beep4K4y6DEHz9dUKYg4</string>
+    <string name="ride_reqsted_driver_confirm">Ride has been requested, waiting for driver to confirm</string>
+    <string name="you_smoke">Smoker ?</string>
+    <string name="rider_can_carry_bags">Rider can carry bags?</string>
+    <string name="seats_on_board">Seats on board</string>
+    <string name="confirm">Confirm</string>
+    <string name="your_driving_preferences">Your driving preferences</string>
+    <string name="only_accepting_credit_card">We are only accepting credit card payments</string>
+    <string name="activity_title_main">Filters</string>
+    <string name="action_settings">Settings</string>
+    <string name="filters">FILTERS</string>
+    <string name="edit">EDIT</string>
+
+    <string name="lbl_brightness">BRIGHTNESS</string>
+    <string name="lbl_contrast">CONTRAST</string>
+    <string name="lbl_saturation">SATURATION</string>
+    <string name="tab_filters">FILTERS</string>
+    <string name="tab_edit">EDIT</string>
+
+
+    <string name="roboto_medium">sans-serif-medium</string>
+    <string name="filter_normal">Normal</string>
+    <string name="action_save">SAVE</string>
+    <string name="action_open">OPEN</string>
+    <string name="i_am">I am a</string>
+</resources>

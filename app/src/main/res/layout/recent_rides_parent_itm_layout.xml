@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@android:color/white"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/tv_ride_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="New York to Dehli"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:gravity="left"
+        app:layout_constraintRight_toLeftOf="@id/tv_ride_date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_with_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="with"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ride_title" />
+
+    <TextView
+        android:id="@+id/tv_ride_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12 Feb 2019"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/tv_ride_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_ride_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_ride_title"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rl_middle_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tv_with_title">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_driver_image_parent"
+            android:layout_width="48dp"
+            android:layout_height="48dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_driver_profile_image"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:src="@drawable/avatar_avatar_12"
+                app:civ_border_width="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_car"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/shape_round_white"
+                android:src="@drawable/ic_drive_profile_on_xhdpi"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_rider_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_toLeftOf="@+id/ll_distance_parent"
+            android:layout_toRightOf="@+id/cl_driver_image_parent"
+            android:orientation="horizontal">
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_distance_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/tv_ride_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="200"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_ride_distance_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="KM"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_item_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:scrollbarSize=".5dp"
+        android:scrollbars="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/rl_middle_parent" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_first_fragment"
+            android:icon="@drawable/ic_home_off_sidebar_xhdpi"
+            android:iconTint="@color/colorGold"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_second_fragment"
+            android:icon="@drawable/ic_timeline_off_sidebar_xhdpi"
+            android:title="Second" />
+        <item
+            android:id="@+id/nav_third_fragment"
+            android:icon="@drawable/ic_current_ride_off_sidebar_xhdpi"
+            android:title="Third" />
+    </group>
+
+</menu>

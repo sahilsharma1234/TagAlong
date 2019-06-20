@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/login_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:src="@drawable/ic_logoxhdpi"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/login_title"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                android:padding="10dp"
+                >
+
+                <LinearLayout
+                    android:id="@+id/mainInputLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <com.hbb20.CountryCodePicker
+                            android:id="@+id/countryCodeSignIn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:ccp_showFullName="false"
+                            app:backgroundTint="#bf9b30"
+                            app:ccp_showPhoneCode="true"
+                            app:ccp_showFlag="false"
+                            app:ccp_defaultNameCode="US"
+                            app:ccp_countryPreference="US"
+                            android:layout_gravity="bottom"
+                            app:ccp_showNameCode="false"/>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            >
+
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/usernameSignIn"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:hint="Mobile Number"
+                                android:fontFamily="sans-serif"
+                                android:maxLength="14"
+                                android:textColor="#000000"
+                                android:textColorHint="#000000"
+                                app:backgroundTint="#bf9b30"
+                                android:inputType="number"/>
+
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:passwordToggleDrawable="@drawable/password_toggle_drawable"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="#000000"
+                        android:textColor="#000000"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/passwordSignIn"
+                            android:layout_width="match_parent"
+                            android:fontFamily="sans-serif"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:singleLine="true"
+                            android:drawableStart="@drawable/ic_lockxhdpi"
+                            android:hint="Password"
+                            android:maxLength="18"
+                            android:drawablePadding="10dp"
+                            android:inputType="textPassword"
+                            app:backgroundTint="#bf9b30"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/forgotPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:paddingTop="5dp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="#000000"
+                        android:textSize="12sp"
+                        android:text="Forgot Password?" />
+
+                    <LinearLayout
+                        android:id="@+id/login"
+                        android:layout_width="150dp"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:gravity="center"
+                        android:background="@drawable/button_shape_signin"
+                        android:orientation="horizontal"
+                        >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_login_loginxhdpi"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:fontFamily="sans-serif"
+                            android:text="Log in"/>
+
+                    </LinearLayout>
+
+                    <!--  <TextView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textColor="#9a9a9a"
+                          android:gravity="center"
+                          android:fontFamily="sans-serif"
+                          android:layout_marginTop="10dp"
+                          android:textSize="12sp"
+                          android:text="Or sign in with"/>
+
+                      <LinearLayout
+                          android:id="@+id/facebookLogin"
+                          android:layout_width="200dp"
+                          android:layout_height="40dp"
+                          android:layout_marginTop="10dp"
+                          android:layout_marginLeft="30dp"
+                          android:layout_marginRight="30dp"
+                          android:gravity="center"
+                          android:background="@drawable/facebook_background"
+                          android:orientation="horizontal"
+                          >
+
+                          <ImageView
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:src="@drawable/ic_facebook_loginxhdpi"/>
+
+                          <TextView
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_marginLeft="20dp"
+                              android:textColor="#fff"
+                              android:fontFamily="sans-serif"
+                              android:textSize="18sp"
+                              android:text="facebook"/>
+
+                      </LinearLayout>-->
+
+                    <!--         <LinearLayout
+                                 android:id="@+id/twitterLogin"
+                                 android:layout_width="200dp"
+                                 android:layout_height="40dp"
+                                 android:layout_marginTop="10dp"
+                                 android:layout_marginLeft="30dp"
+                                 android:layout_marginRight="30dp"
+                                 android:gravity="center"
+                                 android:background="@drawable/twitter_background"
+                                 android:orientation="horizontal"
+                                 >
+
+                                 <ImageView
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:src="@drawable/ic_twitter_loginxhdpi"/>
+
+                                 <TextView
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:layout_marginLeft="20dp"
+                                     android:textColor="#fff"
+                                     android:textSize="18sp"
+                                     android:layout_gravity="center"
+                                     android:fontFamily="sans-serif"
+                                     android:text="twitter"/>
+
+                             </LinearLayout>
+         -->
+
+                    <TextView
+                        android:id="@+id/signUpText"
+                        android:layout_width="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:layout_below="@id/mainInputLayout"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="30dp"
+                        android:text="Not a member yet? Register here"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/lytBarSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clickable="true"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

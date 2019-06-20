@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.StartRideActivity">
+
+    <include android:id="@+id/toolbar_start_ride" layout="@layout/toolbar_shadow"/>
+
+    <RelativeLayout
+        android:layout_below="@id/toolbar_start_ride"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/rootll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/startTripLyt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="@dimen/padding_10"
+            android:layout_marginRight="@dimen/padding_10"
+            android:background="@drawable/bg_white_searchview"
+            android:paddingRight="20dp"
+            android:orientation="horizontal">
+
+            <AutoCompleteTextView
+                android:id="@+id/et_end_trip"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="20dp"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:background="@color/white"
+                android:hint="End of Trip"
+                android:imeOptions="actionDone"
+                android:paddingRight="20dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textColorHint="@android:color/black"/>
+
+            <ImageView
+                android:id="@+id/endPin"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:src="@drawable/cross"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/confirm_end_ride"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_shape_signin"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="16sp"
+            android:layout_marginBottom="30dp"
+            android:text="Confirm"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

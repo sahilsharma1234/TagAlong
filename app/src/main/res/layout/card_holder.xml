@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/_5_px">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="@dimen/_290_px"
+        android:layout_height="@dimen/_170_px"
+        app:cardCornerRadius="@dimen/_7_px"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/card"
+            android:padding="@dimen/_14_px">
+
+
+            <com.carpool.tagalong.fontutils.EditTextMedium
+                android:id="@+id/step1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="XXXX"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="4"
+                android:textColorHint="@color/black"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16_px"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <View
+                android:layout_width="@dimen/_10_px"
+                android:layout_height="@dimen/_2_px"
+                android:background="#40000000"
+                app:layout_constraintBottom_toBottomOf="@id/step1"
+                app:layout_constraintLeft_toRightOf="@+id/step1"
+                app:layout_constraintRight_toLeftOf="@id/step2"
+                app:layout_constraintTop_toTopOf="@id/step1" />
+
+            <com.carpool.tagalong.fontutils.EditTextMedium
+                android:id="@+id/step2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="XXXX"
+                android:textColorHint="@color/black"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16_px"
+                app:layout_constraintLeft_toRightOf="@+id/step1"
+                app:layout_constraintRight_toLeftOf="@+id/step3" />
+
+            <View
+                android:layout_width="@dimen/_10_px"
+                android:layout_height="@dimen/_2_px"
+                android:background="#40000000"
+                app:layout_constraintBottom_toBottomOf="@id/step2"
+                app:layout_constraintLeft_toRightOf="@+id/step2"
+                app:layout_constraintRight_toLeftOf="@id/step3"
+                app:layout_constraintTop_toTopOf="@id/step2" />
+
+            <com.carpool.tagalong.fontutils.EditTextMedium
+                android:id="@+id/step3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="XXXX"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/_16_px"
+                app:layout_constraintLeft_toRightOf="@+id/step2"
+                app:layout_constraintRight_toLeftOf="@+id/step4" />
+
+            <View
+                android:layout_width="@dimen/_10_px"
+                android:layout_height="@dimen/_2_px"
+                android:background="#40000000"
+                app:layout_constraintBottom_toBottomOf="@id/step3"
+                app:layout_constraintLeft_toRightOf="@+id/step3"
+                app:layout_constraintRight_toLeftOf="@id/step4"
+                app:layout_constraintTop_toTopOf="@id/step3" />
+
+            <com.carpool.tagalong.fontutils.EditTextMedium
+                android:id="@+id/step4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="XXXX"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16_px"
+                android:textColorHint="@color/black"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
+            <com.carpool.tagalong.fontutils.EditTextRegular
+                android:id="@+id/holder_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5_px"
+                android:layout_marginTop="@dimen/_25_px"
+                android:background="@null"
+                android:hint="NAME OF CARD"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13_px"
+                android:inputType="textCapSentences"
+                app:layout_constraintRight_toLeftOf="@+id/cvv"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/step1" />
+
+
+            <com.carpool.tagalong.fontutils.EditTextRegular
+                android:id="@+id/cvv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_25_px"
+                android:layout_marginRight="@dimen/_5_px"
+                android:background="@null"
+                android:hint="CVV"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="3"
+                android:textColorHint="@color/black"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13_px"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/step4" />
+
+
+            <com.carpool.tagalong.fontutils.EditTextRegular
+                android:id="@+id/month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="MM"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="2"
+                android:textColorHint="@color/black"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15_px"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+
+            <com.carpool.tagalong.fontutils.EditTextMedium
+                android:id="@+id/das"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_2_px"
+                android:background="@null"
+                android:clickable="false"
+                android:text="/"
+                android:textColor="#40000000"
+                android:textSize="@dimen/_15_px"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/month" />
+
+
+            <com.carpool.tagalong.fontutils.EditTextRegular
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="YY"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="2"
+                android:textColorHint="@color/black"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15_px"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/das" />
+
+            <ImageView
+                android:layout_width="@dimen/_65_px"
+                android:layout_height="@dimen/_25_px"
+                android:background="@drawable/ic_visa_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</android.support.constraint.ConstraintLayout>

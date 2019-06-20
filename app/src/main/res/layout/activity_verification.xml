@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".activities.VerificationActivity">
+
+    <include
+        android:id="@+id/toolbar_verification"
+        layout="@layout/toolbar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_below="@id/toolbar_verification">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:textColor="@android:color/black"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif"
+            android:textSize="18sp"
+            android:text="@string/verification_text"
+            />
+        <requestFocus/>
+
+    </RelativeLayout>
+
+    <com.mukesh.OtpView
+        android:id="@+id/otp_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:inputType="number"
+        app:hint_color="@android:color/black"
+        android:textColor="@color/colorGold"
+        app:hint="0"
+        app:itemCount="6"
+        app:lineColor="@color/colorGold"
+        android:focusableInTouchMode="true"
+        app:viewType="line"
+        />
+
+    <Button
+        android:id="@+id/verify"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Verify"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:background="@drawable/button_shape_signin"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"/>
+
+    <RelativeLayout
+        android:id="@+id/lytBarVerificationOtp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clickable="true"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

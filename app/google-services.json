@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "380083935370",
+    "firebase_url": "https://tagalong-1552975375107.firebaseio.com",
+    "project_id": "tagalong-1552975375107",
+    "storage_bucket": "tagalong-1552975375107.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380083935370:android:753fcebc90cb9d2b",
+        "android_client_info": {
+          "package_name": "com.carpool.tagalong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "380083935370-g9q518s3488e2ehpl4b85ona7dbokecm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7psl4SW32LAY2obyT_O2fuspaQD3yjFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "380083935370-g9q518s3488e2ehpl4b85ona7dbokecm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

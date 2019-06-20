@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#fff"
+    android:layout_height="match_parent"
+    tools:context=".activities.RecoveryMobileActivity">
+
+    <include android:id="@+id/toolbar_recovery_mobile" layout="@layout/toolbar"/>
+
+    <TextView
+        android:id="@+id/title_recovery_mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:padding="30dp"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:fontFamily="sans-serif"
+        android:layout_below="@id/toolbar_recovery_mobile"
+        android:textColor="@android:color/black"
+        android:text="We will send verification code to you registered mobile number"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:elevation="4dp"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:orientation="horizontal">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/countryCodeRecoveryMobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:ccp_showFullName="false"
+                app:backgroundTint="#bf9b30"
+                app:ccp_showPhoneCode="true"
+                app:ccp_showFlag="false"
+                android:layout_gravity="bottom"
+                app:ccp_showNameCode="false"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mobileNumberRecovery"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:maxLength="10"
+                    android:hint="Enter mobile number"
+                    android:fontFamily="sans-serif"
+                    app:backgroundTint="#bf9b30"
+                    android:inputType="number"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/sendCode"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="send code"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/white"
+        android:fontFamily="sans-serif"
+        android:textSize="16sp"
+        android:background="@drawable/button_shape_signin"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentBottom="true"/>
+
+    <RelativeLayout
+        android:id="@+id/lytBarRecoveryMobile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clickable="true"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

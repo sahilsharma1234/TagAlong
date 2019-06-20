@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_searchview">
+
+    <TextView
+        android:id="@+id/documents_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/document_not_found"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/documents_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/document_not_found_text"
+        android:textSize="20sp"
+        android:gravity="center|left"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/drawer_text_color"
+        android:layout_below="@id/documents_title"/>
+
+    <Button
+        android:id="@+id/upload_doc_btn"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@id/documents_text"
+        android:background="@color/colorGold"
+        android:text="@string/upload"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="35dp"
+        />
+
+</RelativeLayout>
+
+
+

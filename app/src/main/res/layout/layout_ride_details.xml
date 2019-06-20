@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:elevation="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ride_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            >
+
+            <TextView
+                android:id="@+id/ride_timing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recent_rides"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/image_user"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/avatar_avatar_12"/>
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="10dp"
+                    android:text="Alexandra Daniel"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_ride_overview_xxhpi"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:layout_marginLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/start_point_dest_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:gravity="center|start"
+                        android:text="Alexandra Daniel"/>
+
+                    <TextView
+                        android:id="@+id/ride_time_driver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/start_point_dest_name"
+                        android:textSize="12sp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="ABC"/>
+
+                    <TextView
+                        android:id="@+id/end_point_dest_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:layout_marginTop="55dp"
+                        android:gravity="center|start"
+                        android:text="Alexandra Daniel"/>
+
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@id/end_point_dest_name"-->
+                        <!--android:textSize="12sp"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="ABC"/>-->
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType= "centerCrop"
+            android:src="@drawable/ic_ride_map_preview_xxhpi"
+            android:layout_alignParentRight="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_below="@id/ride_details"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/not_started"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="@string/start_ride"/>
+
+            <TextView
+                android:id="@+id/cancel_ride_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:textColor="#ff6e40"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="CANCEL RIDE"/>
+
+            <Button
+                android:id="@+id/button_ride"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:background="@drawable/button_shape_round_green"
+                android:layout_marginLeft="40dp"
+                android:textColor="@android:color/white"
+                android:text="START ride"
+                android:visibility="gone"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/start_navigation"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:background="@drawable/button_shape_round_green"
+                android:layout_marginLeft="40dp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:text="@string/navigate"
+                android:visibility="gone"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
