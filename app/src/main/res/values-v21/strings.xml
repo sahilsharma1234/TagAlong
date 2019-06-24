@@ -27,4 +27,5 @@
     <string name="action_save">SAVE</string>
     <string name="action_open">OPEN</string>
     <string name="i_am">I am a</string>
+    <string name="emergency_rides">Rides in Emergency</string>
 </resources>

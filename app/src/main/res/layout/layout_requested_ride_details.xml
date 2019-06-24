@@ -155,8 +155,7 @@
                 android:visibility="gone"
                 android:text="requested"
                 android:textSize="16sp"/>
-
-
+<!--
             <Button
                 android:id="@+id/button_payNow"
                 android:layout_width="150dp"
@@ -167,7 +166,7 @@
                 android:layout_marginRight="10dp"
                 android:textColor="@android:color/white"
                 android:text="Pay Now"
-                android:textSize="16sp"/>
+                android:textSize="16sp"/>-->
 
             <RelativeLayout
                 android:id="@+id/drop_message1"
@@ -176,7 +175,6 @@
                 android:layout_below="@id/lin1"
                 android:gravity="center"
                 android:layout_marginTop="20dp"
-                android:visibility="gone"
                 android:layout_marginBottom="20dp"
                 >
 
@@ -202,7 +200,7 @@
 
         </LinearLayout>
 
-        <RelativeLayout
+     <!--   <RelativeLayout
             android:id="@+id/drop_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -230,7 +228,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_centerHorizontal="true"/>
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
     </RelativeLayout>
 

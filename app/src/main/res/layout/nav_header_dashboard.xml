@@ -160,6 +160,28 @@
 
             </LinearLayout>
 
+            <LinearLayout
+
+                android:id="@+id/emergency_rides_lyt"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/emergency_rides"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textColor="@color/drawer_text_color"
+                    android:drawableLeft="@drawable/ic_emergency_off_sidebar"
+                    android:drawablePadding="30dp"
+                    android:textSize="16sp"
+                    android:text="@string/emergency_rides"/>
+
+            </LinearLayout>
+
       <!--      <LinearLayout
 
                 android:id="@+id/filter"

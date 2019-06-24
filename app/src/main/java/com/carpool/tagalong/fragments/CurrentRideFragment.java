@@ -87,7 +87,7 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
     private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
     private CircleImageView profilePic, postPic;
     private Context context;
-    private Button cancelButton, requestedBtn, paynow, addRideBtn;
+    private Button cancelButton, requestedBtn,  addRideBtn;
     private ModelGetCurrentRideResponse modelGetCurrentRideResponse;
     private RecyclerView onBoardRecyclerView;
     private RecyclerView timeLineRecView;
@@ -97,7 +97,7 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
     private ImageView selectImageForPost, selectedImageForPost;
     private LinearLayout uploadPicLytBtn;
     private Button postImage;
-    private RelativeLayout dropmessage, dropmessage1;
+    private RelativeLayout  dropmessage1;
     private CurrentRideFragment.OnFragmentInteractionListener listener;
 
     public CurrentRideFragment() {
@@ -162,11 +162,11 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
             postPic      = view.findViewById(R.id.image_user_1);
             cancelButton = view.findViewById(R.id.cancel_ride_txt);
             requestedBtn = view.findViewById(R.id.button_ride);
-            paynow = view.findViewById(R.id.button_payNow);
+//            paynow = view.findViewById(R.id.button_payNow);
             uploadPicLytBtn = view.findViewById(R.id.post_image_layout);
             postImage = view.findViewById(R.id.post_image_btn);
 
-            paynow.setOnClickListener(this);
+//            paynow.setOnClickListener(this);
             cancelButton.setOnClickListener(this);
             requestedBtn.setOnClickListener(this);
 
@@ -174,7 +174,7 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
             timeLineRecView      = view.findViewById(R.id.timeline_recView);
             selectImageForPost   = view.findViewById(R.id.select_image_post);
             selectedImageForPost = view.findViewById(R.id.selected_image);
-            dropmessage  = view.findViewById(R.id.drop_message);
+//            dropmessage  = view.findViewById(R.id.drop_message);
             dropmessage1 = view.findViewById(R.id.drop_message1);
 
             uploadPicLytBtn.setOnClickListener(this);
@@ -286,22 +286,23 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
 
         if (modelGetCurrentRideResponse.getRideData().getStatus() == Constants.REQUESTED) {
             requestedBtn.setVisibility(View.VISIBLE);
-            paynow.setVisibility(View.GONE);
+            dropmessage1.setVisibility(View.GONE);
 
         } else if (modelGetCurrentRideResponse.getRideData().getStatus() == Constants.ACCEPTED) {
             requestedBtn.setVisibility(View.GONE);
-
-            if (modelGetCurrentRideResponse.getRideData().isPayStatus()) {
-
-                dropmessage.setVisibility(View.GONE);
-                dropmessage1.setVisibility(View.VISIBLE);
-                paynow.setVisibility(View.GONE);
-
-            } else {
-                dropmessage1.setVisibility(View.GONE);
-                dropmessage.setVisibility(View.VISIBLE);
-                paynow.setVisibility(View.VISIBLE);
-            }
+            dropmessage1.setVisibility(View.VISIBLE);
+//
+//            if (modelGetCurrentRideResponse.getRideData().isPayStatus()) {
+//
+//                dropmessage.setVisibility(View.GONE);
+//                dropmessage1.setVisibility(View.VISIBLE);
+//                paynow.setVisibility(View.GONE);
+//
+//            } else {
+//                dropmessage1.setVisibility(View.GONE);
+//                dropmessage.setVisibility(View.VISIBLE);
+//                paynow.setVisibility(View.VISIBLE);
+//            }
         }
 
         timelineAdapter = new TimelineAdapter(getActivity(), timelineData);
@@ -350,9 +351,9 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
                 showCancelAlert();
                 break;
 
-            case R.id.button_payNow:
-                handlePayNow();
-                break;
+//            case R.id.button_payNow:
+//                handlePayNow();
+//                break;
 
             case R.id.add_ride_btn:
                 handleAddRide();

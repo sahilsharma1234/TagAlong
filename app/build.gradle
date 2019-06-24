@@ -54,7 +54,7 @@ dependencies {
     implementation 'info.androidhive:imagefilters:1.0.7'
     // dexter M permissions
     implementation 'com.karumi:dexter:4.1.0'
-    implementation 'com.stripe:stripe-android:6.1.2'
+//    implementation 'com.stripe:stripe-android:6.1.2'
     implementation 'com.google.firebase:firebase-messaging:17.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.0'
 

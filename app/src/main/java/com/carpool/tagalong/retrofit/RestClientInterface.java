@@ -40,6 +40,8 @@ import com.carpool.tagalong.models.ModelVerifySignUp;
 import com.carpool.tagalong.models.ModelVerifySignUpResponse;
 import com.carpool.tagalong.models.ModelViewAllRidesDriverRequest;
 import com.carpool.tagalong.models.ModelViewAllRidesDriverResponse;
+import com.carpool.tagalong.models.emergencysos.ModelSendEmergencySOSRequest;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -160,4 +162,19 @@ public interface RestClientInterface {
 
     @retrofit2.http.POST("ride/ride_details")
     Call<ModelGetCurrentRideResponse> getRideDetails(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
+
+    @retrofit2.http.GET("user/get_emergency_rides")
+    Call<ModelGetDriverProfileResponse> getEmergencyRides(@Header("x-auth") String value);
+
+    @retrofit2.http.POST("user/add_card")
+    Call<ModelGetCurrentRideResponse> addCard(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
+
+    @retrofit2.http.POST("user/remove_card")
+    Call<ModelGetCurrentRideResponse> removeCard(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
+
+    @retrofit2.http.POST("user/make_card_default")
+    Call<ModelGetCurrentRideResponse> makeCardDefault(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
+
+    @retrofit2.http.POST("user/press_panic_button")
+    Call<ModelDocumentStatus> pressPanicButton(@Header("x-auth") String value, @Body ModelSendEmergencySOSRequest modelSendEmergencySOSRequest);
 }

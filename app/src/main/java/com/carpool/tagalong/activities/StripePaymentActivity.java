@@ -1,43 +1,10 @@
 package com.carpool.tagalong.activities;
 
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.carpool.tagalong.R;
-import com.carpool.tagalong.constants.Constants;
-import com.carpool.tagalong.models.ModelDocumentStatus;
-import com.carpool.tagalong.models.ModelPaymentRequest;
-import com.carpool.tagalong.preferences.TagALongPreferenceManager;
-import com.carpool.tagalong.retrofit.ApiClient;
-import com.carpool.tagalong.retrofit.RestClientInterface;
-import com.carpool.tagalong.utils.ProgressDialogLoader;
-import com.carpool.tagalong.utils.SimpleAlertDialog;
-import com.carpool.tagalong.utils.Utils;
-import com.stripe.android.Stripe;
-import com.stripe.android.TokenCallback;
-import com.stripe.android.model.Card;
-import com.stripe.android.model.Token;
-import com.stripe.android.view.CardInputWidget;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class StripePaymentActivity extends AppCompatActivity {
 
-    private static final String TAG =  StripePaymentActivity.class.getSimpleName() ;
+    /*private static final String TAG =  StripePaymentActivity.class.getSimpleName() ;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.tv_total)
@@ -200,5 +167,5 @@ public class StripePaymentActivity extends AppCompatActivity {
         ProgressDialogLoader.progressDialogDismiss();
         Log.e(TAG, "Post order Error" + t.toString());
         SimpleAlertDialog.show(StripePaymentActivity.this, "" + t.getMessage());
-    }
+    }*/
 }

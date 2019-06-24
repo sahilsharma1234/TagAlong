@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private ActionBarDrawerToggle mDrawerToggle;
-    private LinearLayout homeLayout, recentRidesLayout, currentRideLayout, profileLayout, hepSupportLyt, aboutUsLyt;
+    private LinearLayout homeLayout, recentRidesLayout, currentRideLayout, profileLayout, hepSupportLyt, aboutUsLyt,rides_emergency_lyt;
     private Fragment fragment;
     private TextView userName, address;
     private Button logoutButton;
@@ -142,7 +142,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        navigationView = findViewById(R.id.nav_view);
+        navigationView  = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         homeLayout = headerView.findViewById(R.id.home_layout);
         recentRidesLayout = headerView.findViewById(R.id.recent_ride_layout);
@@ -155,6 +155,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         hepSupportLyt = headerView.findViewById(R.id.help_support_layout);
         aboutUsLyt = headerView.findViewById(R.id.about_us);
         userImage = headerView.findViewById(R.id.user_image);
+        rides_emergency_lyt = headerView.findViewById(R.id.emergency_rides_lyt);
 
         drawer = findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, drawer,
@@ -202,6 +203,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         profileLayout.setOnClickListener(this);
         hepSupportLyt.setOnClickListener(this);
         aboutUsLyt.setOnClickListener(this);
+        rides_emergency_lyt.setOnClickListener(this);
 //        filterLayout.setOnClickListener(this);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -77,4 +77,7 @@
     <string name="currentupcoming"><![CDATA[Current & Upcoming rides]]></string>
     <string name="current_nd_upcoming"><![CDATA[Current & upcoming rides]]></string>
     <string name="i_am">I am a</string>
+    <string name="emergency_send">SOS sent!! Please hold on fr sometime!!</string>
+    <string name="emergency_rides">Rides in Emergency</string>
+    <string name="sos_received">SOS received</string>
 </resources>
