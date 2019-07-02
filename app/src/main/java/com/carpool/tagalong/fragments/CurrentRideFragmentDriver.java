@@ -191,7 +191,7 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
         handleCurrentRideForDriver();
 
         // this is called because we nee lat long in pick up rider
-        ((HomeActivity) getActivity()).getCurrentLatLong();
+//        ((HomeActivity) getActivity()).getCurrentLatLong();
         return view;
     }
 
@@ -918,130 +918,130 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
 
     private void pickupRider(ModelGetCurrentRideResponse.OnBoard onBoard) {
 
-        try {
-
-            ModelPickupRider modelPickupRider = new ModelPickupRider();
-            Location location = ((HomeActivity) getActivity()).location;
-
-            if (location != null) {
-                modelPickupRider.setPickupLat(location.getLatitude());
-                modelPickupRider.setPickupLong(location.getLongitude());
-            }
-
-            if (onBoard != null)
-                modelPickupRider.setRequestId(onBoard.get_id());
-            else
-                return;
-
-            modelPickupRider.setRideId(modelGetCurrentRideResponse.getRideData().get_id());
-
-            if (Utils.isNetworkAvailable(context)) {
-
-                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-
-                if (restClientRetrofitService != null) {
-
-                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
-
-                    restClientRetrofitService.pickupRider(TagALongPreferenceManager.getToken(getActivity()), modelPickupRider).enqueue(new Callback<ModelDocumentStatus>() {
-
-                        @Override
-                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (response.body() != null) {
-
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-
-                            } else {
-                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
-
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (t != null && t.getMessage() != null) {
-                                t.printStackTrace();
-                            }
-                            Log.e("Accept/Reject Ride", "FAILURE verification");
-                        }
-                    });
-                }
-            } else {
-                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            ProgressDialogLoader.progressDialogDismiss();
-            e.printStackTrace();
-        }
+//        try {
+//
+//            ModelPickupRider modelPickupRider = new ModelPickupRider();
+//            Location location = ((HomeActivity) getActivity()).location;
+//
+//            if (location != null) {
+//                modelPickupRider.setPickupLat(location.getLatitude());
+//                modelPickupRider.setPickupLong(location.getLongitude());
+//            }
+//
+//            if (onBoard != null)
+//                modelPickupRider.setRequestId(onBoard.get_id());
+//            else
+//                return;
+//
+//            modelPickupRider.setRideId(modelGetCurrentRideResponse.getRideData().get_id());
+//
+//            if (Utils.isNetworkAvailable(context)) {
+//
+//                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+//
+//                if (restClientRetrofitService != null) {
+//
+//                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
+//
+//                    restClientRetrofitService.pickupRider(TagALongPreferenceManager.getToken(getActivity()), modelPickupRider).enqueue(new Callback<ModelDocumentStatus>() {
+//
+//                        @Override
+//                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+//                            ProgressDialogLoader.progressDialogDismiss();
+//
+//                            if (response.body() != null) {
+//
+//                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//
+//                            } else {
+//                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+//
+//                            ProgressDialogLoader.progressDialogDismiss();
+//
+//                            if (t != null && t.getMessage() != null) {
+//                                t.printStackTrace();
+//                            }
+//                            Log.e("Accept/Reject Ride", "FAILURE verification");
+//                        }
+//                    });
+//                }
+//            } else {
+//                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+//            }
+//        } catch (Exception e) {
+//            ProgressDialogLoader.progressDialogDismiss();
+//            e.printStackTrace();
+//        }
     }
 
     private void dropRider(final ModelGetCurrentRideResponse.OnBoard onBoard) {
 
-        try {
-
-            ModelPickupRider modelPickupRider = new ModelPickupRider();
-            Location location = ((HomeActivity) getActivity()).location;
-
-            if (location != null) {
-                modelPickupRider.setDropLat(location.getLatitude());
-                modelPickupRider.setDropLong(location.getLongitude());
-            }
-
-            if (onBoard != null)
-                modelPickupRider.setRequestId(onBoard.get_id());
-            else
-                return;
-
-            modelPickupRider.setRideId(modelGetCurrentRideResponse.getRideData().get_id());
-
-            if (Utils.isNetworkAvailable(context)) {
-
-                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-
-                if (restClientRetrofitService != null) {
-
-                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
-
-                    restClientRetrofitService.dropRider(TagALongPreferenceManager.getToken(getActivity()), modelPickupRider).enqueue(new Callback<ModelDocumentStatus>() {
-
-                        @Override
-                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (response.body() != null) {
-
-                                if (response.body().getStatus() == 1) {
-                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                    showSubmitReviewDialog(onBoard);
-                                }
-                            } else {
-                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
-
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (t != null && t.getMessage() != null) {
-                                t.printStackTrace();
-                            }
-                            Log.e("Accept/Reject Ride", "FAILURE verification");
-                        }
-                    });
-                }
-            } else {
-                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            ProgressDialogLoader.progressDialogDismiss();
-            e.printStackTrace();
-        }
+//        try {
+//
+//            ModelPickupRider modelPickupRider = new ModelPickupRider();
+//            Location location = ((HomeActivity) getActivity()).location;
+//
+//            if (location != null) {
+//                modelPickupRider.setDropLat(location.getLatitude());
+//                modelPickupRider.setDropLong(location.getLongitude());
+//            }
+//
+//            if (onBoard != null)
+//                modelPickupRider.setRequestId(onBoard.get_id());
+//            else
+//                return;
+//
+//            modelPickupRider.setRideId(modelGetCurrentRideResponse.getRideData().get_id());
+//
+//            if (Utils.isNetworkAvailable(context)) {
+//
+//                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+//
+//                if (restClientRetrofitService != null) {
+//
+//                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
+//
+//                    restClientRetrofitService.dropRider(TagALongPreferenceManager.getToken(getActivity()), modelPickupRider).enqueue(new Callback<ModelDocumentStatus>() {
+//
+//                        @Override
+//                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+//                            ProgressDialogLoader.progressDialogDismiss();
+//
+//                            if (response.body() != null) {
+//
+//                                if (response.body().getStatus() == 1) {
+//                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                    showSubmitReviewDialog(onBoard);
+//                                }
+//                            } else {
+//                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+//
+//                            ProgressDialogLoader.progressDialogDismiss();
+//
+//                            if (t != null && t.getMessage() != null) {
+//                                t.printStackTrace();
+//                            }
+//                            Log.e("Accept/Reject Ride", "FAILURE verification");
+//                        }
+//                    });
+//                }
+//            } else {
+//                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+//            }
+//        } catch (Exception e) {
+//            ProgressDialogLoader.progressDialogDismiss();
+//            e.printStackTrace();
+//        }
     }
 
     private void showSubmitReviewDialog(final ModelGetCurrentRideResponse.OnBoard onBoard) {

@@ -72,7 +72,7 @@
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
-            android:text="ADD RIDE"
+            android:text="START RIDE"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:background="@drawable/button_shape_signin"

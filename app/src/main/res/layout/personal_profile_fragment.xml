@@ -99,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="You drove"/>
+                        android:text="Total Miles"/>
 
                     <TextView
                         android:id="@+id/drove_txt"
@@ -123,7 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="Your rating"/>
+                        android:text="Rating"/>
 
                     <TextView
                         android:id="@+id/rating"
@@ -222,7 +222,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="Name"/>
+                        android:text="Full name"/>
 
                     <TextView
                         android:id="@+id/name_user_profile"
@@ -256,7 +256,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="Mobile number"/>
+                        android:text="Phone number"/>
 
                     <TextView
                         android:id="@+id/mobile_nuber_user"
@@ -292,7 +292,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="Email ID"/>
+                        android:text="Email"/>
 
                     <TextView
                         android:id="@+id/email_id_user"
@@ -328,7 +328,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="Address"/>
+                        android:text="Mailing Address"/>
 
                     <TextView
                         android:id="@+id/address_user"
@@ -399,7 +399,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="Pool gender preference"/>
+                        android:text="Driver/Rider gender preference"/>
 
                     <TextView
                         android:id="@+id/pool_gender_txt"

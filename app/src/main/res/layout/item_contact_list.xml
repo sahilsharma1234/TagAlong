@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <CheckBox
+        android:id="@+id/contactSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@drawable/ic_check_box_outline_blank_black"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/contactName"
+        android:layout_width="wrap_content"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="ABCDDDDDD"/>
+
+    <TextView
+        android:id="@+id/contactNumber"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/contactName"
+        android:layout_height="wrap_content"
+        android:text="1345656656"/>
+
+    <TextView
+        android:id="@+id/contactEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contactName"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/contactNumber"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        android:layout_below="@id/contactNumber"
+        android:layout_marginTop="5dp"/>
+
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.carpool.tagalong.fragments;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -43,6 +46,8 @@ public class RecentRidesFragment extends Fragment {
 
     RecyclerView recycler_view_recent_rides;
     private RecentRideAdapter mAdapter;
+    private TextView  norideTxt;
+    private ImageView noRideImg;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -88,6 +93,8 @@ public class RecentRidesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recent_rides, container, false);
 
         recycler_view_recent_rides = view.findViewById(R.id.recycler_view_recent_rides);
+        noRideImg = view.findViewById(R.id.norideImg);
+        norideTxt = view.findViewById(R.id.no_recent_rides);
 
         getRecentRides();
 
@@ -154,11 +161,24 @@ public class RecentRidesFragment extends Fragment {
                             List<ModelGetRecentRidesResponse.RideData> rideData = response.body().getRideData();
 
                             if (rideData != null && rideData.size() > 0) {
+
+                                noRideImg.setVisibility(View.GONE);
+                                norideTxt.setVisibility(View.GONE);
+                                recycler_view_recent_rides.setVisibility(View.VISIBLE);
+
                                 handleRecentRideResposne(rideData);
+                            }else{
+
+                                noRideImg.setVisibility(View.VISIBLE);
+                                norideTxt.setVisibility(View.VISIBLE);
+                                recycler_view_recent_rides.setVisibility(View.GONE);
                             }
 
                         } else {
                             Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                            noRideImg.setVisibility(View.VISIBLE);
+                            norideTxt.setVisibility(View.VISIBLE);
+                            recycler_view_recent_rides.setVisibility(View.GONE);
                         }
                     }
 
@@ -168,6 +188,10 @@ public class RecentRidesFragment extends Fragment {
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }
+                        noRideImg.setVisibility(View.VISIBLE);
+                        norideTxt.setVisibility(View.VISIBLE);
+                        recycler_view_recent_rides.setVisibility(View.GONE);
+
                         Log.e("SAVE DRIVING DETAILS", "FAILURE SAVING PROFILE");
                     }
                 });

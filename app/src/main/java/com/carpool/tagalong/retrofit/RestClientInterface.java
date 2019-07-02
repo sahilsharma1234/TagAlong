@@ -30,6 +30,7 @@ import com.carpool.tagalong.models.ModelSignInRequest;
 import com.carpool.tagalong.models.ModelSignInResponse;
 import com.carpool.tagalong.models.ModelSignUpResponse;
 import com.carpool.tagalong.models.ModelStartRideRequest;
+import com.carpool.tagalong.models.ModelTagUsers;
 import com.carpool.tagalong.models.ModelUpdatePasswordRequest;
 import com.carpool.tagalong.models.ModelUpdatePasswordResponse;
 import com.carpool.tagalong.models.ModelUpdateProfileRequest;
@@ -40,7 +41,13 @@ import com.carpool.tagalong.models.ModelVerifySignUp;
 import com.carpool.tagalong.models.ModelVerifySignUpResponse;
 import com.carpool.tagalong.models.ModelViewAllRidesDriverRequest;
 import com.carpool.tagalong.models.ModelViewAllRidesDriverResponse;
+import com.carpool.tagalong.models.chat.ChatSendMessageRequest;
+import com.carpool.tagalong.models.chat.ModelChatSendMessageResponse;
+import com.carpool.tagalong.models.chat.ModelGetChatConversationResponse;
+import com.carpool.tagalong.models.chat.ModelGetChatRequest;
+import com.carpool.tagalong.models.emergencysos.ModelGetEmergencyRidesResponse;
 import com.carpool.tagalong.models.emergencysos.ModelSendEmergencySOSRequest;
+import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -164,7 +171,7 @@ public interface RestClientInterface {
     Call<ModelGetCurrentRideResponse> getRideDetails(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
 
     @retrofit2.http.GET("user/get_emergency_rides")
-    Call<ModelGetDriverProfileResponse> getEmergencyRides(@Header("x-auth") String value);
+    Call<ModelGetEmergencyRidesResponse> getEmergencyRides(@Header("x-auth") String value);
 
     @retrofit2.http.POST("user/add_card")
     Call<ModelGetCurrentRideResponse> addCard(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
@@ -177,4 +184,16 @@ public interface RestClientInterface {
 
     @retrofit2.http.POST("user/press_panic_button")
     Call<ModelDocumentStatus> pressPanicButton(@Header("x-auth") String value, @Body ModelSendEmergencySOSRequest modelSendEmergencySOSRequest);
+
+    @retrofit2.http.POST("user/update_coordinate")
+    Call<ModelDocumentStatus> updateCoordinates(@Header("x-auth") String value, @Body ModelUpdateCoordinates modelUpdateCoordinates);
+
+    @retrofit2.http.POST("ride/tag_users_in_ride")
+    Call<ModelDocumentStatus> tagUsers(@Header("x-auth") String value, @Body ModelTagUsers modelTagUsers);
+
+    @retrofit2.http.POST("chat/get_message")
+    Call<ModelGetChatConversationResponse> getConversationMessages(@Header("x-auth") String value, @Body ModelGetChatRequest modelGetChatRequest);
+
+    @retrofit2.http.POST("chat/send_message")
+    Call<ModelChatSendMessageResponse> sendMessage(@Header("x-auth") String value, @Body ChatSendMessageRequest chatSendMessageRequest);
 }

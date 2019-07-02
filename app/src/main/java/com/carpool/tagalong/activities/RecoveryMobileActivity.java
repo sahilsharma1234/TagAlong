@@ -46,6 +46,7 @@ public class RecoveryMobileActivity extends AppCompatActivity {
         countryCodePicker       = findViewById(R.id.countryCodeRecoveryMobile);
         mobileNumber            = findViewById(R.id.mobileNumberRecovery);
         progressBarLayout       = findViewById(R.id.lytBarRecoveryMobile);
+        countryCodePicker.setCustomMasterCountries("us");
 
         sendCode.setOnClickListener(new View.OnClickListener() {
             @Override

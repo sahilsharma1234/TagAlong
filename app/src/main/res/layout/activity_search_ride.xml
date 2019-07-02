@@ -43,7 +43,7 @@
                     android:singleLine="true"
                     android:backgroundTint="@android:color/transparent"
                     android:layout_centerVertical="true"
-                    android:hint="Start of trip"
+                    android:hint="Pick me up at"
                     android:drawablePadding="10dp"
                     android:drawableRight="@drawable/ic_start_ride_point_xhdpi"
                     android:imeOptions="actionDone"
@@ -80,7 +80,7 @@
                     android:singleLine="true"
                     android:backgroundTint="@android:color/transparent"
                     android:layout_centerVertical="true"
-                    android:hint="End of trip"
+                    android:hint="And take me to"
                     android:imeOptions="actionDone"
                     android:drawablePadding="10dp"
                     android:drawableRight="@drawable/ic_end_ride_point_xhdpi"
@@ -249,7 +249,7 @@
                             android:layout_centerVertical="true"
                             android:textColor="@android:color/black"
                             android:textSize="16sp"
-                            android:text="Seats selected "/>
+                            android:text="Seats needed"/>
 
                         <RelativeLayout
                             android:layout_width="wrap_content"

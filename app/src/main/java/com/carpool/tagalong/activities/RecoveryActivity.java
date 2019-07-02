@@ -71,7 +71,7 @@ public class RecoveryActivity extends AppCompatActivity {
             return false;
         }
         if(!isValidPassword(passwordString)){
-            enterPasssword.setError("Password must be minimum 8 characters including numbers,special characters and capital alphabets");
+            enterPasssword.setError("Password must be minimum 8 and max 18 characters including numbers,special characters and capital alphabets");
             return false;
         }
         if(reneterPasswordString.equals("")){
@@ -87,7 +87,7 @@ public class RecoveryActivity extends AppCompatActivity {
 
     private boolean isValidPassword(String password) {
 
-        return Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,})").matcher(password).matches();
+        return Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,18})").matcher(password).matches();
     }
 
     private void setToolBar() {

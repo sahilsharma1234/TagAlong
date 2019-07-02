@@ -67,4 +67,43 @@ public class TagALongPreferenceManager {
         editor.putString(Constants.DEVICE_TOKEN, token);
         editor.commit();
     }
+
+    public static void saveUserLocationLatitude(Context context, String latitude) {
+        SharedPreferences mPrefs = context.getSharedPreferences(Constants.MY_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        prefsEditor.putString("userLocationLatitude", latitude);
+        prefsEditor.apply();
+    }
+
+    public static void saveUserLocationLongitude(Context context, String longitude) {
+        SharedPreferences mPrefs = context.getSharedPreferences(Constants.MY_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        prefsEditor.putString("userLocationLongitude", longitude);
+        prefsEditor.apply();
+    }
+
+    public static String getUserLocationLatitude(Context context) {
+        SharedPreferences mPrefs = context.getSharedPreferences(Constants.MY_PREF, Context.MODE_PRIVATE);
+        String token = mPrefs.getString("userLocationLatitude", "");
+        return token;
+    }
+
+    public static String getUserLocationLongitude(Context context) {
+        SharedPreferences mPrefs = context.getSharedPreferences(Constants.MY_PREF, Context.MODE_PRIVATE);
+        String token = mPrefs.getString("userLocationLongitude", "");
+        return token;
+    }
+
+    public static void saveUserAddress(Context context, String address) {
+        SharedPreferences mPrefs = context.getSharedPreferences(Constants.MY_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        prefsEditor.putString("address", address);
+        prefsEditor.apply();
+    }
+
+    public static String getUserAddress(Context context) {
+        SharedPreferences mPrefs = context.getSharedPreferences(Constants.MY_PREF, Context.MODE_PRIVATE);
+        String address = mPrefs.getString("address", "");
+        return address;
+    }
 }

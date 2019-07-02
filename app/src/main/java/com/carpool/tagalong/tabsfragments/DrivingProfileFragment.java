@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -88,8 +89,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     private ModelUserProfileData data = null;
     private String mCurrentPhotoPath;
     private RecyclerView recyclerViewDocuments;
-    private  List<ModelDocuments> documentsList;
-    private  DocumentListAdapter documentListAdapter;
+    private List<ModelDocuments> documentsList;
+    private DocumentListAdapter documentListAdapter;
 
     @Nullable
     @Override
@@ -104,22 +105,22 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
         vehicleTxt = view.findViewById(R.id.vehicle);
         vehicleRegistrationTxt = view.findViewById(R.id.vehicle_number);
-        vehicleYearTxt   = view.findViewById(R.id.vehicle_year);
-        vehicleColorTxt  = view.findViewById(R.id.vehicle_color);
-        vehicleModelTxt  = view.findViewById(R.id.vehicle_model_txt);
+        vehicleYearTxt = view.findViewById(R.id.vehicle_year);
+        vehicleColorTxt = view.findViewById(R.id.vehicle_color);
+        vehicleModelTxt = view.findViewById(R.id.vehicle_model_txt);
         vehicleRegNumEdt = view.findViewById(R.id.vehicle_number_edt);
-        saveTxt          = view.findViewById(R.id.save_driving_preferences);
-        editTxt          = view.findViewById(R.id.edit_driving_preferences);
-        uploadImage      = view.findViewById(R.id.upload_document_action);
-        mainDocuLyt      = view.findViewById(R.id.document_uploaded_container);
-        progressBarLyt   = view.findViewById(R.id.lytBarDriving);
-        smokeCheckBox    = view.findViewById(R.id.smoke_prefe_chck);
-        kidsCheckBox     = view.findViewById(R.id.kids_travelling_chck);
-        bagsCheckBox     = view.findViewById(R.id.carry_bags_pref_chck);
+        saveTxt = view.findViewById(R.id.save_driving_preferences);
+        editTxt = view.findViewById(R.id.edit_driving_preferences);
+        uploadImage = view.findViewById(R.id.upload_document_action);
+        mainDocuLyt = view.findViewById(R.id.document_uploaded_container);
+        progressBarLyt = view.findViewById(R.id.lytBarDriving);
+        smokeCheckBox = view.findViewById(R.id.smoke_prefe_chck);
+        kidsCheckBox = view.findViewById(R.id.kids_travelling_chck);
+        bagsCheckBox = view.findViewById(R.id.carry_bags_pref_chck);
         vehicleBrandSpinner = view.findViewById(R.id.vehicle_brand_spinner);
         vehicleModelSpinner = view.findViewById(R.id.vehicle_model_spinner);
         vehicleColorSpinner = view.findViewById(R.id.vehicle_color_spinner);
-        vehicleYearSpinner  = view.findViewById(R.id.vehicle_year_spinner);
+        vehicleYearSpinner = view.findViewById(R.id.vehicle_year_spinner);
         recyclerViewDocuments = view.findViewById(R.id.documentRecyclerView);
 
         saveTxt.setOnClickListener(this);
@@ -129,8 +130,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         vehicleBrandArrayList = new ArrayList<>();
         vehicleModelArrayList = new ArrayList<>();
         vehicleColorArrayList = new ArrayList<>();
-        vehicleYearArrayList  = new ArrayList<>();
-        vehicleYearArrayListString  = new ArrayList<>();
+        vehicleYearArrayList = new ArrayList<>();
+        vehicleYearArrayListString = new ArrayList<>();
         vehicleBrandArrayList.add(0, "Select brand");
         vehicleModelArrayList.add(0, "Select model");
         vehicleColorArrayList.add(0, "Select color");
@@ -142,21 +143,21 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
     private void handleStartSetup() {
 
-        if(DataManager.getYearsList() != null) {
+        if (DataManager.getYearsList() != null) {
 
             for (int year : DataManager.getYearsList()) {
                 vehicleYearArrayListString.add(year + "");
                 vehicleYearArrayList.add(year);
             }
-        }else{
+        } else {
             Utils.getYearsList(getActivity());
         }
 
-        if(DataManager.getColorList() != null) {
+        if (DataManager.getColorList() != null) {
             for (String color : DataManager.getColorList()) {
                 vehicleColorArrayList.add(color);
             }
-        }else{
+        } else {
             Utils.getColorList(getActivity());
         }
 
@@ -497,6 +498,10 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        createDocumentsList();
+    }
+
+    private void createDocumentsList() {
 
         data = DataManager.modelUserProfileData;
 
@@ -515,7 +520,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
                 documentsList = data.getDocuments();
 
-                documentListAdapter = new DocumentListAdapter(getActivity(),documentsList, this);
+                documentListAdapter = new DocumentListAdapter(getActivity(), documentsList, this);
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
                 recyclerViewDocuments.setLayoutManager(mLayoutManager);
                 recyclerViewDocuments.setItemAnimator(new DefaultItemAnimator());
@@ -565,7 +570,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     uploadDocToServer(null);
                 }
             }
-            reduceImageAndSet(bitmap);
+//            reduceImageAndSet(bitmap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -599,13 +604,13 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
     private void addImageLayout(Bitmap bitmap) {
 
-        mainDocuLyt.removeAllViews();
+//        mainDocuLyt.removeAllViews();
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View inflatedLayout     = inflater.inflate(R.layout.uploaded_document_review, null, false);
+        View inflatedLayout = inflater.inflate(R.layout.uploaded_document_review, null, false);
 
-        ImageView document_image   = inflatedLayout.findViewById(R.id.document);
-        ImageView delete_document  = inflatedLayout.findViewById(R.id.delete);
+        ImageView document_image = inflatedLayout.findViewById(R.id.document);
+        ImageView delete_document = inflatedLayout.findViewById(R.id.delete);
         ImageView refresh_document = inflatedLayout.findViewById(R.id.reload);
 
         delete_document.setOnClickListener(new View.OnClickListener() {
@@ -690,7 +695,14 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                                 DataManager.isDocumentUploaded = true;
 
                                 TagALongPreferenceManager.setDocumentUploadedStatus(getActivity(), true);
-
+                                ((HomeActivity) getActivity()).getUserProfile();
+                                // here we again creates the list of documents
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        createDocumentsList();
+                                    }
+                                }, 2000);
                             } else {
                                 Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
                             }
@@ -859,7 +871,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             if (restClientRetrofitService != null) {
 
-                restClientRetrofitService.deleteDocument(TagALongPreferenceManager.getToken(getActivity()),docId).enqueue(new Callback<ModelDocumentStatus>() {
+                restClientRetrofitService.deleteDocument(TagALongPreferenceManager.getToken(getActivity()), docId).enqueue(new Callback<ModelDocumentStatus>() {
 
                     @Override
                     public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {

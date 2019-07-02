@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.CurrentRideActivity;
 import com.carpool.tagalong.activities.CurrentRideActivityDriver;
@@ -28,7 +29,9 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
+
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -93,7 +96,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
         currentNdUpcomingrecyclerView = view.findViewById(R.id.current_upcoming_recycler);
         lyt_currnt_upcoming = view.findViewById(R.id.lyt_list_curUpcoming);
         add_ride_lyt = view.findViewById(R.id.add_ride_post_rel);
-        addRideBtn   = view.findViewById(R.id.add_ride_btn);
+        addRideBtn = view.findViewById(R.id.add_ride_btn);
         addRideBtn.setOnClickListener(this);
         return view;
     }
@@ -123,6 +126,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
                         @Override
                         public void onResponse(Call<ModelGetAllRidesResponse> call, Response<ModelGetAllRidesResponse> response) {
+
                             ProgressDialogLoader.progressDialogDismiss();
 
                             if (response.body() != null) {
@@ -163,33 +167,43 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
     private void initAdapter(ModelGetAllRidesResponse.RideData rideData) {
 
+        int ongoingRidesCount = 0;
+
         if (rideData != null) {
 
             if (rideData.getCurrentRidesArr() != null && rideData.getUpcomingRidesArr() != null) {
 
-                List<ModelGetAllRidesResponse.Rides> commonlist = rideData.getCurrentRidesArr();
+                List<ModelGetAllRidesResponse.Rides> ongongRidesLIst = rideData.getCurrentRidesArr();
                 List<ModelGetAllRidesResponse.Rides> upcomingRideList = rideData.getUpcomingRidesArr();
 
-                if (commonlist.size() > 0 || upcomingRideList.size() > 0) {
+                ongoingRidesCount = ongongRidesLIst.size();
+
+                if (upcomingRideList.size() > 0) {
 
                     lyt_currnt_upcoming.setVisibility(View.VISIBLE);
                     add_ride_lyt.setVisibility(View.GONE);
 
                     for (ModelGetAllRidesResponse.Rides ride : rideData.getUpcomingRidesArr()) {
-                        commonlist.add(ride);
+                        ongongRidesLIst.add(ride);
                     }
+                }
+                if(ongongRidesLIst.size() > 0){
 
-                    mAdapter = new CurrentAndUpcomingRideAdapter(context, commonlist, this);
+                    mAdapter = new CurrentAndUpcomingRideAdapter(context, ongongRidesLIst, this, ongoingRidesCount);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                     currentNdUpcomingrecyclerView.setLayoutManager(mLayoutManager);
                     currentNdUpcomingrecyclerView.setItemAnimator(new DefaultItemAnimator());
                     currentNdUpcomingrecyclerView.setAdapter(mAdapter);
-                } else {
+
+                }else{
                     lyt_currnt_upcoming.setVisibility(View.GONE);
                     add_ride_lyt.setVisibility(View.VISIBLE);
                 }
+            } else {
+                lyt_currnt_upcoming.setVisibility(View.GONE);
+                add_ride_lyt.setVisibility(View.VISIBLE);
             }
-        }else {
+        } else {
             lyt_currnt_upcoming.setVisibility(View.GONE);
             add_ride_lyt.setVisibility(View.VISIBLE);
         }
@@ -203,7 +217,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
         }
     }
 
-    private void getRideDetails(String rideId) {
+    private void getRideDetails(final String rideId) {
 
         try {
             if (Utils.isNetworkAvailable(context)) {
@@ -228,7 +242,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 Log.i(CurrentUpcomingFragment.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
-                                handleRideResponse(response.body());
+                                handleRideResponse(response.body(), rideId);
 
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -254,34 +268,36 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
         }
     }
 
-    private void handleRideResponse(ModelGetCurrentRideResponse data) {
+    private void handleRideResponse(ModelGetCurrentRideResponse data, String rideId) {
 
         if (data != null) {
 
             if (data.getRideData().isDrive()) {
 
-                handleCurrentRideForDriver(data);
+                handleCurrentRideForDriver(data, rideId);
 
             } else {
-                handleCurrentRideForRider(data);
+                handleCurrentRideForRider(data, rideId);
             }
         }
     }
 
-    private void handleCurrentRideForRider(ModelGetCurrentRideResponse data) {
+    private void handleCurrentRideForRider(ModelGetCurrentRideResponse data, String rideId) {
 
         Intent intent = new Intent(getActivity(), CurrentRideActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("data", data);
+        intent.putExtra("rideId", rideId);
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    private void handleCurrentRideForDriver(ModelGetCurrentRideResponse data) {
+    private void handleCurrentRideForDriver(ModelGetCurrentRideResponse data, String rideId) {
 
         Intent intent = new Intent(getActivity(), CurrentRideActivityDriver.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("data", data);
+        intent.putExtra("rideId", rideId);
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }

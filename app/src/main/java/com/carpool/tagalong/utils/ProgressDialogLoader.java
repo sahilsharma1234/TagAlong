@@ -37,11 +37,13 @@ public class ProgressDialogLoader {
 
     public static void progressDialogDismiss() {
 
-        if ((progressDialog != null) && progressDialog.isShowing())
-            progressDialog.dismiss();
+        try {
+            if ((progressDialog != null) && progressDialog.isShowing())
+                progressDialog.dismiss();
 
-        progressDialog = null;
-
-
+            progressDialog = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

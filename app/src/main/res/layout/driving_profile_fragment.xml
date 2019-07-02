@@ -25,7 +25,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Driving preferences" />
+                    android:text="Rider preferences" />
 
             </RelativeLayout>
 
@@ -34,10 +34,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rel1"
+                android:layout_marginTop="20dp"
                 android:background="@android:color/white"
-                android:orientation="vertical"  android:layout_marginTop="20dp"
-                android:padding="20dp"
-                >
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <RelativeLayout
                     android:id="@+id/smoke_lyt"
@@ -146,14 +146,14 @@
                 android:paddingRight="25dp">
 
                 <TextView
-                    android:layout_width  = "wrap_content"
-                    android:layout_height = "wrap_content"
-                    android:text          = "Driving preferences" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vehicle information" />
 
                 <TextView
                     android:id="@+id/edit_driving_preferences"
-                    android:layout_width  = "wrap_content"
-                    android:layout_height = "wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="EDIT"
                     android:textColor="@color/colorGold"
@@ -307,14 +307,14 @@
 
                     <Spinner
                         android:id="@+id/vehicle_brand_spinner"
+                        style="@android:style/Widget.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        style="@android:style/Widget.Spinner"
-                        android:backgroundTint="@color/colorGold"
-                        android:textSize="16sp"
                         android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:backgroundTint="@color/colorGold"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -340,14 +340,14 @@
 
                     <Spinner
                         android:id="@+id/vehicle_model_spinner"
+                        style="@android:style/Widget.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        style="@android:style/Widget.Spinner"
-                        android:backgroundTint="@color/colorGold"
-                        android:textSize="16sp"
                         android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:backgroundTint="@color/colorGold"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -360,16 +360,16 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Vehicle number" />
+                        android:text="License Plate State and Number" />
 
                     <TextView
                         android:id="@+id/vehicle_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
                         android:textSize="18sp" />
 
                     <EditText
@@ -377,9 +377,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
                         android:textSize="18sp"
                         android:visibility="gone" />
 
@@ -394,28 +394,28 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Vehicle year" />
+                        android:text="Model year" />
 
                     <TextView
                         android:id="@+id/vehicle_year"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
                         android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/vehicle_year_spinner"
+                        style="@android:style/Widget.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        style="@android:style/Widget.Spinner"
-                        android:backgroundTint="@color/colorGold"
-                        android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -435,21 +435,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
                         android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/vehicle_color_spinner"
+                        style="@android:style/Widget.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:layout_marginTop="5dp"
-                        style="@android:style/Widget.Spinner"
-                        android:backgroundTint="@color/colorGold"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -469,13 +469,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Document" />
+                    android:text="Driver’s License and Proof of Insurance" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
                         android:id="@+id/upload_document_action"
@@ -535,8 +535,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
-                            android:scrollbars="horizontal"
-                            android:scrollbarStyle="insideInset">
+                            android:scrollbarStyle="insideInset"
+                            android:scrollbars="horizontal">
 
                         </android.support.v7.widget.RecyclerView>
 

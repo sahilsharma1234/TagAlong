@@ -88,6 +88,9 @@ public class NotificationService extends FirebaseMessagingService {
             Intent intent1 = new Intent("launchCurrentRideFragment");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         }
+        else if(title.contains("Somebody is in Danger")){
+
+        }
         else {
             intent.putExtra(Constants.START_RIDE, "Current Ride");
             Intent intent1 = new Intent("launchCurrentRideFragment");

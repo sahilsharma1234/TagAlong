@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="@dimen/padding_10"
-    android:background="#fff">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/light_grey_color">
 
     <!--<TextView
         android:id="@+id/title_text_home"
@@ -20,145 +17,172 @@
         android:textColor="@android:color/holo_red_light"
         android:textSize="@dimen/_12_px" />
 -->
-   <!-- <android.support.v7.widget.CardView
-        android:id="@+id/card_driving"
+    <!-- <android.support.v7.widget.CardView
+         android:id="@+id/card_driving"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/title_text_home"
+         android:layout_margin="@dimen/_5_px"
+         >-->
+
+
+    <include android:id="@+id/toolbar_emergency_ride" layout="@layout/toolbar_shadow"/>
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_text_home"
+        android:layout_below="@id/toolbar_emergency_ride"
+        android:elevation="@dimen/_8_px"
+        app:cardElevation="@dimen/_8_px"
+        app:cardMaxElevation="@dimen/_10_px"
         android:layout_margin="@dimen/_5_px"
-        >-->
+        app:cardCornerRadius="@dimen/_5_px"
+        android:layout_marginTop="@dimen/_5_px">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_elevation_red"
 
+            >
             <fragment
                 android:id="@+id/map"
-                android:name="com.google.android.gms.maps.MapFragment"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_100_px" />
+                android:layout_margin="@dimen/_1_px"
+                android:layout_height="@dimen/_150_px" />
 
-            <RelativeLayout
-                android:id="@+id/details_lyt"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/ridersList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/map"
                 android:layout_marginTop="@dimen/_10_px"
-                android:orientation="horizontal"
                 android:padding="@dimen/_5_px">
 
-                <LinearLayout
-                    android:id="@+id/rider_detail_lyt_emer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
+            </android.support.v7.widget.RecyclerView>
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/emergency_rider_img"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:src="@drawable/avatar_avatar_12" />
+            <!-- <RelativeLayout
+                 android:id="@+id/details_lyt"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_below="@id/map"
+                 android:layout_marginTop="@dimen/_10_px"
+                 android:orientation="horizontal"
+                 android:padding="@dimen/_5_px">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/_5_px"
-                        android:orientation="vertical">
+                 <LinearLayout
+                     android:id="@+id/rider_detail_lyt_emer"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/emergency_rider_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="ABCDE"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                     <de.hdodenhof.circleimageview.CircleImageView
+                         android:id="@+id/emergency_rider_img"
+                         android:layout_width="50dp"
+                         android:layout_height="50dp"
+                         android:src="@drawable/avatar_avatar_12" />
 
-                        <TextView
-                            android:id="@+id/emergency_rider_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="ABCDE"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_gravity="center"
+                         android:layout_marginLeft="@dimen/_5_px"
+                         android:orientation="vertical">
 
-                    </LinearLayout>
+                         <TextView
+                             android:id="@+id/emergency_rider_name"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="ABCDE"
+                             android:textColor="@color/black"
+                             android:textSize="16sp" />
 
-                </LinearLayout>
+                         <TextView
+                             android:id="@+id/emergency_rider_number"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="ABCDE"
+                             android:textColor="@color/black"
+                             android:textSize="16sp" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/_5_px"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                 </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_call_user"
-                            android:textSize="16sp" />
+                 <LinearLayout
+                     android:layout_width="wrap_content"
+                     android:layout_height="40dp"
+                     android:layout_alignParentRight="true"
+                     android:layout_centerVertical="true"
+                     android:gravity="center"
+                     android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Call user"
-                            android:textColor="@color/orange_color"
-                            android:textSize="12sp" />
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_gravity="center"
+                         android:layout_marginLeft="@dimen/_5_px"
+                         android:gravity="center"
+                         android:orientation="vertical">
 
-                    </LinearLayout>
+                         <ImageView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:src="@drawable/ic_call_user"
+                             android:textSize="16sp" />
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_10_px"
-                        android:layout_marginRight="@dimen/_10_px"
-                        android:background="@color/grey"></View>
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_gravity="center"
+                             android:text="Call user"
+                             android:textColor="@color/orange_color"
+                             android:textSize="12sp" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/_5_px"
-                        android:layout_toRightOf="@id/rider_detail_lyt_emer"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                     </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_navigate"
-                            android:textSize="16sp" />
+                     <View
+                         android:layout_width="1dp"
+                         android:layout_height="wrap_content"
+                         android:layout_marginLeft="@dimen/_10_px"
+                         android:layout_marginRight="@dimen/_10_px"
+                         android:background="@color/grey"></View>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Navigate"
-                            android:textColor="@color/orange_color"
-                            android:textSize="12sp" />
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_gravity="center"
+                         android:layout_marginLeft="@dimen/_5_px"
+                         android:layout_toRightOf="@id/rider_detail_lyt_emer"
+                         android:gravity="center"
+                         android:orientation="vertical">
 
-                    </LinearLayout>
-                </LinearLayout>
+                         <ImageView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:src="@drawable/ic_navigate"
+                             android:textSize="16sp" />
 
-            </RelativeLayout>
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_gravity="center"
+                             android:text="Navigate"
+                             android:textColor="@color/orange_color"
+                             android:textSize="12sp" />
+
+                     </LinearLayout>
+                 </LinearLayout>
+
+             </RelativeLayout>-->
 
             <View
                 android:id="@+id/div1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/details_lyt"
+                android:layout_below="@id/ridersList"
                 android:layout_margin="@dimen/_10_px"
                 android:background="@color/grey" />
 
@@ -168,6 +192,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/div1"
+                android:padding="@dimen/_10_px"
                 android:orientation="vertical">
 
                 <TextView
@@ -201,6 +226,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center|start"
                             android:text="Alexandra Daniel"
+                            android:ellipsize="end"
+                            android:singleLine="true"
                             android:textColor="@android:color/black"
                             android:textSize="16sp" />
 
@@ -219,7 +246,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="55dp"
+                            android:ellipsize="end"
                             android:gravity="center|start"
+                            android:singleLine="true"
                             android:text="Alexandra Daniel"
                             android:textColor="@android:color/black"
                             android:textSize="16sp" />
@@ -231,8 +260,9 @@
             </LinearLayout>
 
         </RelativeLayout>
-<!--
-    </android.support.v7.widget.CardView>-->
+    </android.support.v7.widget.CardView>
+    <!--
+        </android.support.v7.widget.CardView>-->
     <!--
             <android.support.v7.widget.CardView
                 android:id="@+id/card_searching"
@@ -304,4 +334,4 @@
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+</RelativeLayout>

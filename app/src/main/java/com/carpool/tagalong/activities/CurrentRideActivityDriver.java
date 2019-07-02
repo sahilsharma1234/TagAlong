@@ -12,9 +12,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -48,22 +46,33 @@ import com.carpool.tagalong.adapter.OnBoardRidersAdapter;
 import com.carpool.tagalong.adapter.TimelineAdapter;
 import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.fragments.CurrentRideFragmentDriver;
+import com.carpool.tagalong.fragments.CurrentUpcomingFragment;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelAcceptRideRequest;
 import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
+import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
 import com.carpool.tagalong.models.ModelPickupRider;
 import com.carpool.tagalong.models.ModelRateRiderequest;
 import com.carpool.tagalong.models.ModelStartRideRequest;
+import com.carpool.tagalong.models.emergencysos.ModelSendEmergencySOSRequest;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.BitmapUtils;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
+import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.ncorti.slidetoact.SlideToActView;
 
 import org.jetbrains.annotations.NotNull;
@@ -81,16 +90,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CurrentRideActivityDriver extends AppCompatActivity implements LocationListener, View.OnClickListener, JoinedRidersAdapter.joinriderlistener, OnBoardRidersAdapter.OnBoardRidersInterface {
+public class CurrentRideActivityDriver extends AppCompatActivity implements View.OnClickListener, JoinedRidersAdapter.joinriderlistener, OnBoardRidersAdapter.OnBoardRidersInterface {
 
     private static final int MY_PERMISSIONS_REQUEST = 132;
     private static final int IMAGE_PICK_REQUEST = 134;
+    private static final int FACEBOOK_SHARE_REQUEST_CODE = 107;
     private static String postPath = "";
-    public Location location;
     private LinearLayout uploadPicLytBtn;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
-    private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
+    private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime;
     private CircleImageView profilePic, postPic;
     // TODO: Rename and change types of parameters
     private Context context;
@@ -104,9 +113,11 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
     private JoinedRidersAdapter joinedRidersAdapter;
     private OnBoardRidersAdapter onBoardRidersAdapter;
     private TimelineAdapter timelineAdapter;
-    private ImageView selectImageForPost, selectedImageForPost;
+    private ImageView selectImageForPost, selectedImageForPost, shareIcon, emergency_icon;
     private List<ModelGetCurrentRideResponse.Timeline> timelineData = new ArrayList<>();
-    private LocationManager locationManager;
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+    private String rideID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +128,11 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
         TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
+        shareIcon = toolbarLayout.findViewById(R.id.share);
+        emergency_icon = toolbarLayout.findViewById(R.id.emergency);
+        shareIcon.setVisibility(View.VISIBLE);
+        emergency_icon.setVisibility(View.VISIBLE);
+
         title.setText("Current Ride");
         title.setVisibility(View.VISIBLE);
         titleImage.setVisibility(View.GONE);
@@ -131,16 +147,15 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi));
         }
         modelGetRideDetailsResponse = (ModelGetCurrentRideResponse) getIntent().getExtras().getSerializable("data");
+        rideID = getIntent().getStringExtra("rideId");
         timelineData = modelGetRideDetailsResponse.getRideData().getTimeline();
 
         initializeViews();
-        getCurrentLatLong();
     }
 
     private void initializeViews() {
 
         context = this;
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         uploadPicLytBtn = findViewById(R.id.post_image_layout);
         postImage = findViewById(R.id.post_image_btn);
@@ -166,6 +181,27 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
         navigate.setOnClickListener(this);
         notStarted = findViewById(R.id.not_started);
 
+        setUIData();
+
+        handleCurrentRideForDriver();
+
+        uploadPicLytBtn.setOnClickListener(this);
+        postImage.setOnClickListener(this);
+
+
+        uploadPicLytBtn.setOnClickListener(this);
+        shareIcon.setOnClickListener(this);
+        emergency_icon.setOnClickListener(this);
+
+        shareIcon.setVisibility(View.GONE);
+        emergency_icon.setVisibility(View.GONE);
+
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+    }
+
+    private void setUIData(){
+
         timelineAdapter = new TimelineAdapter(context, timelineData);
         joinedRidersAdapter = new JoinedRidersAdapter(context, modelGetRideDetailsResponse.getRideData().getJoinRequest(), this);
         onBoardRidersAdapter = new OnBoardRidersAdapter(context, modelGetRideDetailsResponse.getRideData().getOnBoard(), this);
@@ -187,11 +223,59 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
         timeLineRecView.setItemAnimator(new DefaultItemAnimator());
         timeLineRecView.setAdapter(timelineAdapter);
 
-        uploadPicLytBtn.setOnClickListener(this);
-        postImage.setOnClickListener(this);
-        handleCurrentRideForDriver();
+    }
 
-        uploadPicLytBtn.setOnClickListener(this);
+    private void getRideDetails(final String rideId) {
+
+        try {
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ModelGetRideDetailsRequest modelGetRideDetailsRequest = new ModelGetRideDetailsRequest();
+                    modelGetRideDetailsRequest.setRideId(rideId);
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.getRideDetails(TagALongPreferenceManager.getToken(this), modelGetRideDetailsRequest).enqueue(new Callback<ModelGetCurrentRideResponse>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                Log.i(CurrentUpcomingFragment.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
+                                modelGetRideDetailsResponse = response.body();
+                                setUIData();
+                                handleCurrentRideForDriver();
+
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Get All rides", "FAILURE GETTING ALL RIDES");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ProgressDialogLoader.progressDialogDismiss();
+        }
     }
 
     private void handleCurrentRideForDriver() {
@@ -367,7 +451,138 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
             case R.id.start_navigation:
                 handleStartNavigation();
                 break;
+
+            case R.id.share:
+                handleShareRide();
+                break;
+
+            case R.id.emergency:
+                handleEmergencySituation();
+                break;
         }
+    }
+
+    private void handleShareRide() {
+        showShareAlert();
+    }
+
+    private void handleEmergencySituation() {
+
+        try {
+
+            ModelSendEmergencySOSRequest modelSendEmergencySOSRequest = new ModelSendEmergencySOSRequest();
+            modelSendEmergencySOSRequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+
+            if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
+                modelSendEmergencySOSRequest.setLatitude(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
+                modelSendEmergencySOSRequest.setLongitude(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
+            }
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.pressPanicButton(TagALongPreferenceManager.getToken(context), modelSendEmergencySOSRequest).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                    UIUtils.alertBox(context, context.getString(R.string.emergency_send));
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Failure sending SOS", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
+    }
+
+    private void showShareAlert() {
+
+        try {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogLayout = inflater.inflate(R.layout.layout_social_preference_new, null);
+            builder.setView(dialogLayout);
+            builder.setTitle("Share Ride");
+            builder.setMessage("You want to share this ride on:");
+            builder.setCancelable(true);
+
+            final AlertDialog alert = builder.create();
+            alert.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+            ImageView facebook = dialogLayout.findViewById(R.id.facebookLogo);
+            facebook.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    shareRideOnFacebook();
+                    alert.cancel();
+                }
+            });
+            alert.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void shareRideOnFacebook() {
+
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .setShareHashtag(new ShareHashtag.Builder()
+                        .setHashtag("#ConnectTheWorld")
+                        .build()).build();
+
+        if (shareDialog == null)
+
+            shareDialog = new ShareDialog(this);
+
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                Toast.makeText(context, "You shared this post", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(context, "You cancel this post", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                e.printStackTrace();
+            }
+        }, FACEBOOK_SHARE_REQUEST_CODE);
+        shareDialog.show(content, ShareDialog.Mode.NATIVE);
     }
 
     private void handleStartNavigation() {
@@ -405,7 +620,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
                                 if (response.body().getStatus() == 1) {
 //                                    HomeActivity activity = ((HomeActivity) getActivity());
 //                                    activity.handleCurrentRideLayoutClick();
-                                    getCurrentRide();
+                                    getRideDetails(rideID);
                                 }
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -503,9 +718,9 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
 
             ModelPickupRider modelPickupRider = new ModelPickupRider();
 //            Location location = ((HomeActivity) getActivity()).location;
-            if (location != null) {
-                modelPickupRider.setPickupLat(location.getLatitude());
-                modelPickupRider.setPickupLong(location.getLongitude());
+            if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
+                modelPickupRider.setDropLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
+                modelPickupRider.setDropLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
             }
 
             if (onBoard != null)
@@ -565,9 +780,9 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
 
             ModelPickupRider modelPickupRider = new ModelPickupRider();
 
-            if (location != null) {
-                modelPickupRider.setDropLat(location.getLatitude());
-                modelPickupRider.setDropLong(location.getLongitude());
+            if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
+                modelPickupRider.setDropLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
+                modelPickupRider.setDropLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
             }
 
             if (onBoard != null)
@@ -710,10 +925,10 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
                                     HomeActivity activity = HomeActivity.getInstance();
 
                                     if (modelGetRideDetailsResponse.getRideData().onBoard.size() > 1) {
-                                        getCurrentRide();
+                                        getRideDetails(rideID);
                                     } else {
-                                        activity.handleDrawer();
-                                        activity.handleHomeLayoutClick();
+//                                        activity.handleDrawer();
+//                                        activity.handleHomeLayoutClick();
                                         finish();
                                     }
                                 }
@@ -779,7 +994,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
 
-                                    getCurrentRide();
+                                    getRideDetails(rideID);
                                 }
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -839,7 +1054,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
 
-                                    getCurrentRide();
+                                    getRideDetails(rideID);
                                 }
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -1401,33 +1616,12 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        this.location = location;
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
     public void onJoinRiderClick(ModelGetCurrentRideResponse.JoinRequest joinReqModel) {
 
         if (joinReqModel != null) {
 //            Toast.makeText(getActivity(), "Name is: " + joinReqModel.getUserName(), Toast.LENGTH_LONG).show();
             handleJoinRiderClick(joinReqModel);
         }
-
     }
 
     private void handleJoinRiderClick(ModelGetCurrentRideResponse.JoinRequest joinReqModel) {
@@ -1435,73 +1629,72 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements Loca
         showDialog(joinReqModel, null);
     }
 
-    public void getCurrentLatLong() {
+//    private void getCurrentRide() {
+//
+//        try {
+//
+//            if (Utils.isNetworkAvailable(context)) {
+//
+//                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+//
+//                if (restClientRetrofitService != null) {
+//
+//                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+//
+//                    restClientRetrofitService.getCurrentRide(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelGetCurrentRideResponse>() {
+//
+//                        @Override
+//                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
+//
+//                            ProgressDialogLoader.progressDialogDismiss();
+//
+//                            if (response.body() != null) {
+//                                int status = response.body().getStatus();
+//
+//                                if (status == 1) {
+//
+//                                    modelGetRideDetailsResponse = response.body();
+//                                    handleCurrentRideForDriver();
+//                                } else {
+//                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                }
+//                            } else {
+//                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
+//
+//                            ProgressDialogLoader.progressDialogDismiss();
+//
+//                            if (t != null && t.getMessage() != null) {
+//                                t.printStackTrace();
+//                                Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
+//                            }
+//                            Log.e("Current Ride", "FAILURE verification");
+//                        }
+//                    });
+//                }
+//            } else {
+//                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-    }
 
-    private void getCurrentRide() {
-
-        try {
-
-            if (Utils.isNetworkAvailable(context)) {
-
-                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-
-                if (restClientRetrofitService != null) {
-
-                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
-
-                    restClientRetrofitService.getCurrentRide(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelGetCurrentRideResponse>() {
-
-                        @Override
-                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
-
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (response.body() != null) {
-                                int status = response.body().getStatus();
-
-                                if (status == 1) {
-
-                                    modelGetRideDetailsResponse = response.body();
-                                    handleCurrentRideForDriver();
-                                } else {
-                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
-
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (t != null && t.getMessage() != null) {
-                                t.printStackTrace();
-                                Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                            Log.e("Current Ride", "FAILURE verification");
-                        }
-                    });
-                }
-            } else {
-                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return super.onOptionsItemSelected(item);
     }
 }

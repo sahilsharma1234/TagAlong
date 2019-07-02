@@ -25,15 +25,16 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="when_do_you_want_to_leave">When do you want to leave</string>
+    <string name="when_do_you_want_to_leave">When do you need a ride?</string>
     <string name="are_you_sure_to_logout">Are you sure you want to logout?</string>
     <string name="document_not_found">Documents not found!</string>
     <string name="document_not_found_text">Upload documents to start your ride. For security reasons you need to upload your documents.</string>
     <string name="upload">Upload</string>
-    <string name="add_new_ride">Add new ride</string>
-    <string name="add_ride_dtl">You don\'t have any ongoing ride.Click ADD RIDE to create new ride or join any ride</string>
+    <string name="add_new_ride">Start or Join a New Ride</string>
+
+    <string name="add_ride_dtl">No Current Rides. Click START RIDE to start a ride or join an existing ride</string>
     <string name="title_activity_current_ride_demo">CurrentRideActivityDemo</string>
-    <string name="change_ride_needs">Change your ride needs</string>
+    <string name="change_ride_needs">Your Ride Details</string>
     <string name="estimated_cost_of_the_ride">Estimated cost of the ride</string>
     <string name="mode_of_payment">Mode of payment</string>
     <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBiAvCToSLEv3LMfW6gFI0PTvHM4s8nq18</string>-->
@@ -41,11 +42,11 @@
     <string name="your_ride">Your Ride</string>
     <string name="drop_message">DROP A MESSAGE</string>
     <string name="ride_reqsted_driver_confirm">Ride has been requested, waiting for driver to confirm</string>
-    <string name="carrying_bags">Carrying bag/s</string>
-    <string name="travelling_with_kids">Travelling with kid/s</string>
-    <string name="rider_with_kids">Rider with kids?</string>
-    <string name="you_smoke">Smoker ?</string>
-    <string name="rider_can_carry_bags">Rider can carry bags?</string>
+    <string name="carrying_bags">Luggage/bag(s)</string>
+    <string name="travelling_with_kids">ravelling with kids</string>
+    <string name="rider_with_kids">Families with children?</string>
+    <string name="you_smoke">Smoking?</string>
+    <string name="rider_can_carry_bags">Riders with bags?</string>
     <string name="seats_on_board">Seats on board</string>
     <string name="confirm">Confirm</string>
     <string name="your_driving_preferences">Your driving preferences</string>
@@ -80,4 +81,7 @@
     <string name="emergency_send">SOS sent!! Please hold on fr sometime!!</string>
     <string name="emergency_rides">Rides in Emergency</string>
     <string name="sos_received">SOS received</string>
+    <string name="no_emergencies">No Emergencies</string>
+    <string name="emergency_string">If any users presses sos button we will show his/her details here you can help him/her voluntarily.</string>
+    <string name="invite_contacts">Loading Contacts</string>
 </resources>

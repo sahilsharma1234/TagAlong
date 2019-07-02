@@ -11,20 +11,19 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="@dimen/_10_px"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/_8_px"
         android:text="@string/sos_received"
         android:textColor="@android:color/holo_red_light"
+        android:visibility="gone"
         android:textSize="@dimen/_12_px" />
 
     <android.support.v7.widget.RecyclerView
-
         android:id="@+id/emergency_rides_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_8_px"
         android:padding="@dimen/_10_px"
         android:layout_below="@id/title_text_home">
-
     </android.support.v7.widget.RecyclerView>
 
     <!--
@@ -83,18 +82,46 @@
             </android.support.v7.widget.CardView>-->
 
     <RelativeLayout
-        android:id="@+id/lytBarHomeFragment"
+        android:id="@+id/lytNoEmergencyRides"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:gravity="center"
+        android:paddingLeft="@dimen/_20_px"
+        android:paddingRight="@dimen/_20_px"
+        android:background="@color/white"
         android:focusableInTouchMode="true"
         android:visibility="gone">
 
-        <ProgressBar
+        <ImageView
+            android:id="@+id/emptyEmergency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_emergency" />
+
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_emergencies"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_20_px"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_20_px"
+            android:layout_below="@id/emptyEmergency"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/emergency_string"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:padding="@dimen/_15_px"
+            android:layout_marginTop="@dimen/_5_px"
+            android:textSize="@dimen/_12_px"
+            android:layout_below="@id/txt1"/>
 
     </RelativeLayout>
 

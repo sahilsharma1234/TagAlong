@@ -25,7 +25,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Payment details" />
+                    android:text="Payment method" />
 
                 <TextView
                     android:id="@+id/edit_payment_dtls"
@@ -104,7 +104,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Short code" />
+                        android:text="Account Nickname" />
 
                     <TextView
                         android:id="@+id/short_code"
@@ -171,7 +171,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bank name" />
+                        android:text="Financial Intuition or Bank Name" />
 
                     <TextView
                         android:id="@+id/bank_name"

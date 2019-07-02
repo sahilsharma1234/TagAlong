@@ -1,17 +1,26 @@
 package com.carpool.tagalong.utils;
 
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 import com.carpool.tagalong.managers.DataManager;
+import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
+import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
+import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
+import com.carpool.tagalong.service.JobSchedulerService;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -182,6 +191,44 @@ public class Utils {
         }
     }
 
+    public static void updateCoordinates1(Location location, final Context context) {
+
+        if (Utils.isNetworkAvailable(context)) {
+
+            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+            if (restClientRetrofitService != null) {
+
+                ModelUpdateCoordinates modelUpdateCoordinates  = new ModelUpdateCoordinates();
+                modelUpdateCoordinates.setLatitude(location.getLatitude());
+                modelUpdateCoordinates.setLongitude(location.getLongitude());
+
+                restClientRetrofitService.updateCoordinates(TagALongPreferenceManager.getToken(context), modelUpdateCoordinates).enqueue(new Callback<ModelDocumentStatus>() {
+
+                    @Override
+                    public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                        if (response.body() != null) {
+
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                        if (t != null && t.getMessage() != null) {
+                            t.printStackTrace();
+                        }
+                        Log.e("SAVE DRIVING DETAILS", "FAILURE SAVING PROFILE");
+                    }
+                });
+            }
+        } else {
+            Toast.makeText(context, "PLease check your internet connection!!", Toast.LENGTH_LONG).show();
+        }
+    }
+
     public static String getScreenWidthHeightInPixels(Activity context) {
 
         String coordinates = "";
@@ -198,5 +245,31 @@ public class Utils {
         float scale = context.getResources().getDisplayMetrics().density;
         int dpAsPixels = (int) (dp * scale + 0.5f);
         return dpAsPixels;
+    }
+
+    public static void scheduleApplicationPackageJob(Context context) {
+
+        ComponentName serviceComponent = new ComponentName(context, JobSchedulerService.class);
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo.Builder builder = new JobInfo.Builder(3, serviceComponent);
+        builder.setMinimumLatency(5* 1000); // wait at least
+        builder.setOverrideDeadline(1* 60 * 1000);
+        builder.setPersisted(true);
+        jobScheduler.schedule(builder.build());
+    }
+
+    public static boolean isJobServiceOn(Context context) {
+
+        JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        boolean hasBeenScheduled = false;
+
+        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+            if (jobInfo.getId() == 3) {
+                hasBeenScheduled = true;
+                break;
+            }
+        }
+        return hasBeenScheduled;
     }
 }

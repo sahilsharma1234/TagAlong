@@ -5,23 +5,24 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -45,6 +46,7 @@ import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.fragments.CurrentRideFragment;
 import com.carpool.tagalong.fragments.CurrentRideFragmentDriver;
 import com.carpool.tagalong.fragments.CurrentUpcomingFragment;
+import com.carpool.tagalong.fragments.EmergencyRidesFragment;
 import com.carpool.tagalong.fragments.HomeFragment;
 import com.carpool.tagalong.fragments.ProfileFragment;
 import com.carpool.tagalong.fragments.RecentRidesFragment;
@@ -68,32 +70,33 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity implements LocationListener, View.OnClickListener, HomeFragment.OnFragmentInteractionListener, TimelineFragment.OnFragmentInteractionListener, CurrentRideFragment.OnFragmentInteractionListener, RecentRidesFragment.OnFragmentInteractionListener
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, HomeFragment.OnFragmentInteractionListener, TimelineFragment.OnFragmentInteractionListener, CurrentRideFragment.OnFragmentInteractionListener, RecentRidesFragment.OnFragmentInteractionListener
         , ProfileFragment.OnFragmentInteractionListener {
 
     private static final String ANIM_PREFERENCE_SET = "share";
     private static final String ANIM_PREFERENCE_GONE = "shareGone";
     private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
-    public Location location;
+    private static final int LOCATION_REQUEST_CODE = 178;
     boolean doubleBackToExitPressedOnce = false;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private ActionBarDrawerToggle mDrawerToggle;
-    private LinearLayout homeLayout, recentRidesLayout, currentRideLayout, profileLayout, hepSupportLyt, aboutUsLyt,rides_emergency_lyt;
+    private LinearLayout homeLayout, recentRidesLayout, currentRideLayout, profileLayout, hepSupportLyt, aboutUsLyt, rides_emergency_lyt;
     private Fragment fragment;
     private TextView userName, address;
     private Button logoutButton;
     private Activity context;
     private CircleImageView userImage;
-    private LocationManager locationManager;
-    private ModelGetCurrentRideResponse currentRideResponse;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private static HomeActivity homeActivity;
@@ -119,9 +122,9 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public static  HomeActivity getInstance(){
+    public static HomeActivity getInstance() {
 
-        if(homeActivity == null){
+        if (homeActivity == null) {
             homeActivity = new HomeActivity();
         }
 
@@ -133,7 +136,14 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
         context = this;
+        if (checkAndRequestPermissions()) {
+            if (!Utils.isJobServiceOn(this)) {
+                Utils.scheduleApplicationPackageJob(this);
+            }
+        }
+
         toolbarLayout = findViewById(R.id.toolbar_home);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
 
@@ -142,7 +152,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        navigationView  = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         homeLayout = headerView.findViewById(R.id.home_layout);
         recentRidesLayout = headerView.findViewById(R.id.recent_ride_layout);
@@ -168,17 +178,21 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-                RequestOptions options = new RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.drawable.avatar_avatar_12)
-                        .error(R.drawable.avatar_avatar_12);
+                try {
+                    RequestOptions options = new RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.drawable.avatar_avatar_12)
+                            .error(R.drawable.avatar_avatar_12);
 
-                if (DataManager.getModelUserProfileData() != null)
-                    Glide.with(context).load(DataManager.getModelUserProfileData().getProfile_pic()).apply(options).into(userImage);
-                else
-                    Glide.with(context).load(TagALongPreferenceManager.getDeviceProfile(context).getProfile_pic()).apply(options).into(userImage);
+                    if (DataManager.getModelUserProfileData() != null)
+                        Glide.with(context).load(DataManager.getModelUserProfileData().getProfile_pic()).apply(options).into(userImage);
+                    else
+                        Glide.with(context).load(TagALongPreferenceManager.getDeviceProfile(context).getProfile_pic()).apply(options).into(userImage);
 
-                hideKeyboard(HomeActivity.this);
+                    hideKeyboard(HomeActivity.this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
 
@@ -215,7 +229,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
 
         LocalBroadcastManager.getInstance(this).registerReceiver(listener,
                 new IntentFilter("launchCurrentRideFragment"));
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (getIntent().getExtras() != null) {
 
@@ -224,7 +237,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
                 if (getIntent().getExtras().getString(Constants.START_RIDE).equalsIgnoreCase("Current Ride")) {
 
                 } else {
-                     Toast.makeText(context, getIntent().getExtras().getString(Constants.START_RIDE), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, getIntent().getExtras().getString(Constants.START_RIDE), Toast.LENGTH_SHORT).show();
                 }
 //                handleCurrentRideLayoutClick();
                 handleCurrentAndUpcomingRideLayoutClick();
@@ -245,22 +258,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         shareDialog = new ShareDialog(this);
     }
 
-    public void getCurrentLatLong() {
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-    }
-
-    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
@@ -277,7 +274,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onResume() {
         super.onResume();
-        getCurrentRide();
+//        getCurrentRide();
 
         if (DataManager.getYearsList() == null) {
             Utils.getYearsList(context);
@@ -305,7 +302,6 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
                             ProgressDialogLoader.progressDialogDismiss();
 
                             if (response.body() != null) {
-                                currentRideResponse = response.body();
                                 DataManager.status = response.body().getStatus();
 
                             } else {
@@ -356,6 +352,10 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
                 handleProfileLayoutClick(ProfileFragment.ID_PERSONAL);
                 break;
 
+            case R.id.emergency_rides_lyt:
+                handleEmergencyRides();
+                break;
+
             case R.id.help_support_layout:
                 handleHelpAndSupportLyt();
                 break;
@@ -366,6 +366,25 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
 
         }
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    private void handleEmergencyRides() {
+
+        fragment = EmergencyRidesFragment.newInstance();
+
+        TextView profileTextView = rides_emergency_lyt.findViewById(R.id.emergency_rides);
+        Drawable img3 = getResources().getDrawable(R.drawable.ic_emergency_on_sidebar);
+        profileTextView.setCompoundDrawablesWithIntrinsicBounds(img3, null, null, null);
+        profileTextView.setTextColor(getResources().getColor(R.color.black));
+
+        TextView title = toolbar.findViewById(R.id.toolbar_title);
+        ImageView share = toolbar.findViewById(R.id.share);
+        share.setVisibility(View.INVISIBLE);
+        title.setVisibility(View.VISIBLE);
+        title.setText("Rides in Emergency");
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
+
+        loadFragment("Emergency Rides");
     }
 
     private void handleLogout() {
@@ -569,6 +588,11 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
         TextView profileTextView = profileLayout.findViewById(R.id.profile_textView);
         TextView helpSupportTextView = hepSupportLyt.findViewById(R.id.help_and_supportTextView);
         TextView aboutUsTextView = aboutUsLyt.findViewById(R.id.about_us_textView);
+        TextView emergencytextView = rides_emergency_lyt.findViewById(R.id.emergency_rides);
+
+        Drawable img0 = getResources().getDrawable(R.drawable.ic_emergency_off_sidebar);
+        emergencytextView.setCompoundDrawablesWithIntrinsicBounds(img0, null, null, null);
+        emergencytextView.setTextColor(getResources().getColor(R.color.drawer_text_color));
 
         Drawable img = getResources().getDrawable(R.drawable.ic_home_on_sidebar_xxhdpi);
         homeText.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
@@ -698,29 +722,14 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        this.location = location;
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+//
+//    @Override
+//    protected void setUpPolyLine() {
+//
+//    }
 
     public void refresh() {
 
@@ -811,4 +820,85 @@ public class HomeActivity extends AppCompatActivity implements LocationListener,
             }
         }
     }
+
+    private boolean checkAndRequestPermissions() {
+
+        int permissionStorage = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        int permissionlocationGPS = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        if (permissionStorage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (permissionlocationGPS != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), LOCATION_REQUEST_CODE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        try {
+
+            switch (requestCode) {
+
+                case LOCATION_REQUEST_CODE:
+
+                    if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    } else {
+                        showAlertDialog("This app needs location permission", "Need Location Permission", false, 1);
+                    }
+                    break;
+            }
+
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                //starting saving location in preferences
+                if (!Utils.isJobServiceOn(this)) {
+                    Utils.scheduleApplicationPackageJob(this);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlertDialog(String message, String title, boolean cancelable, final int code) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(cancelable);
+
+        if (code == 1) {
+            builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+        builder.show();
+    }
+
 }

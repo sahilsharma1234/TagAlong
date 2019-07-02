@@ -11,11 +11,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -51,6 +52,8 @@ import com.carpool.tagalong.models.ModelSearchRideResponseData;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
+import com.carpool.tagalong.service.LocationHelper;
+import com.carpool.tagalong.utils.LocationAddress;
 import com.carpool.tagalong.utils.Utils;
 
 import org.json.JSONArray;
@@ -71,7 +74,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchRideActivity extends AppCompatActivity implements View.OnClickListener, LocationListener, AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
+public class SearchRideActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
 
     private static final int MY_LOCATION_PERMISSIONS_REQUEST = 108;
     private static final String LOG_TAG = "Google Places";
@@ -109,12 +112,23 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
         }
     };
     private Context context;
+    private TextWatcher startTextWatcher;
+    private LocationHelper locationHelper;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_ride);
         context = this;
+
+        if (checkAndRequestPermissions()) {
+            if (!Utils.isJobServiceOn(this)) {
+                Utils.scheduleApplicationPackageJob(this);
+            }
+            locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
+        }
+
         initializeViews();
         setToolBar();
         LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
@@ -126,7 +140,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
         TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
-        title.setText("Search ride");
+        title.setText("Ride Search");
         title.setVisibility(View.VISIBLE);
         titleImage.setVisibility(View.GONE);
 
@@ -145,10 +159,10 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
         nowCheckBox = findViewById(R.id.nowCheckBox);
         laterCheckBox = findViewById(R.id.laterCheckBox);
-        laterDateLyt = findViewById(R.id.dateLayout);
-        laterTimeLyt = findViewById(R.id.timeLyt);
+        laterDateLyt  = findViewById(R.id.dateLayout);
+        laterTimeLyt  = findViewById(R.id.timeLyt);
         startTrip = findViewById(R.id.et_start_trip);
-        endTrip = findViewById(R.id.et_end_trip);
+        endTrip   = findViewById(R.id.et_end_trip);
         chengeDateTimeTxtview = findViewById(R.id.changeDateTime);
         date = findViewById(R.id.date);
         time = findViewById(R.id.time);
@@ -165,8 +179,6 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
         startPin.setOnClickListener(this);
         endPin.setOnClickListener(this);
         searchBtn.setOnClickListener(this);
-
-        checkAndRequestPermissions();
 
         nowCheckBox.setChecked(true);
         chengeDateTimeTxtview.setVisibility(View.GONE);
@@ -219,16 +231,15 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        startTrip.addTextChangedListener(new TextWatcher() {
+        startTextWatcher = new TextWatcher() {
 
-            public void afterTextChanged(Editable s) {
-            }
-
+            @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 try {
                     if (s.length() > 1) {
                         googlePlacesAutocompleteAdapter.getFilter().filter(s.toString());
@@ -237,7 +248,14 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
                     e.printStackTrace();
                 }
             }
-        });
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        startTrip.addTextChangedListener(startTextWatcher);
 
         googlePlacesAutocompleteAdapterEndTrip = new GooglePlacesAutocompleteAdapterEndTrip(this, R.layout.list_item);
 
@@ -319,26 +337,6 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 //    }
 
     @Override
-    public void onLocationChanged(Location location) {
-//        Toast.makeText(this, location.getLatitude() + "", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         int i = position;
     }
@@ -348,8 +346,12 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    private ArrayList autocomplete(String input) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    private ArrayList autocomplete(String input) {
 
         ArrayList resultList = null;
         ArrayList placeIdList = null;
@@ -413,7 +415,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
             // Extract the Place descriptions from the results
 
-            resultList  = new ArrayList(predsJsonArray.length());
+            resultList = new ArrayList(predsJsonArray.length());
             placeIdList = new ArrayList(predsJsonArray.length());
 
             for (int i = 0; i < predsJsonArray.length(); i++) {
@@ -487,12 +489,14 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
     private void handleStartPinClick() {
 
-        if (startPin.getVisibility() == View.VISIBLE) {
+        if (!startTrip.getText().toString().equalsIgnoreCase("")) {
 
             startTrip.clearComposingText();
             startTrip.setText("");
-            startPin.setVisibility(View.GONE);
-            startTrip.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_start_ride_point_xhdpi, 0);
+//            startPin.setVisibility(View.GONE);
+            startTrip.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_start_ride_point_xhdpi, 0);
+        }else{
+            locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
         }
     }
 
@@ -500,11 +504,11 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        mYear  = c.get(Calendar.YEAR);
+        mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
-        mDay   = c.get(Calendar.DAY_OF_MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this,mYear, mMonth, mDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis() - 1000);
 
 //        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
@@ -578,10 +582,10 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
     private boolean checkAndRequestPermissions() {
 
-        int permissionStorage = ContextCompat.checkSelfPermission(context,
+        int permissionStorage = ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_COARSE_LOCATION);
 
-        int permissionlocationGPS = ContextCompat.checkSelfPermission(context,
+        int permissionlocationGPS = ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -620,6 +624,11 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
+                //starting saving location in preferences
+                if (!Utils.isJobServiceOn(this)) {
+                    Utils.scheduleApplicationPackageJob(this);
+                }
+                locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -731,6 +740,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
     private void searchRides() {
 
         try {
+
             ModelSearchRideRequest modelSearchRideRequest = new ModelSearchRideRequest();
             modelSearchRideRequest.setStartLat(startLat);
             modelSearchRideRequest.setStartLong(startlongt);
@@ -884,12 +894,11 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
                                 if (!lastHit.equals(constraint.toString())) {
 
                                     resultList = autocomplete(constraint.toString());
-                                    lastHit = constraint.toString();
+                                    lastHit    = constraint.toString();
 
                                     // Assign the data to the FilterResults
                                     filterResults.values = resultList;
-
-                                    filterResults.count = resultList.size();
+                                    filterResults.count  = resultList.size();
                                 }
                             }
                             return filterResults;
@@ -983,6 +992,92 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
                 }
             };
             return filter;
+        }
+    }
+
+    private class GeocoderHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message message) {
+
+            String locationAddress;
+
+            switch (message.what) {
+
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    TagALongPreferenceManager.saveUserAddress(getApplicationContext(), locationAddress);
+
+                    if (startTrip.getText().toString().equalsIgnoreCase("")) {
+
+                        startTrip.addTextChangedListener(new TextWatcher() {
+
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+
+                            }
+                        });
+                        startTrip.setText(locationAddress);
+                        startTrip.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.cross), null);
+                        startPin.setVisibility(View.VISIBLE);
+                        startLat   = Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(context));
+                        startlongt = Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(context));
+                    }
+                    break;
+                default:
+            }
+        }
+    }
+
+    private Handler locationHandler = new Handler(new Handler.Callback() {
+
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            try {
+
+                locationHelper = LocationHelper.getInstance(context);
+
+                if (locationHelper != null) {
+                    mLastLocation = locationHelper.getmLastLocation();
+                    getLocation();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+    });
+
+    private void getLocation() {
+
+        if (mLastLocation != null) {
+
+            Double latitude  = mLastLocation.getLatitude();
+            Double longitude = mLastLocation.getLongitude();
+
+            TagALongPreferenceManager.saveUserLocationLatitude(getApplicationContext(), String.valueOf(latitude));
+            TagALongPreferenceManager.saveUserLocationLongitude(getApplicationContext(), String.valueOf(longitude));
+
+            LocationAddress.getAddressFromLocation(latitude, longitude,
+                    getApplicationContext(), new GeocoderHandler());
+
+            locationHandler.removeMessages(1);
+            startTrip.addTextChangedListener(startTextWatcher);
+        }
+        else{
+            locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
         }
     }
 }

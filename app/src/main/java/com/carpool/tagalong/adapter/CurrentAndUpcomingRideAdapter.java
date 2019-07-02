@@ -16,11 +16,13 @@ public class CurrentAndUpcomingRideAdapter extends RecyclerView.Adapter<CurrentA
     private List<ModelGetAllRidesResponse.Rides> modelGetAllRidesResponsesList;
     private Context activity;
     private CurrentUpcomingInterface currentUpcomingInterface;
+    private int  onGoingRideCount;
 
-    public CurrentAndUpcomingRideAdapter(Context activity, List<ModelGetAllRidesResponse.Rides> commonlist, CurrentUpcomingInterface currentUpcomingInterface) {
+    public CurrentAndUpcomingRideAdapter(Context activity, List<ModelGetAllRidesResponse.Rides> commonlist, CurrentUpcomingInterface currentUpcomingInterface, int onGoingRideCount) {
         this.modelGetAllRidesResponsesList = commonlist;
         this.activity = activity;
         this.currentUpcomingInterface = currentUpcomingInterface;
+        this.onGoingRideCount = onGoingRideCount;
     }
 
     @Override
@@ -36,11 +38,23 @@ public class CurrentAndUpcomingRideAdapter extends RecyclerView.Adapter<CurrentA
         holder.srcLocName.setText(modelGetAllRidesResponsesList.get(position).getStartLocation());
         holder.destLocName.setText(modelGetAllRidesResponsesList.get(position).getEndLocation());
         holder.date.setText(modelGetAllRidesResponsesList.get(position).getRideDate());
-        if (position == 0) {
+
+        if(position < onGoingRideCount){
             holder.distance.setText("OnGoing");
             holder.distance.setTextColor(activity.getResources().getColor(R.color.colorGold));
-        } else
+        }else{
             holder.distance.setText("Upcoming");
+        }
+
+//        if(!allUpcomingRides) {
+//            if (position == 0) {
+//                holder.distance.setText("OnGoing");
+//                holder.distance.setTextColor(activity.getResources().getColor(R.color.colorGold));
+//            } else
+//                holder.distance.setText("Upcoming");
+//        }else{
+//            holder.distance.setText("Upcoming");
+//        }
     }
 
     @Override

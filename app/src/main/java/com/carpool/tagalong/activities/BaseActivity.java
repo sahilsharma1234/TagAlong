@@ -63,6 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
     private FusedLocationProviderClient mFusedLocationClient;
     private List<LatLng> listLatLng = new ArrayList<>();
     private Polyline blackPolyLine, greyPolyLine;
+
     Animator.AnimatorListener polyLineAnimationListener = new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animator) {
@@ -186,11 +187,26 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
         return true;
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     public Location getUserLocation() {
         if (userLocation != null)
             return userLocation;
+        else{
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                userLocation = location;
 
-        return null;
+                            } else {
+                                userLocation = null;
+                            }
+                        }
+                    });
+        }
+
+        return userLocation;
     }
 
     public LatLng getDestinationLatLong() {

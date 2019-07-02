@@ -1,7 +1,9 @@
 package com.carpool.tagalong.tabsfragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,7 +12,9 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,7 +125,18 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         for (int i = 0; i < genderArray.length; i++) {
             genderMap.put(String.valueOf(i), genderArray[i]);
         }
+
         return view;
+    }
+
+
+    private boolean checkStoragePermission() {
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},123);
+            return false ;
+        }
+        return true;
     }
 
     @Override
@@ -353,9 +368,12 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
     private void uploadProfilePic() {
 
-        Intent picIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        picIntent.putExtra("return-data", true);
-        startActivityForResult(picIntent, GALLERY_PICTURE);
+        if(checkStoragePermission()) {
+
+            Intent picIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            picIntent.putExtra("return-data", true);
+            startActivityForResult(picIntent, GALLERY_PICTURE);
+        }
     }
 
     private void handleSavePersonalDetails() {
@@ -474,6 +492,21 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             }
         } else {
             Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 123) {
+            if (checkStoragePermission()) {
+                Intent picIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                picIntent.putExtra("return-data", true);
+                startActivityForResult(picIntent, GALLERY_PICTURE);
+            } else {
+                Toast.makeText(getActivity(), "Storage permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

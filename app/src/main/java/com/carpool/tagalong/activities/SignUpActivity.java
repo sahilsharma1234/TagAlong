@@ -181,7 +181,7 @@ public class SignUpActivity   extends AppCompatActivity  implements View.OnClick
             return false;
         }
         if(!isValidPassword(passwordString)){
-            password.setError("Password must be minimum 8 and max 13 characters including numbers,special characters and capital alphabets");
+            password.setError("Password must be minimum 8 and max 18 characters including numbers,special characters and capital alphabets");
             return false;
         }
         if(reneterPasswordString.equals("")){

@@ -9,9 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,12 +39,16 @@ import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.OnBoardRidersAdapter;
 import com.carpool.tagalong.adapter.TimelineAdapter;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.fragments.CurrentUpcomingFragment;
 import com.carpool.tagalong.managers.DataManager;
+import com.carpool.tagalong.models.Contact;
 import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
+import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
+import com.carpool.tagalong.models.ModelTagUsers;
 import com.carpool.tagalong.models.emergencysos.ModelSendEmergencySOSRequest;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
@@ -75,7 +77,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CurrentRideActivity extends AppCompatActivity implements View.OnClickListener, LocationListener {
+public class CurrentRideActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int MY_PERMISSIONS_REQUEST = 132;
     private static final int IMAGE_PICK_REQUEST = 134;
@@ -87,7 +89,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
     private CircleImageView profilePic, postPic;
     private Button cancelButton, requestedBtn;
-    private ModelGetCurrentRideResponse modelGetRideDetailsResponse;
+    private static ModelGetCurrentRideResponse modelGetRideDetailsResponse;
     private RecyclerView onBoardRecyclerView;
     private RecyclerView timeLineRecView;
     private OnBoardRidersAdapter onBoardRidersAdapter;
@@ -99,8 +101,8 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
-    private LocationManager locationManager;
-    private Location location;
+    private ArrayList<String> invitedGuestList;
+    String rideID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,11 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
+
+        shareIcon = toolbarLayout.findViewById(R.id.share);
+        emergency_icon = toolbarLayout.findViewById(R.id.emergency);
+        shareIcon.setVisibility(View.VISIBLE);
+        emergency_icon.setVisibility(View.VISIBLE);
         title.setText("Current Ride");
         title.setVisibility(View.VISIBLE);
         titleImage.setVisibility(View.GONE);
@@ -127,8 +134,10 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         if (getIntent().getExtras() != null) {
             modelGetRideDetailsResponse = (ModelGetCurrentRideResponse) getIntent().getExtras().getSerializable("data");
+            rideID = getIntent().getStringExtra("rideId");
+
         }
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         initializeViews();
     }
 
@@ -137,30 +146,30 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         context = this;
         recent_ride_txt = findViewById(R.id.ride_timing);
         userName = findViewById(R.id.userName);
-        startLocationName   = findViewById(R.id.start_point_source_name);
-        endLocationName     = findViewById(R.id.end_point_dest_name);
-        startRideTime       = findViewById(R.id.startRideTime);
+        startLocationName = findViewById(R.id.start_point_source_name);
+        endLocationName = findViewById(R.id.end_point_dest_name);
+        startRideTime = findViewById(R.id.startRideTime);
         estimatedCostOfRide = findViewById(R.id.estimated_cost);
-        profilePic   = findViewById(R.id.user_image);
-        postPic      = findViewById(R.id.image_user_1);
+        profilePic = findViewById(R.id.user_image);
+        postPic = findViewById(R.id.image_user_1);
         cancelButton = findViewById(R.id.cancel_ride_txt);
         requestedBtn = findViewById(R.id.button_ride);
 //        paynow       = findViewById(R.id.button_payNow);
         uploadPicLytBtn = findViewById(R.id.post_image_layout);
-        postImage       = findViewById(R.id.post_image_btn);
+        postImage = findViewById(R.id.post_image_btn);
 
 //        paynow.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         requestedBtn.setOnClickListener(this);
 
-        onBoardRecyclerView  = findViewById(R.id.onBoardRecView);
-        timeLineRecView      = findViewById(R.id.timeline_recView);
-        selectImageForPost   = findViewById(R.id.select_image_post);
+        onBoardRecyclerView = findViewById(R.id.onBoardRecView);
+        timeLineRecView = findViewById(R.id.timeline_recView);
+        selectImageForPost = findViewById(R.id.select_image_post);
         selectedImageForPost = findViewById(R.id.selected_image);
 //        dropmessage  = findViewById(R.id.drop_message);
-        dropmessage1   = findViewById(R.id.drop_message1);
-        shareIcon      = findViewById(R.id.share);
-        emergency_icon = findViewById(R.id.emergency);
+        dropmessage1 = findViewById(R.id.drop_message1);
+
+        dropmessage1.setOnClickListener(this);
 
         shareIcon.setOnClickListener(this);
         emergency_icon.setOnClickListener(this);
@@ -172,20 +181,58 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         shareDialog = new ShareDialog(this);
     }
 
-    public void getCurrentLatLong() {
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-    }
+//    private void getRideDetails(final String rideId) {
+//
+//        try {
+//            if (Utils.isNetworkAvailable(context)) {
+//
+//                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+//
+//                if (restClientRetrofitService != null) {
+//
+//                    ModelGetRideDetailsRequest modelGetRideDetailsRequest = new ModelGetRideDetailsRequest();
+//                    modelGetRideDetailsRequest.setRideId(rideId);
+//
+//                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+//
+//                    restClientRetrofitService.getRideDetails(TagALongPreferenceManager.getToken(this), modelGetRideDetailsRequest).enqueue(new Callback<ModelGetCurrentRideResponse>() {
+//
+//                        @Override
+//                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
+//
+//                            ProgressDialogLoader.progressDialogDismiss();
+//
+//                            if (response.body() != null) {
+//
+//                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                Log.i(CurrentUpcomingFragment.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
+//                                handleCurrentRideForRider();
+//
+//                                modelGetRideDetailsResponse = response.body();
+//
+//                            } else {
+//                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
+//                            ProgressDialogLoader.progressDialogDismiss();
+//                            if (t != null && t.getMessage() != null) {
+//                                t.printStackTrace();
+//                            }
+//                            Log.e("Get All rides", "FAILURE GETTING ALL RIDES");
+//                        }
+//                    });
+//                }
+//            } else {
+//                Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            ProgressDialogLoader.progressDialogDismiss();
+//        }
+//    }
 
     private void handleCurrentRideForRider() {
 
@@ -198,15 +245,15 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             userName.setText(name);
         }
 
-        String startLocName  = modelGetRideDetailsResponse.getRideData().getStartLocation();
-        String endLocation   = modelGetRideDetailsResponse.getRideData().getEndLocation();
-        String rideTime      = modelGetRideDetailsResponse.getRideData().getRideDateTime();
+        String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
+        String endLocation = modelGetRideDetailsResponse.getRideData().getEndLocation();
+        String rideTime = modelGetRideDetailsResponse.getRideData().getRideDateTime();
         String estimatedcost = String.valueOf(modelGetRideDetailsResponse.getRideData().getEstimatedFare());
 
         startLocationName.setText(startLocName);
         endLocationName.setText(endLocation);
         startRideTime.setText(rideTime);
-        estimatedCostOfRide.setText(estimatedcost);
+        estimatedCostOfRide.setText("$"+estimatedcost);
 
         if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.REQUESTED) {
             requestedBtn.setVisibility(View.VISIBLE);
@@ -284,13 +331,26 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case R.id.share:
-                handleShareRide();
+                launchContacts();
                 break;
 
             case R.id.emergency:
                 handleEmergencySituation();
                 break;
+
+            case R.id.drop_message1:
+                handleChat();
+                break;
         }
+    }
+
+    private void handleChat() {
+
+        Intent intent = new Intent(context,ChatActivity.class);
+        intent.putExtra("receiverId", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
+        intent.putExtra("userName", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void handleShareRide() {
@@ -303,14 +363,18 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
             ModelSendEmergencySOSRequest modelSendEmergencySOSRequest = new ModelSendEmergencySOSRequest();
             modelSendEmergencySOSRequest.setRideId(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
-            if(location!= null) {
-                modelSendEmergencySOSRequest.setLatitude(location.getLatitude());
-                modelSendEmergencySOSRequest.setLongitude(location.getLongitude());
+
+            if(TagALongPreferenceManager.getUserLocationLatitude(this)!= null) {
+                modelSendEmergencySOSRequest.setLatitude(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
+                modelSendEmergencySOSRequest.setLongitude(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
             }
 
             if (Utils.isNetworkAvailable(context)) {
 
                 RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                Log.e("EMERGENCY REQUEST IS:", "****************************************"+modelSendEmergencySOSRequest.toString());
+
 
                 if (restClientRetrofitService != null) {
 
@@ -341,6 +405,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                             if (t != null && t.getMessage() != null) {
                                 t.printStackTrace();
                             }
+                            Toast.makeText(context, "Failure sending SOS", Toast.LENGTH_LONG).show();
                             Log.e("Failure sending SOS", "FAILURE verification");
                         }
                     });
@@ -351,6 +416,40 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         } catch (Exception e) {
             ProgressDialogLoader.progressDialogDismiss();
             e.printStackTrace();
+        }
+    }
+
+    private void launchContacts() {
+        Intent intent = new Intent(context,ContactsActivity.class);
+        intent.putExtra("from", "event");
+        startActivityForResult(intent, Constants.INVITE_GUEST_REQUEST_CODE);
+    }
+
+    private void handleGuestInvitation(Intent data) {
+
+        ArrayList<Contact> selectedContacts = data.getParcelableArrayListExtra("SelectedContacts");
+
+        if(selectedContacts != null) {
+
+            if (selectedContacts.size() > 0) {
+
+                invitedGuestList = new ArrayList<>(selectedContacts.size());
+
+                if(selectedContacts.size() > 3){
+
+                    for(int i = 0 ; i < 3;i++){
+
+                        invitedGuestList.add(selectedContacts.get(i).getPhone());
+                    }
+                }else{
+                    for(int i = 0 ; i < selectedContacts.size();i++){
+
+                        invitedGuestList.add(selectedContacts.get(i).getPhone());
+                    }
+                }
+
+                handletagUsers();
+            }
         }
     }
 
@@ -383,25 +482,25 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void showEmergencyShareAlert() {
-
-        try {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//            LayoutInflater inflater = getLayoutInflater();
-//            View dialogLayout = inflater.inflate(R.layout.submit_review_dialog_layout, null);
-//            builder.setView(dialogLayout);
-            builder.setTitle("Share Ride");
-            builder.setMessage("You want to share this ride on:");
-            builder.setCancelable(true);
-
-            final AlertDialog alert = builder.create();
-            alert.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
-            alert.show();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
+//    private void showEmergencyShareAlert() {
+//
+//        try {
+//
+//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+////            LayoutInflater inflater = getLayoutInflater();
+////            View dialogLayout = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+////            builder.setView(dialogLayout);
+//            builder.setTitle("Share Ride");
+//            builder.setMessage("You want to share this ride on:");
+//            builder.setCancelable(true);
+//
+//            final AlertDialog alert = builder.create();
+//            alert.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+//            alert.show();
+//        } catch (Exception exception) {
+//            exception.printStackTrace();
+//        }
+//    }
 
     private void shareRideOnFacebook() {
 
@@ -509,9 +608,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                     DataManager.setStatus(0);
-                                    HomeActivity activity = HomeActivity.getInstance();
-                                    activity.handleDrawer();
-                                    activity.handleHomeLayoutClick();
                                     finish();
                                 }
                             } else {
@@ -535,6 +631,66 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void handletagUsers() {
+
+        try {
+
+            ModelTagUsers modelTagUsers = new ModelTagUsers();
+            modelTagUsers.setRequestId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelTagUsers.setUserContacts(invitedGuestList);
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+                    ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
+
+                    restClientRetrofitService.tagUsers(TagALongPreferenceManager.getToken(context), modelTagUsers).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+//                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                    UIUtils.alertBox(context, response.body().getMessage());
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Cancel Rider Own Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        if(userLocation!= null){
+//            Utils.updateCoordinates(userLocation,this);
+//        }
     }
 
     private void showCustomCancelRideDialog(Activity context) {
@@ -730,6 +886,8 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 postPath = path;
                 reduceImageAndSet();
             }
+        }else if(requestCode == Constants.INVITE_GUEST_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            handleGuestInvitation(data);
         }
     }
 
@@ -793,23 +951,16 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        this.location = location;
-    }
+        int id = item.getItemId();
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+        switch (id){
+            case android.R.id.home:
+                finish();
+                break;
+        }
 
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
+        return super.onOptionsItemSelected(item);
     }
 }

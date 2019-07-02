@@ -1,31 +1,32 @@
 package com.carpool.tagalong.fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.carpool.tagalong.R;
-import com.carpool.tagalong.activities.HomeActivity;
-import com.carpool.tagalong.activities.SearchRideActivity;
-import com.carpool.tagalong.activities.StartRideActivity;
+import com.carpool.tagalong.activities.EmergencyRideActivity;
+import com.carpool.tagalong.adapter.EmergencyRidesAdapter;
+import com.carpool.tagalong.models.emergencysos.ModelGetEmergencyRidesResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.carpool.tagalong.retrofit.ApiClient;
+import com.carpool.tagalong.retrofit.RestClientInterface;
+import com.carpool.tagalong.utils.ProgressDialogLoader;
+import com.carpool.tagalong.utils.Utils;
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,17 +36,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link EmergencyRidesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EmergencyRidesFragment extends Fragment  implements View.OnClickListener, OnMapReadyCallback {
+public class EmergencyRidesFragment extends Fragment  implements View.OnClickListener, EmergencyRidesAdapter.EmergencyRideInterface {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAg = EmergencyRidesFragment.class.getSimpleName();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
     private RecyclerView emergencyListRecyclerView;
+    private RelativeLayout lytEmptyEmergencyRides;
+    private TextView sosTxt;
 
     public EmergencyRidesFragment() {
     }
@@ -82,8 +86,9 @@ public class EmergencyRidesFragment extends Fragment  implements View.OnClickLis
                              Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_emergency_rides, container, false);
-       emergencyListRecyclerView = view.findViewById(R.id.emergency_rides_recyclerview);
-        // Inflate the layout for this fragment
+        emergencyListRecyclerView =  view.findViewById(R.id.emergency_rides_recyclerview);
+        lytEmptyEmergencyRides    =  view.findViewById(R.id.lytNoEmergencyRides);
+        sosTxt                    =  view.findViewById(R.id.title_text_home);
         return view;
     }
 
@@ -104,100 +109,107 @@ public class EmergencyRidesFragment extends Fragment  implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-
-        int id = v.getId();
-
-        switch (id){
-
-            case R.id.card_driving:
-                isDocumentUploaded();
-                break;
-
-            case R.id.card_searching:
-                handleCardSearchingClick();
-                break;
-        }
-    }
-
-    private void handleCardSearchingClick() {
-
-        Intent intent;
-        intent = new Intent(getActivity(), SearchRideActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    private void isDocumentUploaded() {
-
-        if(TagALongPreferenceManager.getDocumentUploadedStatus(getActivity())){
-
-            Intent intent = new Intent(getActivity(), StartRideActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-        }else{
-            showDocumentAlert();
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-//        GoogleMap map = ((MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map)).getMap();
-//
-//        map.addMarker(new MarkerOptions()
-//                .title(address)
-//                .position(new LatLng(latitude, longitude))
-//                .snippet(time));
+        getEmergencyRidesForUser();
     }
 
-    private void showDocumentAlert(){
+    private void getEmergencyRidesForUser() {
 
         try {
+            if (Utils.isNetworkAvailable(getActivity())) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater     = getLayoutInflater();
-            View dialogLayout           = inflater.inflate(R.layout.document_upload_alert, null);
-            builder.setView(dialogLayout);
-            builder.setCancelable(true);
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-            final AlertDialog alert     = builder.create();
-            Button upload_docu = dialogLayout.findViewById(R.id.upload_doc_btn);
-            upload_docu.setOnClickListener(new View.OnClickListener() {
+                if (restClientRetrofitService != null) {
 
-                @Override
-                public void onClick(View v) {
-                    alert.cancel();
-                    HomeActivity activity = ((HomeActivity) getActivity());
-                    activity.handleDrawer();
-                    activity.handleProfileLayoutClick(ProfileFragment.ID_DRIVING);
+                    ProgressDialogLoader.progressDialogCreation(getActivity(),getActivity().getString(R.string.please_wait));
+
+                    restClientRetrofitService.getEmergencyRides(TagALongPreferenceManager.getToken(getActivity())).enqueue(new Callback<ModelGetEmergencyRidesResponse>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetEmergencyRidesResponse> call, Response<ModelGetEmergencyRidesResponse> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+
+                                    handleEmergencyRideResposne(response.body());
+
+                                } else {
+                                    lytEmptyEmergencyRides.setVisibility(View.VISIBLE);
+//                                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), "Some error occured on server side!!", Toast.LENGTH_LONG).show();
+                                lytEmptyEmergencyRides.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetEmergencyRidesResponse> call, Throwable t) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e(TAg, "FAILURE verification");
+                        }
+                    });
                 }
-            });
-            alert.show();
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            } else {
+                Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
         }
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
+    private void handleEmergencyRideResposne(ModelGetEmergencyRidesResponse data) {
 
-//        CameraPosition cameraPosition = new CameraPosition.Builder()
-//                .target(getSourceLatLng())
-//                .zoom(17)
-//                .build();
-//
-//        addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
-//        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//
-//        MarkerOptions options = new MarkerOptions();
-//        options.position(getSourceLatLng());
-//        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_start_ride_point_xhdpi);
-//        options.icon(icon);
-//        mMap.addMarker(options);
+        List<ModelGetEmergencyRidesResponse.EmergencyRides> emergencyRides = data.getEmergencyRides();
+
+        if(emergencyRides != null && emergencyRides.size() > 0 ){
+            lytEmptyEmergencyRides.setVisibility(View.GONE);
+            sosTxt.setVisibility(View.VISIBLE);
+            handleEmergencyList(emergencyRides);
+
+        }else{
+            lytEmptyEmergencyRides.setVisibility(View.VISIBLE);
+            sosTxt.setVisibility(View.GONE);
+        }
+    }
+
+    private void handleEmergencyList(List<ModelGetEmergencyRidesResponse.EmergencyRides> emergencyRides) {
+
+        EmergencyRidesAdapter emergencyRidesAdapter = new EmergencyRidesAdapter(getActivity(),emergencyRides,this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        emergencyListRecyclerView.setLayoutManager(mLayoutManager);
+        emergencyListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        emergencyListRecyclerView.setAdapter(emergencyRidesAdapter);
+    }
+
+    @Override
+    public void onItemClick(ModelGetEmergencyRidesResponse.EmergencyRides ride) {
+
+        if(ride!= null){
+
+            if(ride.getDriverDetail() != null) {
+
+                Intent intent = new Intent(getActivity(), EmergencyRideActivity.class);
+                intent.putExtra("emergency_ride", ride);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                getActivity().startActivity(intent);
+            }else
+                Toast.makeText(getActivity(),"There is some issue pending in backend side when driver taps on SOS", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**

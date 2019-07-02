@@ -34,4 +34,5 @@ public class Constants {
     public static final int COMPLETED = 14;
     public static final int DRIVER_CANCELLED = 15;
     public static final String DRIVER_DATA = "driver_data";
+    public static final int INVITE_GUEST_REQUEST_CODE = 007 ;
 }

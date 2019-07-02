@@ -35,6 +35,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         initializeData();
         displayLocationSettingsRequest(this);
+
     }
 
     private void displayLocationSettingsRequest(Context context) {
