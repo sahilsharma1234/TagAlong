@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.SearchResultsAdapter;
@@ -28,7 +27,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private SearchResultsAdapter searchResultsAdapter;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
-    private TextView dateTime;
+    private com.carpool.tagalong.views.RegularTextView dateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class SearchResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_result);
 
         toolbarLayout = findViewById(R.id.toolbar_search_result);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         dateTime = findViewById(R.id.ride_details_text);

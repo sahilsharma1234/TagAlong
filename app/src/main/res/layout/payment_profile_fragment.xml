@@ -22,12 +22,12 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Payment method" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/edit_payment_dtls"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/save_payment_dtls"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,12 +68,12 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Account number" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/account_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -101,12 +101,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Account Nickname" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/short_code"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -135,12 +135,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Routing Number" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/routing_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -168,12 +168,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Financial Intuition or Bank Name" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/bank_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

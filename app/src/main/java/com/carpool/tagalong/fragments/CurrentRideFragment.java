@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -84,7 +83,7 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
     private static final int MY_PERMISSIONS_REQUEST = 132;
     private static final int IMAGE_PICK_REQUEST = 134;
     private static String postPath = "";
-    private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
+    private com.carpool.tagalong.views.RegularTextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
     private CircleImageView profilePic, postPic;
     private Context context;
     private Button cancelButton, requestedBtn,  addRideBtn;
@@ -337,7 +336,7 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
     }
 
     private void handleCurrentRideForDriver() {
-        ((HomeActivity) getActivity()).handleCurrentRideDriver(modelGetCurrentRideResponse);
+//        ((HomeActivity) getActivity()).handleCurrentRideDriver(modelGetCurrentRideResponse);
     }
 
     @Override
@@ -479,8 +478,8 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
 
     private void showCustomCancelRideDialog(Activity context) {
 
-        TextView buttonPositive;
-        TextView buttonNegative;
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
         AlertDialog alertDialog;
         final EditText reasonText;
 

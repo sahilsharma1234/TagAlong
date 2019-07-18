@@ -17,8 +17,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.RecentRideDriverProfileAdapter;
 import com.carpool.tagalong.constants.Constants;
@@ -28,11 +29,14 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
+import com.carpool.tagalong.views.RegularTextView;
+
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 import static com.carpool.tagalong.managers.DataManager.modelSearchRideRequest;
 
 public class DriverProfileActivity extends AppCompatActivity implements View.OnClickListener {
@@ -44,7 +48,7 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
     private Toolbar toolbar;
     private String driverId;
     private Context context;
-    private TextView name, address, viewAll;
+    private RegularTextView name, address, drove, rating, trips, viewAll;
     private CircleImageView profile_image;
     private BroadcastReceiver listener = new BroadcastReceiver() {
         @Override
@@ -64,7 +68,7 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
 
         context = this;
         toolbarLayout = findViewById(R.id.toolbar_driverprofile);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         title.setText("Driver");
@@ -75,8 +79,11 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         name    = findViewById(R.id.tv_driver_name);
         address = findViewById(R.id.tv_driver_address);
-        profile_image = findViewById(R.id.iv_rider_profile_image2);
-        viewAll = findViewById(R.id.viewAllRidesDriver);
+        profile_image =  findViewById(R.id.iv_rider_profile_image2);
+        drove   =        findViewById(R.id.driver_drove);
+        rating  =        findViewById(R.id.driver_rating);
+        trips   =        findViewById(R.id.driver_trips);
+        viewAll =        findViewById(R.id.viewAllRidesDriver);
         viewAll.setOnClickListener(this);
         recycler_view_recent_rides_driver_profile = findViewById(R.id.recycler_view_recent_rides_driver_profile);
 
@@ -158,6 +165,13 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
     private void handleResponse(ModelGetDriverProfileResponse.Data data) {
 
         if (data != null) {
+
+            name.setText(data.getUserName());
+            address.setText(data.getAddress());
+            drove.setText(data.getDrove());
+            rating.setText(data.getRating()+"");
+            trips.setText(data.getTrips()+" trips");
+            Glide.with(this).load(data.getProfile_pic()).into(profile_image);
 
             ridesList = data.getRides();
 

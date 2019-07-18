@@ -26,7 +26,6 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -93,7 +92,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
     ArgbEvaluator argbEvaluator;
     @BindView(R.id.confirm_end_ride)
     Button endRideConfirm;
-    TextView carryBagCountTxt;
+    com.carpool.tagalong.views.RegularTextView carryBagCountTxt;
     private GooglePlacesAutocompleteAdapter googlePlacesAutocompleteAdapter;
     private ArrayList<String> placeIdList = null;
     private Context context;
@@ -158,7 +157,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
         });
 
         toolbarLayout = findViewById(R.id.toolbar_start_ride);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         endPin = findViewById(R.id.endPin);
@@ -618,7 +617,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
 
         public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
-            super(context, textViewResourceId);
+            super(context,textViewResourceId);
         }
 
         @Override

@@ -22,7 +22,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rider preferences" />
@@ -46,7 +46,7 @@
                     android:layout_below="@id/documents_title"
                     android:gravity="center|left">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -78,7 +78,7 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center|left">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -110,7 +110,7 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center|left">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -145,12 +145,12 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="25dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Vehicle information" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/edit_driving_preferences"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/save_driving_preferences"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -191,12 +191,12 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="You smoke" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/smoke_driving_profile_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -224,12 +224,12 @@
                      android:layout_marginTop="10dp"
                      android:orientation="vertical">
 
-                     <TextView
+                     <com.carpool.tagalong.views.RegularTextView
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:text="Bags per person allowed" />
 
-                     <TextView
+                     <com.carpool.tagalong.views.RegularTextView
                          android:id="@+id/bags_driving_profile_txt"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
@@ -258,12 +258,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Kids allowed on board" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/kids_driving_preferences_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -291,12 +291,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vehicle Brand" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/vehicle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -324,12 +324,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vehicle Model" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/vehicle_model_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -357,12 +357,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="License Plate State and Number" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/vehicle_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -391,12 +391,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Model year" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/vehicle_year"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -425,12 +425,12 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vehicle Color" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/vehicle_color"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -466,7 +466,7 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="20dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Driver’s License and Proof of Insurance" />

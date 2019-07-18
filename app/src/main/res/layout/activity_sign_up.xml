@@ -29,7 +29,7 @@
             android:layout_marginTop="10dp"
             android:paddingBottom="20dp">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -204,7 +204,7 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-                <!-- <TextView
+                <!-- <com.carpool.tagalong.views.RegularTextView
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:layout_gravity="right"
@@ -230,7 +230,7 @@
                          android:layout_height="wrap_content"
                          android:src="@drawable/ic_login_loginxhdpi"/>-->
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#fff"
@@ -240,7 +240,7 @@
 
                 </LinearLayout>
 
-               <!-- <TextView
+               <!-- <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#9a9a9a"
@@ -267,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_facebook_loginxhdpi"/>
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -294,7 +294,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_twitter_loginxhdpi"/>
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
@@ -306,7 +306,7 @@
                 </LinearLayout>-->
                 <requestFocus/>
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/signintext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

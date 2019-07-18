@@ -7,12 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.carpool.tagalong.R;
-import com.carpool.tagalong.glide.GlideApp;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
-import com.carpool.tagalong.models.ModelGetRideDetailsResponse;
 
 import java.util.List;
 
@@ -41,11 +39,11 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.MyView
         myViewHolder.nameUser.setText(timelines.get(i).getUserName());
         myViewHolder.time.setText(timelines.get(i).getCreatedAt());
 
-        GlideApp.with(context)
+        Glide.with(context)
                 .load(timelines.get(i).getProfile_pic())
                 .into(myViewHolder.profile_image);
 
-        GlideApp.with(context)
+        Glide.with(context)
                 .load(timelines.get(i).getPostUrl())
                 .into(myViewHolder.posted_image);
     }
@@ -57,12 +55,12 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView nameUser, time;
+        public com.carpool.tagalong.views.RegularTextView nameUser, time;
         public ImageView posted_image,profile_image;
 
         public MyViewHolder(View view) {
             super(view);
-            // title = (TextView) view.findViewById(R.id.title);
+            // title = (com.carpool.tagalong.views.RegularTextView) view.findViewById(R.id.title);
             profile_image = view.findViewById(R.id.userImage);
             posted_image  = view.findViewById(R.id.posted_image);
             nameUser = view.findViewById(R.id.userName);

@@ -23,7 +23,7 @@
             android:layout_margin="15dp"
             android:orientation="vertical">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/tv_source_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/avatar_avatar_12" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/tv_driver_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                     />
             </LinearLayout>
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -79,7 +79,7 @@
                 android:rating="3.2"
                 android:stepSize=".5" />
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

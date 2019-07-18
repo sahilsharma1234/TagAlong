@@ -10,18 +10,17 @@
         android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/nav_header_margin_top"
-        android:orientation="horizontal">
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/avatar_avatar_12"
-            />
+            android:src="@drawable/avatar_avatar_12" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,25 +28,23 @@
             android:layout_gravity="center"
             android:orientation="vertical">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/user_name"
                 android:layout_width="match_parent"
-                android:layout_marginLeft="10dp"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
                 android:text="Android Studio"
-                />
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/user_address"
                 android:layout_width="match_parent"
-                android:layout_marginLeft="10dp"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@android:color/black"
+                android:layout_marginLeft="10dp"
                 android:text="Android Studio"
-                />
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -57,9 +54,8 @@
         android:id="@+id/view1"
         android:layout_width="wrap_content"
         android:layout_height="8dp"
-        android:background="#fafafa"
         android:layout_below="@id/linear"
-        />
+        android:background="#fafafa" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -75,184 +71,183 @@
             <LinearLayout
 
                 android:id="@+id/home_layout"
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/homeTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/drawer_text_color"
                     android:drawableLeft="@drawable/ic_home_on_sidebar_xxhdpi"
                     android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="@string/home"/>
+                    android:padding="10dp"
+                    android:text="@string/home"
+                    android:textColor="@color/drawer_text_color"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
             <LinearLayout
 
                 android:id="@+id/current_ride_layout"
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/current_ride_textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/drawer_text_color"
                     android:drawableLeft="@drawable/ic_current_ride_off_sidebar_xxhdpi"
                     android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="@string/currentupcoming"/>
+                    android:padding="10dp"
+                    android:text="@string/currentupcoming"
+                    android:textColor="@color/drawer_text_color"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
             <LinearLayout
 
                 android:id="@+id/recent_ride_layout"
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/recent_rides_textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/drawer_text_color"
                     android:drawableLeft="@drawable/ic_recent_ride_off_sidebar_xxhdpi"
                     android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="@string/recent_rides"/>
+                    android:padding="10dp"
+                    android:text="@string/recent_rides"
+                    android:textColor="@color/drawer_text_color"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
             <LinearLayout
 
                 android:id="@+id/profile_layout"
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/profile_textView"
-                    android:layout_width  = "match_parent"
-                    android:layout_height = "wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/drawer_text_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_profile_off_sidebar_xxhdpi"
                     android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="@string/profile"/>
+                    android:padding="10dp"
+                    android:text="@string/profile"
+                    android:textColor="@color/drawer_text_color"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
             <LinearLayout
 
                 android:id="@+id/emergency_rides_lyt"
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/emergency_rides"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/drawer_text_color"
                     android:drawableLeft="@drawable/ic_emergency_off_sidebar"
                     android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="@string/emergency_rides"/>
-
-            </LinearLayout>
-
-      <!--      <LinearLayout
-
-                android:id="@+id/filter"
-                android:padding="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/filter_txt"
-                    android:layout_width  = "match_parent"
-                    android:layout_height = "wrap_content"
                     android:padding="10dp"
+                    android:text="@string/emergency_rides"
                     android:textColor="@color/drawer_text_color"
-                    android:drawableLeft="@drawable/ic_rating_profile_view_xhdpi"
-                    android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="Filter"/>
+                    android:textSize="16sp" />
 
             </LinearLayout>
--->
+
+            <!--      <LinearLayout
+
+                      android:id="@+id/filter"
+                      android:padding="10dp"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:layout_gravity="center"
+                      android:orientation="horizontal">
+
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:id="@+id/filter_txt"
+                          android:layout_width  = "match_parent"
+                          android:layout_height = "wrap_content"
+                          android:padding="10dp"
+                          android:textColor="@color/drawer_text_color"
+                          android:drawableLeft="@drawable/ic_rating_profile_view_xhdpi"
+                          android:drawablePadding="30dp"
+                          android:textSize="16sp"
+                          android:text="Filter"/>
+
+                  </LinearLayout>
+      -->
             <View
                 android:id="@+id/view2"
                 android:layout_width="wrap_content"
                 android:layout_height="8dp"
-                android:background="#fafafa"
                 android:layout_below="@id/linear"
-                />
+                android:background="#fafafa" />
 
             <LinearLayout
 
                 android:id="@+id/help_support_layout"
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/help_and_supportTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/drawer_text_color"
                     android:drawableLeft="@drawable/ic_help_support_off_sidebar_xxhdpi"
                     android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="@string/help_and_support"/>
+                    android:padding="10dp"
+                    android:text="@string/help_and_support"
+                    android:textColor="@color/drawer_text_color"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
             <LinearLayout
 
                 android:id="@+id/about_us"
-                android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/about_us_textView"
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/about_us_textview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/drawer_text_color"
                     android:drawableLeft="@drawable/ic_about_us_off_sidebar_xxhdpi"
                     android:drawablePadding="30dp"
-                    android:textSize="16sp"
-                    android:text="@string/about_us"/>
+                    android:padding="10dp"
+                    android:text="@string/about_us"
+                    android:textColor="@color/drawer_text_color"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -267,8 +262,8 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/button_shape_logout"
                 android:text="Log out"
-                android:textSize="20sp"
-                android:textColor="@color/colorGold"/>
+                android:textColor="@color/colorGold"
+                android:textSize="20sp" />
 
         </LinearLayout>
 

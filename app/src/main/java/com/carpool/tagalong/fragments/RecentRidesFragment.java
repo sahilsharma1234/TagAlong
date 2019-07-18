@@ -1,7 +1,6 @@
 package com.carpool.tagalong.fragments;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -46,7 +44,7 @@ public class RecentRidesFragment extends Fragment {
 
     RecyclerView recycler_view_recent_rides;
     private RecentRideAdapter mAdapter;
-    private TextView  norideTxt;
+    private com.carpool.tagalong.views.RegularTextView  norideTxt;
     private ImageView noRideImg;
 
     // TODO: Rename and change types of parameters

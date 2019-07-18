@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -46,7 +45,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private LinearLayout facebookSignin, twitterSignIn, login;
     private TextInputEditText userName, password;
     private String usernameString, passwordString;
-    private TextView signUpText, forgotPassword;
+    private com.carpool.tagalong.views.RegularTextView signUpText, forgotPassword;
     private RelativeLayout progressBarLayout;
     private CountryCodePicker countryCodePickerSignIn;
 
@@ -192,7 +191,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.black)), 18, 31, 0); // for coloring purpose
 
         signUpText.setMovementMethod(LinkMovementMethod.getInstance());
-        signUpText.setText(spannableString, TextView.BufferType.SPANNABLE);
+        signUpText.setText(spannableString, com.carpool.tagalong.views.RegularTextView.BufferType.SPANNABLE);
         signUpText.setHighlightColor(Color.TRANSPARENT);
         stripUnderlines(signUpText);
     }
@@ -292,7 +291,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void stripUnderlines(TextView textView) {
+    private void stripUnderlines(com.carpool.tagalong.views.RegularTextView textView) {
         Spannable s = new SpannableString(textView.getText());
         URLSpan[] spans = s.getSpans(20, s.length(), URLSpan.class);
         for (URLSpan span : spans) {

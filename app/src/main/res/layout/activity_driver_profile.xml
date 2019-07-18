@@ -8,7 +8,9 @@
     android:orientation="vertical"
     tools:context=".activities.DriverProfileActivity">
 
-    <include android:id="@+id/toolbar_driverprofile" layout="@layout/toolbar_shadow" />
+    <include
+        android:id="@+id/toolbar_driverprofile"
+        layout="@layout/toolbar_shadow" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -39,8 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    >
+                    android:orientation="vertical">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/iv_rider_profile_image2"
@@ -49,7 +50,7 @@
                         android:src="@drawable/avatar_avatar_12"
                         app:civ_border_width="0dp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_driver_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -57,7 +58,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="18sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_driver_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -105,7 +106,8 @@
                             android:layout_height="25dp"
                             android:src="@drawable/ic_traveled_profile_view_xhdpi" />
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
+                            android:id="@+id/driver_drove"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -134,13 +136,13 @@
                             android:layout_height="25dp"
                             android:src="@drawable/ic_rating_profile_view_xhdpi" />
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
+                            android:id="@+id/driver_rating"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:gravity="center"
                             android:text="4.5"
-
                             android:textColor="@color/colorGold"
                             android:textSize="14sp" />
 
@@ -164,13 +166,13 @@
                             android:layout_height="25dp"
                             android:src="@drawable/ic_trips_profile_view_xhdpi" />
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
+                            android:id="@+id/driver_trips"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:gravity="center"
                             android:text="40 trips"
-
                             android:textColor="@color/colorGold"
                             android:textSize="14sp" />
 
@@ -178,9 +180,7 @@
 
                 </LinearLayout>
 
-
             </android.support.v7.widget.CardView>
-
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -190,7 +190,7 @@
                 android:layout_marginRight="20dp"
                 android:gravity="center_vertical">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -198,7 +198,7 @@
                     android:text="Recents Rides"
                     android:textSize="12sp" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/viewAllRidesDriver"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -209,18 +209,27 @@
                     android:textSize="16sp" />
             </RelativeLayout>
 
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_recent_rides_driver_profile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="15dp"
-                android:scrollbars="vertical"
+                android:layout_marginRight="5dp"
+                android:scrollbars="horizontal" />
 
+            <com.carpool.tagalong.views.RegularTextView
+                android:id="@+id/noTimelineData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_50_px"
+                android:text="No timeline data"
+                android:textColor="@color/colorGold"
+                android:textSize="16sp"
+                android:visibility="gone" />
 
-                />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

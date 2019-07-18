@@ -61,6 +61,7 @@ dependencies {
     //slider
     implementation 'com.ncorti:slidetoact:0.6.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.google.android.gms:play-services-vision:10.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -13,7 +13,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerHorizontal="true"/>
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/contactName"
         android:layout_width="wrap_content"
         android:textColor="@color/black"
@@ -21,14 +21,14 @@
         android:textSize="15sp"
         android:text="ABCDDDDDD"/>
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/contactNumber"
         android:layout_width="wrap_content"
         android:layout_below="@id/contactName"
         android:layout_height="wrap_content"
         android:text="1345656656"/>
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/contactEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -9,7 +9,7 @@
         android:padding="10dp"
         >
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:id="@+id/location_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

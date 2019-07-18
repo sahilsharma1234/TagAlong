@@ -30,7 +30,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -39,13 +38,11 @@ import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.OnBoardRidersAdapter;
 import com.carpool.tagalong.adapter.TimelineAdapter;
 import com.carpool.tagalong.constants.Constants;
-import com.carpool.tagalong.fragments.CurrentUpcomingFragment;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.Contact;
 import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
-import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
 import com.carpool.tagalong.models.ModelTagUsers;
@@ -57,6 +54,7 @@ import com.carpool.tagalong.utils.BitmapUtils;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
+import com.carpool.tagalong.views.RegularTextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -86,7 +84,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private Button postImage;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
-    private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
+    private com.carpool.tagalong.views.RegularTextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
     private CircleImageView profilePic, postPic;
     private Button cancelButton, requestedBtn;
     private static ModelGetCurrentRideResponse modelGetRideDetailsResponse;
@@ -103,6 +101,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
     private ArrayList<String> invitedGuestList;
     String rideID;
+    private RegularTextView rideDetailsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +109,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.fragment_current_ride2);
 
         toolbarLayout = findViewById(R.id.toolbar_current_ride);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
 
@@ -157,6 +156,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 //        paynow       = findViewById(R.id.button_payNow);
         uploadPicLytBtn = findViewById(R.id.post_image_layout);
         postImage = findViewById(R.id.post_image_btn);
+        rideDetailsText = findViewById(R.id.ride_details_text);
 
 //        paynow.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
@@ -261,6 +261,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         } else if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.ACCEPTED) {
             requestedBtn.setVisibility(View.GONE);
             dropmessage1.setVisibility(View.VISIBLE);
+            rideDetailsText.setText("Ride Details");
 //            if (modelGetRideDetailsResponse.getRideData().isPayStatus()) {
 //
 ////                dropmessage.setVisibility(View.GONE);
@@ -375,7 +376,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
                 Log.e("EMERGENCY REQUEST IS:", "****************************************"+modelSendEmergencySOSRequest.toString());
 
-
                 if (restClientRetrofitService != null) {
 
                     ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
@@ -447,7 +447,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                         invitedGuestList.add(selectedContacts.get(i).getPhone());
                     }
                 }
-
                 handletagUsers();
             }
         }
@@ -633,7 +632,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-
     private void handletagUsers() {
 
         try {
@@ -695,8 +693,8 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private void showCustomCancelRideDialog(Activity context) {
 
-        TextView buttonPositive;
-        TextView buttonNegative;
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
         AlertDialog alertDialog;
         final EditText reasonText;
 
@@ -933,6 +931,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         if (code == 1) {
             builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -941,6 +940,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             });
 
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -960,7 +960,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

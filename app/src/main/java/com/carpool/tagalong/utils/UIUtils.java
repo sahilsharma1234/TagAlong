@@ -11,13 +11,12 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.listeners.AlertDialogPermissionBoxClickInterface;
+import com.carpool.tagalong.views.RegularTextView;
 
 /**
  * Created by sahilsharma on 8/11/17.
@@ -37,10 +36,10 @@ public class UIUtils {
      */
     public static void showCustomConfirmDialog(Activity context, String msg, int imageResource, String positiveBtnCaption, String negativeBtnCaption, final AlertDialogPermissionBoxClickInterface alertDialogBoxClickListener) {
 
-        TextView textViewMsg;
+        RegularTextView textViewMsg;
         ImageView imageView;
-        TextView buttonPositive;
-        TextView buttonNegative;
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
         AlertDialog alertDialog;
         try {
             AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
@@ -49,7 +48,7 @@ public class UIUtils {
             alertDialog.setCancelable(false);
             LayoutInflater inflater = context.getLayoutInflater();
             ViewGroup parent = null;
-            View dialogView = null;
+            View dialogView  = null;
             if (imageResource == 2) {
                 dialogView = inflater.inflate(R.layout.custom_alert_logout, parent);
             }else if(imageResource == 2) {

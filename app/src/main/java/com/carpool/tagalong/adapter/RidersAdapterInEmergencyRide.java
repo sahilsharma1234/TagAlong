@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.carpool.tagalong.R;
@@ -77,7 +76,7 @@ public class RidersAdapterInEmergencyRide extends RecyclerView.Adapter<RidersAda
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView riderName, riderNumber;
+        com.carpool.tagalong.views.RegularTextView riderName, riderNumber;
         CircleImageView riderImage;
         LinearLayout callUserLyt, navigateLyt;
 

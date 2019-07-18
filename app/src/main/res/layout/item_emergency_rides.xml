@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/light_grey_color">
 
-    <!--<TextView
+    <!--<com.carpool.tagalong.views.RegularTextView
         android:id="@+id/title_text_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                          android:layout_marginLeft="@dimen/_5_px"
                          android:orientation="vertical">
 
-                         <TextView
+                         <com.carpool.tagalong.views.RegularTextView
                              android:id="@+id/emergency_rider_name"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                              android:textColor="@color/black"
                              android:textSize="16sp" />
 
-                         <TextView
+                         <com.carpool.tagalong.views.RegularTextView
                              android:id="@+id/emergency_rider_number"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                              android:src="@drawable/ic_call_user"
                              android:textSize="16sp" />
 
-                         <TextView
+                         <com.carpool.tagalong.views.RegularTextView
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:layout_gravity="center"
@@ -165,7 +165,7 @@
                              android:src="@drawable/ic_navigate"
                              android:textSize="16sp" />
 
-                         <TextView
+                         <com.carpool.tagalong.views.RegularTextView
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:layout_gravity="center"
@@ -195,7 +195,7 @@
                 android:padding="@dimen/_10_px"
                 android:orientation="vertical">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/ride_timing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
                         android:layout_marginLeft="10dp"
                         android:paddingTop="5dp">
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
                             android:id="@+id/emergency_start_point_source_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -231,7 +231,7 @@
                             android:textColor="@android:color/black"
                             android:textSize="16sp" />
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
                             android:id="@+id/emergency_ride_start_timing"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -241,7 +241,7 @@
                             android:text="ABC"
                             android:textSize="12sp" />
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
                             android:id="@+id/emergency_end_point_dest_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -295,7 +295,7 @@
                         android:orientation="horizontal"
                         android:weightSum="2">
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"

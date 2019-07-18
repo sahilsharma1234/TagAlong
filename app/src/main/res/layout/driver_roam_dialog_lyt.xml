@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_15_px">
+
+    <com.carpool.tagalong.views.MediumTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Driving"
+        android:textColor="@color/black"
+        android:textSize="26sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10_px"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/free_roam_lyt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:src="@drawable/ic_drive_profile_on_xxhdpi" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10_px"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/img1"
+                android:orientation="vertical">
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/decider_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start_roaming"
+                    android:gravity="center|start"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/decider_text1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:text="@string/get_small_distance_riders"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+
+            android:id="@+id/schedule_trip_lyt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_10_px"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_drive_profile_on_xxhdpi" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10_px"
+                android:layout_toRightOf="@id/img2"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/decider_text3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/schedule_trip"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/decider_text4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/schedule_intercity_txt"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

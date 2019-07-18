@@ -158,8 +158,8 @@ public interface RestClientInterface {
     @retrofit2.http.GET("admin/get_color_list")
     Call<ModelGetCarColorsListResponse> getColors();
 
-    @retrofit2.http.GET("user/driver_profile/{userId}")
-    Call<ModelGetDriverProfileResponse> getDriverProfile(@Header("x-auth") String value, @Path("userId") String userId);
+    @retrofit2.http.GET("user/driver_profile")
+    Call<ModelGetDriverProfileResponse> getDriverProfile(@Header("x-auth") String value, @Query("userId") String userId);
 
     @retrofit2.http.GET("ride/upcoming_rides")
     Call<ModelGetAllRidesResponse> getAllRides(@Header("x-auth") String value);

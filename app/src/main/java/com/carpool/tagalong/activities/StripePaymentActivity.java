@@ -8,11 +8,11 @@ public class StripePaymentActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.tv_total)
-    TextView tv_total;
+    com.carpool.tagalong.views.RegularTextView tv_total;
     @BindView(R.id.btn_order)
-    TextView btn_order;
+    com.carpool.tagalong.views.RegularTextView btn_order;
     @BindView(R.id.errorMsg)
-    TextView errorMsg;
+    com.carpool.tagalong.views.RegularTextView errorMsg;
     @BindView(R.id.card_input_widget)
     CardInputWidget mCardInputWidget;
     @BindView(R.id.toolbar_stripe_payment)
@@ -36,7 +36,7 @@ public class StripePaymentActivity extends AppCompatActivity {
         }
 
         toolbarLayout = findViewById(R.id.toolbar_stripe_payment);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
 

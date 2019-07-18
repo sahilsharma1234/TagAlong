@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,8 +32,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
@@ -51,7 +50,6 @@ import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
-import com.carpool.tagalong.models.ModelPickupRider;
 import com.carpool.tagalong.models.ModelRateRiderequest;
 import com.carpool.tagalong.models.ModelStartRideRequest;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
@@ -61,11 +59,14 @@ import com.carpool.tagalong.utils.BitmapUtils;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
 import com.ncorti.slidetoact.SlideToActView;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -73,6 +74,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -91,7 +93,7 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
     private static final int MY_PERMISSIONS_REQUEST = 132;
     private static final int IMAGE_PICK_REQUEST = 134;
     private static String postPath = "";
-    private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
+    private com.carpool.tagalong.views.RegularTextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
     private CircleImageView profilePic, postPic;
     // TODO: Rename and change types of parameters
     private Context context;
@@ -99,7 +101,7 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
     private Button postImage, button_ride, navigate;
     private OnFragmentInteractionListener mListener;
     private ModelGetCurrentRideResponse modelGetCurrentRideResponse;
-    private TextView cancelRideDriver, notStarted;
+    private com.carpool.tagalong.views.RegularTextView cancelRideDriver, notStarted;
     private RecyclerView joinRequestRecyclerView;
     private RecyclerView onBoardRecyclerView;
     private RecyclerView timeLineRecView;
@@ -410,8 +412,8 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
 
     private void showCustomCancelRideDialog(Activity context) {
 
-        TextView buttonPositive;
-        TextView buttonNegative;
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
         AlertDialog alertDialog = null;
         final EditText reasonText;
 
@@ -454,8 +456,8 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
 
     private void showCustomCancelPickupDialog(ModelGetCurrentRideResponse.JoinRequest joinRequest, final ModelGetCurrentRideResponse.OnBoard onBoard) {
 
-        TextView buttonPositive;
-        TextView buttonNegative;
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
         AlertDialog alertDialog = null;
         final ModelGetCurrentRideResponse.JoinRequest mjoinRequest = joinRequest;
         final EditText reasonText;
@@ -628,28 +630,28 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
         seatMap.put(3, "Three");
         seatMap.put(4, "Four");
 
-        TextView name = delayDialog.findViewById(R.id.tv_driver_name);
+        com.carpool.tagalong.views.RegularTextView name = delayDialog.findViewById(R.id.tv_driver_name);
         CircleImageView profilePic = delayDialog.findViewById(R.id.iv_driver_profile_image);
 
-        TextView source_loc = delayDialog.findViewById(R.id.tv_source_address);
-        TextView dest_loc = delayDialog.findViewById(R.id.tv_dest_address);
-        TextView time = delayDialog.findViewById(R.id.tv_date);
-        TextView fare_amount = delayDialog.findViewById(R.id.tv_payment_amount);
-        TextView payment_status = delayDialog.findViewById(R.id.tv_payment_status);
-        TextView payment_status_notpaid = delayDialog.findViewById(R.id.tv_payment_status1);
+        com.carpool.tagalong.views.RegularTextView source_loc = delayDialog.findViewById(R.id.tv_source_address);
+        com.carpool.tagalong.views.RegularTextView dest_loc = delayDialog.findViewById(R.id.tv_dest_address);
+        com.carpool.tagalong.views.RegularTextView time = delayDialog.findViewById(R.id.tv_date);
+        com.carpool.tagalong.views.RegularTextView fare_amount = delayDialog.findViewById(R.id.tv_payment_amount);
+        com.carpool.tagalong.views.RegularTextView payment_status = delayDialog.findViewById(R.id.tv_payment_status);
+        com.carpool.tagalong.views.RegularTextView payment_status_notpaid = delayDialog.findViewById(R.id.tv_payment_status1);
 
-        TextView seats_selected = delayDialog.findViewById(R.id.tv_seat_selected);
+        com.carpool.tagalong.views.RegularTextView seats_selected = delayDialog.findViewById(R.id.tv_seat_selected);
         ImageView carrying_bags = delayDialog.findViewById(R.id.tv_bags);
         ImageView kids_allowed = delayDialog.findViewById(R.id.tv_traveling_with_children);
 
-        TextView accept = delayDialog.findViewById(R.id.tv_acept);
-        TextView accepted = delayDialog.findViewById(R.id.tv_acepted);
-        TextView cancel = delayDialog.findViewById(R.id.tv_cancel);
-        TextView reject = delayDialog.findViewById(R.id.tv_Reject);
-        TextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
+        com.carpool.tagalong.views.RegularTextView accept = delayDialog.findViewById(R.id.tv_acept);
+        com.carpool.tagalong.views.RegularTextView accepted = delayDialog.findViewById(R.id.tv_acepted);
+        com.carpool.tagalong.views.RegularTextView cancel = delayDialog.findViewById(R.id.tv_cancel);
+        com.carpool.tagalong.views.RegularTextView reject = delayDialog.findViewById(R.id.tv_Reject);
+        com.carpool.tagalong.views.RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
         final SlideToActView slideToActView = delayDialog.findViewById(R.id.tv_slider);
 
-//        final TextView tv_slide = delayDialog.findViewById(R.id.tv_slide);
+//        final com.carpool.tagalong.views.RegularTextView tv_slide = delayDialog.findViewById(R.id.tv_slide);
 //        final ImageView iv_drop_slider = delayDialog.findViewById(R.id.iv_drop_slider);
 //        final RelativeLayout ll_slider_parent = delayDialog.findViewById(R.id.ll_slider_parent);
 
@@ -1046,7 +1048,7 @@ public class CurrentRideFragmentDriver extends Fragment implements View.OnClickL
 
     private void showSubmitReviewDialog(final ModelGetCurrentRideResponse.OnBoard onBoard) {
 
-        TextView iv_userName;
+        com.carpool.tagalong.views.RegularTextView iv_userName;
         RatingBar ratingBar;
         final EditText feedBackComments;
         Button submitFeedback;

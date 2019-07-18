@@ -17,7 +17,7 @@
             android:layout_margin="15dp"
             >
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/ride_timing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                     android:layout_height="30dp"
                     android:src="@drawable/avatar_avatar_12"/>
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/userName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                     android:paddingTop="5dp"
                     android:layout_marginLeft="10dp">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/start_point_source_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                         android:gravity="center|start"
                         android:text="Alexandra Daniel"/>
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/startRideTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                         android:gravity="center|start"
                         android:text="ABC"/>
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/end_point_dest_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                         android:gravity="center|start"
                         android:text="Alexandra Daniel"/>
 
-                    <!--<TextView-->
+                    <!--<com.carpool.tagalong.views.RegularTextView-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
                     <!--android:layout_below="@id/end_point_dest_name"-->
@@ -155,18 +155,18 @@
                 android:visibility="gone"
                 android:text="requested"
                 android:textSize="16sp"/>
-<!--
-            <Button
-                android:id="@+id/button_payNow"
-                android:layout_width="150dp"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_shape_round_gold"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="10dp"
-                android:textColor="@android:color/white"
-                android:text="Pay Now"
-                android:textSize="16sp"/>-->
+            <!--
+                        <Button
+                            android:id="@+id/button_payNow"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_shape_round_gold"
+                            android:layout_marginLeft="40dp"
+                            android:layout_marginRight="10dp"
+                            android:textColor="@android:color/white"
+                            android:text="Pay Now"
+                            android:textSize="16sp"/>-->
 
             <RelativeLayout
                 android:id="@+id/drop_message1"
@@ -185,7 +185,7 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_message_current_ride_xhdpi"/>
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/drop_message"
@@ -200,35 +200,35 @@
 
         </LinearLayout>
 
-     <!--   <RelativeLayout
-            android:id="@+id/drop_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lin1"
-            android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            >
+        <!--   <RelativeLayout
+               android:id="@+id/drop_message"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@id/lin1"
+               android:gravity="center"
+               android:layout_marginTop="20dp"
+               android:layout_marginBottom="20dp"
+               >
 
-            <ImageView
-                android:id="@+id/drop_message_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_message_current_ride_xhdpi"/>
+               <ImageView
+                   android:id="@+id/drop_message_img"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:src="@drawable/ic_message_current_ride_xhdpi"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/drop_message"
-                android:layout_toRightOf="@id/drop_message_img"
-                android:textColor="@color/colorGold"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginLeft="20dp"
-                android:layout_centerHorizontal="true"/>
+               <com.carpool.tagalong.views.RegularTextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="@string/drop_message"
+                   android:layout_toRightOf="@id/drop_message_img"
+                   android:textColor="@color/colorGold"
+                   android:textStyle="bold"
+                   android:textSize="16sp"
+                   android:layout_marginLeft="20dp"
+                   android:layout_centerHorizontal="true"/>
 
-        </RelativeLayout>-->
+           </RelativeLayout>-->
 
     </RelativeLayout>
 

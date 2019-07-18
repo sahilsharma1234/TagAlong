@@ -37,7 +37,7 @@
                 android:gravity="center"
                 android:src="@drawable/ic_star_profile_top_xhdpi" />
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/rider_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
 
     </FrameLayout>
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/name_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

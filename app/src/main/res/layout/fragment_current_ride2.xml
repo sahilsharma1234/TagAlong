@@ -19,19 +19,20 @@
             android:layout_height="wrap_content"
             android:background="@color/light_grey_color">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/ride_details_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ride_reqsted_driver_confirm"
                 android:layout_margin="15dp"
-                android:textSize="12sp"/>
+                android:text="@string/ride_reqsted_driver_confirm"
+                android:textSize="12sp" />
 
-            <include android:id="@+id/ride_lyt"
+            <include
+                android:id="@+id/ride_lyt"
+                layout="@layout/layout_requested_ride_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ride_details_text"
-                layout="@layout/layout_requested_ride_details"/>
+                android:layout_below="@id/ride_details_text" />
 
             <RelativeLayout
                 android:id="@+id/rel1"
@@ -40,33 +41,33 @@
                 android:layout_below="@id/ride_lyt"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/white"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
                 android:elevation="2dp"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:paddingTop="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="15dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:text="@string/estimated_cost_of_the_ride"/>
+                    android:text="@string/estimated_cost_of_the_ride"
+                    android:textColor="@android:color/black" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/estimated_cost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$ 80.50"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:text="$ 80.50"
                     android:textColor="@android:color/black"
-                    android:layout_alignParentRight="true"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/timeline_text1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,7 +85,7 @@
                 android:layout_below="@id/timeline_text1"
                 android:layout_marginTop="10dp" />
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/onBoard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,18 +108,17 @@
 
             </android.support.v7.widget.RecyclerView>
 
-
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/timeline_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/onBoardRecView"
-                android:text="Timeline"
-                android:gravity="center"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
-                android:textSize="14sp"/>
+                android:gravity="center"
+                android:text="Timeline"
+                android:textSize="14sp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/timeline_recView"
@@ -135,6 +135,5 @@
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
 
 </RelativeLayout>

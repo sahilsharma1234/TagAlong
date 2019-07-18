@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.models.Contact;
@@ -67,7 +65,7 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView contactName, contactNumber,contactEmail;
+        private com.carpool.tagalong.views.RegularTextView contactName, contactNumber,contactEmail;
         private CheckBox contactCheck;
 
         public ViewHolder(View view) {

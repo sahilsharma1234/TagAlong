@@ -35,7 +35,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -99,14 +98,14 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private LinearLayout uploadPicLytBtn;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
-    private TextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime;
+    private com.carpool.tagalong.views.RegularTextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime;
     private CircleImageView profilePic, postPic;
     // TODO: Rename and change types of parameters
     private Context context;
     private Button postImage, button_ride, navigate;
     private CurrentRideFragmentDriver.OnFragmentInteractionListener mListener;
     private ModelGetCurrentRideResponse modelGetRideDetailsResponse;
-    private TextView cancelRideDriver, notStarted;
+    private com.carpool.tagalong.views.RegularTextView cancelRideDriver, notStarted;
     private RecyclerView joinRequestRecyclerView;
     private RecyclerView onBoardRecyclerView;
     private RecyclerView timeLineRecView;
@@ -125,7 +124,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         setContentView(R.layout.activity_current_ride_demo2);
 
         toolbarLayout = findViewById(R.id.toolbar_current_ride_driver);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         shareIcon = toolbarLayout.findViewById(R.id.share);
@@ -281,8 +280,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void handleCurrentRideForDriver() {
 
         String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
-        String endLocation = modelGetRideDetailsResponse.getRideData().getEndLocation();
-        String rideTime = modelGetRideDetailsResponse.getRideData().getRideDateTime();
+        String endLocation  = modelGetRideDetailsResponse.getRideData().getEndLocation();
+        String rideTime     = modelGetRideDetailsResponse.getRideData().getRideDateTime();
         userName.setText(modelGetRideDetailsResponse.getRideData().getUserName());
         recent_ride_txt.setText("Ride created at " + rideTime);
 
@@ -414,7 +413,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void reduceImageAndSet() {
         // we'll start with the original picture already open to a file
         try {
-
             Bitmap bitmap = BitmapUtils.getBitmapFromGallery(context, Uri.parse(postPath), 100, 100);
             selectedImageForPost.setImageBitmap(bitmap);
         } catch (Exception e) {
@@ -747,6 +745,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                             if (response.body() != null) {
 
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                getRideDetails(rideID);
 
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -811,6 +810,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                     showSubmitReviewDialog(onBoard);
+                                }else{
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -840,7 +841,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
     private void showSubmitReviewDialog(final ModelGetCurrentRideResponse.OnBoard onBoard) {
 
-        TextView iv_userName;
+        com.carpool.tagalong.views.RegularTextView iv_userName;
         RatingBar ratingBar;
         final EditText feedBackComments;
         Button submitFeedback;
@@ -853,15 +854,15 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
             final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
             LayoutInflater inflater = this.getLayoutInflater();
-            final View dialogView = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+            final View dialogView   = inflater.inflate(R.layout.submit_review_dialog_layout, null);
             dialogBuilder.setCancelable(false);
             dialogBuilder.setView(dialogView);
 
             feedBackComments = dialogView.findViewById(R.id.feedback_comments);
-            submitFeedback = dialogView.findViewById(R.id.submitReview);
-            user_image = dialogView.findViewById(R.id.iv_user_profile_image);
-            iv_userName = dialogView.findViewById(R.id.tv_driver_name);
-            ratingBar = dialogView.findViewById(R.id.rating_bar);
+            submitFeedback   = dialogView.findViewById(R.id.submitReview);
+            user_image       = dialogView.findViewById(R.id.iv_user_profile_image);
+            iv_userName      = dialogView.findViewById(R.id.tv_driver_name);
+            ratingBar        = dialogView.findViewById(R.id.rating_bar);
 
             rating = ratingBar.getRating();
 
@@ -900,7 +901,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
             modelRateRiderequest.setRateTo(onBoard.getUserId());
-            modelRateRiderequest.setRideId(onBoard.get_id());
+            modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
             modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
             modelRateRiderequest.setReview(comments);
 
@@ -920,15 +921,13 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
                             if (response.body() != null) {
 
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+
                                 if (response.body().getStatus() == 1) {
-                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                    HomeActivity activity = HomeActivity.getInstance();
 
                                     if (modelGetRideDetailsResponse.getRideData().onBoard.size() > 1) {
                                         getRideDetails(rideID);
                                     } else {
-//                                        activity.handleDrawer();
-//                                        activity.handleHomeLayoutClick();
                                         finish();
                                     }
                                 }
@@ -941,11 +940,12 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                         public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
 
                             ProgressDialogLoader.progressDialogDismiss();
+                            Toast.makeText(context, "Some error in rating rider!!", Toast.LENGTH_LONG).show();
 
                             if (t != null && t.getMessage() != null) {
                                 t.printStackTrace();
                             }
-                            Log.e("Accept/Reject Ride", "FAILURE verification");
+                            Log.e("Rate Rider", "FAILURE Rating rider");
                         }
                     });
                 }
@@ -1027,6 +1027,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         try {
 
             ModelAcceptRideRequest modelAcceptRideRequest = new ModelAcceptRideRequest();
+
             if (joinRequest != null) {
                 modelAcceptRideRequest.setRequestId(joinRequest.get_id());
             } else
@@ -1053,7 +1054,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-
                                     getRideDetails(rideID);
                                 }
                             } else {
@@ -1106,7 +1106,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     if (restClientRetrofitService != null) {
 
                         ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
-
                         restClientRetrofitService.addPost(TagALongPreferenceManager.getToken(context), rideId, type, part).enqueue(new Callback<ModelDocumentStatus>() {
 
                             @Override
@@ -1238,30 +1237,26 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         seatMap.put(3, "Three");
         seatMap.put(4, "Four");
 
-        TextView name = delayDialog.findViewById(R.id.tv_driver_name);
+        com.carpool.tagalong.views.RegularTextView name = delayDialog.findViewById(R.id.tv_driver_name);
         CircleImageView profilePic = delayDialog.findViewById(R.id.iv_driver_profile_image);
 
-        TextView source_loc = delayDialog.findViewById(R.id.tv_source_address);
-        TextView dest_loc = delayDialog.findViewById(R.id.tv_dest_address);
-        TextView time = delayDialog.findViewById(R.id.tv_date);
-        TextView fare_amount = delayDialog.findViewById(R.id.tv_payment_amount);
-        TextView payment_status = delayDialog.findViewById(R.id.tv_payment_status);
-        TextView payment_status_notpaid = delayDialog.findViewById(R.id.tv_payment_status1);
+        com.carpool.tagalong.views.RegularTextView source_loc  = delayDialog.findViewById(R.id.tv_source_address);
+        com.carpool.tagalong.views.RegularTextView dest_loc    = delayDialog.findViewById(R.id.tv_dest_address);
+        com.carpool.tagalong.views.RegularTextView time        = delayDialog.findViewById(R.id.tv_date);
+        com.carpool.tagalong.views.RegularTextView fare_amount = delayDialog.findViewById(R.id.tv_payment_amount);
+        com.carpool.tagalong.views.RegularTextView payment_status = delayDialog.findViewById(R.id.tv_payment_status);
+        com.carpool.tagalong.views.RegularTextView payment_status_notpaid = delayDialog.findViewById(R.id.tv_payment_status1);
 
-        TextView seats_selected = delayDialog.findViewById(R.id.tv_seat_selected);
+        com.carpool.tagalong.views.RegularTextView seats_selected = delayDialog.findViewById(R.id.tv_seat_selected);
         ImageView carrying_bags = delayDialog.findViewById(R.id.tv_bags);
         ImageView kids_allowed = delayDialog.findViewById(R.id.tv_traveling_with_children);
 
-        TextView accept = delayDialog.findViewById(R.id.tv_acept);
-        TextView accepted = delayDialog.findViewById(R.id.tv_acepted);
-        TextView cancel = delayDialog.findViewById(R.id.tv_cancel);
-        TextView reject = delayDialog.findViewById(R.id.tv_Reject);
-        TextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
+        com.carpool.tagalong.views.RegularTextView accept   = delayDialog.findViewById(R.id.tv_acept);
+        com.carpool.tagalong.views.RegularTextView accepted = delayDialog.findViewById(R.id.tv_acepted);
+        com.carpool.tagalong.views.RegularTextView cancel   = delayDialog.findViewById(R.id.tv_cancel);
+        com.carpool.tagalong.views.RegularTextView reject   = delayDialog.findViewById(R.id.tv_Reject);
+        com.carpool.tagalong.views.RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
         final SlideToActView slideToActView = delayDialog.findViewById(R.id.tv_slider);
-
-//        final TextView tv_slide = delayDialog.findViewById(R.id.tv_slide);
-//        final ImageView iv_drop_slider = delayDialog.findViewById(R.id.iv_drop_slider);
-//        final RelativeLayout ll_slider_parent = delayDialog.findViewById(R.id.ll_slider_parent);
 
         if (joinRequest != null) {
 
@@ -1379,9 +1374,9 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             }
 
             accept.setVisibility(View.GONE);
-            accepted.setVisibility(View.VISIBLE);
+            accepted.setVisibility(View.GONE);
             reject.setVisibility(View.GONE);
-            cancel.setVisibility(View.VISIBLE);
+            cancel.setVisibility(View.GONE);
             slideToActView.setVisibility(View.VISIBLE);
 
             if (onBoard.getStatus() == Constants.PICKUP) {
@@ -1432,6 +1427,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 delayDialog.dismiss();
             }
         });
+
 //        iv_drop_slider.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View view, MotionEvent event) {
@@ -1528,8 +1524,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
     private void showCustomCancelRideDialog(Activity context) {
 
-        TextView buttonPositive;
-        TextView buttonNegative;
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
         AlertDialog alertDialog = null;
         final EditText reasonText;
 
@@ -1572,8 +1568,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
     private void showCustomCancelPickupDialog(ModelGetCurrentRideResponse.JoinRequest joinRequest, final ModelGetCurrentRideResponse.OnBoard onBoard) {
 
-        TextView buttonPositive;
-        TextView buttonNegative;
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
         AlertDialog alertDialog = null;
         final ModelGetCurrentRideResponse.JoinRequest mjoinRequest = joinRequest;
         final EditText reasonText;

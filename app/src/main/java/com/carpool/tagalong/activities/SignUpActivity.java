@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -45,7 +44,7 @@ public class SignUpActivity   extends AppCompatActivity  implements View.OnClick
     private TextInputEditText userName,       email_address, mobileNumber,  address, password,  reEnterPassword;
     private String            usernameString, emailString,   addressString, mobileNumberString, passwordString, reneterPasswordString;
     private LinearLayout      register;
-    private TextView          signInText;
+    private com.carpool.tagalong.views.RegularTextView          signInText;
     private CallbackManager   callbackManager;
     private LoginButton       loginButton;
     private LinearLayout      facebookSignUp,twitterSignUp;
@@ -64,7 +63,7 @@ public class SignUpActivity   extends AppCompatActivity  implements View.OnClick
     private void setToolbar() {
 
         toolbar = findViewById(R.id.toolbar_signup);
-        TextView title  = toolbar.findViewById(R.id.title);
+        com.carpool.tagalong.views.RegularTextView title  = toolbar.findViewById(R.id.title);
         title.setText("Register");
 
         setSupportActionBar(toolbar);
@@ -211,7 +210,6 @@ public class SignUpActivity   extends AppCompatActivity  implements View.OnClick
     private void handleSignUp() {
 
         if(validateSignUpData()){
-
             signUp();
         }
     }
@@ -232,7 +230,7 @@ public class SignUpActivity   extends AppCompatActivity  implements View.OnClick
         spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.black)), 16, 23, 0); // for coloring purpose
 
         signInText.setMovementMethod(LinkMovementMethod.getInstance());
-        signInText.setText(spannableString, TextView.BufferType.SPANNABLE);
+        signInText.setText(spannableString, com.carpool.tagalong.views.RegularTextView.BufferType.SPANNABLE);
         signInText.setHighlightColor(Color.TRANSPARENT);
     }
 

@@ -30,8 +30,8 @@
                 android:contentDescription="@null"
                 android:padding="10dp" />
 
-            <TextView
-                android:id="@+id/textViewMessage"
+            <com.carpool.tagalong.views.RegularTextView
+                android:id="@+id/com.carpool.tagalong.views.RegularTextViewMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
@@ -46,7 +46,7 @@
             android:gravity="end"
             android:orientation="horizontal">
 
-            <!--<TextView
+            <!--<com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/buttonNegative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp" />-->
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/buttonPositive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

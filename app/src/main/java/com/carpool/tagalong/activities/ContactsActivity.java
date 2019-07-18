@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -39,7 +38,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private Context context;
     private ArrayList<Contact> tempContactHolder = new ArrayList<>();
     private ContactList selectedList = null;
-    private TextView txtProgress     = null;
+    private com.carpool.tagalong.views.RegularTextView txtProgress     = null;
     private int totalContactsCount   = 0,loadedContactsCount = 0;
     private ContactsListAdapter contactsListAdapter;
     private boolean isFromCreateEvent = false;
@@ -74,7 +73,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         toolbarLayout = findViewById(R.id.toolbar_contacts);
         done          = findViewById(R.id.done);
         done.setOnClickListener(this);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         title.setText("Tag Contacts");

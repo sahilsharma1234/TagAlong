@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.EmergencyRideActivity;
 import com.carpool.tagalong.adapter.EmergencyRidesAdapter;
@@ -23,7 +23,9 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
+
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,7 +51,7 @@ public class EmergencyRidesFragment extends Fragment  implements View.OnClickLis
     private OnFragmentInteractionListener mListener;
     private RecyclerView emergencyListRecyclerView;
     private RelativeLayout lytEmptyEmergencyRides;
-    private TextView sosTxt;
+    private com.carpool.tagalong.views.RegularTextView sosTxt;
 
     public EmergencyRidesFragment() {
     }

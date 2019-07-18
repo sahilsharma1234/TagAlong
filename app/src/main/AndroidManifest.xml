@@ -86,16 +86,6 @@
             android:name=".activities.StartRideActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeActivity" />
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
 
         </activity>
         <activity
@@ -115,9 +105,9 @@
         <activity
             android:name=".activities.CurrentRideActivityDriver"
             android:screenOrientation="portrait">
-             <!--<meta-data
-                 android:name="android.support.PARENT_ACTIVITY"
-                 android:value=".activities.HomeActivity" />-->
+            <!--<meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeActivity" />-->
         </activity>
         <activity
             android:name=".activities.CurrentRideActivity"
@@ -242,6 +232,11 @@
         <service
             android:name=".service.JobSchedulerService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity
+            android:name=".activities.FreeRoamActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

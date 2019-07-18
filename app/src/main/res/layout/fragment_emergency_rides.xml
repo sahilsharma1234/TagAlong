@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#fff">
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/title_text_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                         android:orientation="horizontal"
                         android:weightSum="2">
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -101,7 +101,7 @@
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_emergency" />
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:id="@+id/txt1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
             android:textSize="@dimen/_20_px"
             android:layout_below="@id/emptyEmergency"/>
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/emergency_string"

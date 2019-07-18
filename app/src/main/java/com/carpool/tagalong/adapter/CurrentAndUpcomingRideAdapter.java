@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.models.ModelGetAllRidesResponse;
+
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CurrentAndUpcomingRideAdapter extends RecyclerView.Adapter<CurrentAndUpcomingRideAdapter.MyViewHolder> {
@@ -69,7 +71,7 @@ public class CurrentAndUpcomingRideAdapter extends RecyclerView.Adapter<CurrentA
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView srcLocName, destLocName, date, distance;
+        com.carpool.tagalong.views.RegularTextView srcLocName, destLocName, date, distance;
         CircleImageView driverProfileIMage;
 
         public MyViewHolder(View view) {
@@ -86,9 +88,7 @@ public class CurrentAndUpcomingRideAdapter extends RecyclerView.Adapter<CurrentA
 
                 @Override
                 public void onClick(View v) {
-
                     currentUpcomingInterface.onItemClick(modelGetAllRidesResponsesList.get(getAdapterPosition()));
-
                 }
             });
         }

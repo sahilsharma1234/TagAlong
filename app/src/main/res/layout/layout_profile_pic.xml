@@ -3,9 +3,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center"
     android:background="@android:color/white"
-    android:elevation="3dp">
+    android:elevation="3dp"
+    android:gravity="center">
 
     <FrameLayout
         android:id="@+id/rr1"
@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:src="@drawable/ic_star_profile_top_xhdpi" />
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/rider_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,19 +51,17 @@
 
         </LinearLayout>
 
-
-
     </FrameLayout>
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/name_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ABC"
-        android:textSize="16sp"
         android:layout_below="@id/rr1"
-        android:gravity="center"
         android:layout_centerInParent="true"
-        android:textColor="@android:color/black" />
+        android:gravity="center"
+        android:text="ABC"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
 
 </RelativeLayout>

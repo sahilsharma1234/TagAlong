@@ -10,8 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.models.ModelVerifySignUp;
 import com.carpool.tagalong.models.ModelVerifySignUpResponse;
@@ -20,6 +20,7 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.Utils;
 import com.mukesh.OtpView;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,7 +67,7 @@ public class VerificationActivity extends AppCompatActivity {
     private void setToolBar() {
 
         toolbar         = findViewById(R.id.toolbar_verification);
-        TextView title  = toolbar.findViewById(R.id.title);
+        com.carpool.tagalong.views.RegularTextView title  = toolbar.findViewById(R.id.title);
         title.setText("Verification");
 
         setSupportActionBar(toolbar);

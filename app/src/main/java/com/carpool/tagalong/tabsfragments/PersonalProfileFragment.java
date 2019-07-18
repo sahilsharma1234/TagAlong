@@ -23,7 +23,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -60,9 +59,9 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     private static final int GALLERY_PICTURE = 125;
     HashMap<String, String> genderMap = new HashMap<>();
     HashMap<String, String> poolgenderMap = new HashMap<>();
-    private TextView nameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips;
+    private com.carpool.tagalong.views.RegularTextView nameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips;
     private EditText nameEdt, emailEdt, mobileNumberEdt, addressEdt;
-    private TextView saveTxt, editTxt;
+    private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
     private Spinner genderSpinner, poolPreferenceSpinner;
     private String[] genderArray = new String[]{"Select Gender", "Male", "Female", "Other"};
     private String[] poolPreferenceArray = new String[]{"Select Pool Preference", "All", "Male", "Female"};

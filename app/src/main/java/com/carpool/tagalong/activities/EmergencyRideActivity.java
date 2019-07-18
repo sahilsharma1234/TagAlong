@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -53,7 +52,7 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
     private ModelGetEmergencyRidesResponse.EmergencyRides emergencyRide;
     private RecyclerView ridersListInEmergencyRide;
     private RidersAdapterInEmergencyRide ridersAdapterInEmergencyRide;
-    private TextView startLoc, endLoc, rideDateTime;
+    private com.carpool.tagalong.views.RegularTextView startLoc, endLoc, rideDateTime;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private GoogleMap mMap;
@@ -92,7 +91,7 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
         endLoc = findViewById(R.id.emergency_end_point_dest_name);
 
         toolbarLayout = findViewById(R.id.toolbar_emergency_ride);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         title.setText("Emergency Ride");

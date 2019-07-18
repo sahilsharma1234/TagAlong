@@ -36,7 +36,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.carpool.tagalong.views.MediumTextView
+                <com.carpool.tagalong.views.Mediumcom.carpool.tagalong.views.RegularTextView
                     android:id="@+id/tv_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <com.carpool.tagalong.views.MediumTextView
+            <com.carpool.tagalong.views.Mediumcom.carpool.tagalong.views.RegularTextView
                 android:id="@+id/btn_order"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

@@ -6,8 +6,6 @@
     android:background="#fafafa"
     tools:context=".activities.SearchRideActivity">
 
-
-
     <RelativeLayout
         android:id="@+id/startLayout"
         android:layout_width="match_parent"
@@ -84,7 +82,7 @@
     </RelativeLayout>
     <!--
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:id="@+id/postsTitle"
             android:layout_below="@id/endTrip"
             android:layout_width="wrap_content"
@@ -109,7 +107,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -125,8 +123,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp">
 
-                <TextView
-                    android:id="@+id/nowTextView"
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/nowcom.carpool.tagalong.views.RegularTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -140,17 +138,17 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@id/nowTextView"
+                    android:layout_toRightOf="@id/nowcom.carpool.tagalong.views.RegularTextView"
                     />
 
-                <!-- <TextView
-                     android:id="@+id/laterTextView"
+                <!-- <com.carpool.tagalong.views.RegularTextView
+                     android:id="@+id/latercom.carpool.tagalong.views.RegularTextView"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:textColor="@android:color/black"
                      android:textSize="18sp"
                      android:text="Later"
-                     android:layout_below="@id/nowTextView"/>-->
+                     android:layout_below="@id/nowcom.carpool.tagalong.views.RegularTextView"/>-->
 
             </RelativeLayout>
 
@@ -159,8 +157,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp">
 
-                <TextView
-                    android:id="@+id/laterTextView"
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/latercom.carpool.tagalong.views.RegularTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -172,18 +170,18 @@
                     android:id="@+id/laterCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/laterTextView"
+                    android:layout_toRightOf="@id/latercom.carpool.tagalong.views.RegularTextView"
                     android:layout_marginLeft="20dp"
                     />
 
-                <!-- <TextView
-                     android:id="@+id/laterTextView"
+                <!-- <com.carpool.tagalong.views.RegularTextView
+                     android:id="@+id/latercom.carpool.tagalong.views.RegularTextView"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:textColor="@android:color/black"
                      android:textSize="18sp"
                      android:text="Later"
-                     android:layout_below="@id/nowTextView"/>-->
+                     android:layout_below="@id/nowcom.carpool.tagalong.views.RegularTextView"/>-->
 
             </RelativeLayout>
             <!--
@@ -198,14 +196,14 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:text="DD MM YYYY"/>
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="CHANGE"
@@ -223,7 +221,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"

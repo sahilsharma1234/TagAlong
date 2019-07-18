@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -70,7 +69,7 @@ public class VerificationOTPActivity extends AppCompatActivity {
     private void setToolBar() {
 
         toolbar         = findViewById(R.id.toolbar_verification);
-        TextView title  = toolbar.findViewById(R.id.title);
+        com.carpool.tagalong.views.RegularTextView title  = toolbar.findViewById(R.id.title);
         title.setText("Verification");
 
         setSupportActionBar(toolbar);

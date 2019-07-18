@@ -7,14 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.carpool.tagalong.R;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.utils.ThumbnailItem;
- 
+
 import java.util.List;
- 
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
  
@@ -34,7 +33,7 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.My
         ImageView thumbnail;
  
         @BindView(R.id.filter_name)
-        TextView filterName;
+        com.carpool.tagalong.views.RegularTextView filterName;
  
         public MyViewHolder(View view) {
             super(view);

@@ -5,10 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.carpool.tagalong.R;
-import com.carpool.tagalong.models.ModelGetAllRidesResponse;
 import com.carpool.tagalong.models.emergencysos.ModelGetEmergencyRidesResponse;
 
 import java.util.List;
@@ -56,7 +54,7 @@ public class EmergencyRidesAdapter extends RecyclerView.Adapter<EmergencyRidesAd
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView srcLocName, destLocName, date, distance;
+        com.carpool.tagalong.views.RegularTextView srcLocName, destLocName, date, distance;
         CircleImageView driverProfileIMage;
 
         public MyViewHolder(View view) {

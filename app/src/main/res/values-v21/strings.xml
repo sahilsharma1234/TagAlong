@@ -45,7 +45,7 @@
     <string name="drop_message">DROP A MESSAGE</string>
     <string name="ride_reqsted_driver_confirm">Ride has been requested, waiting for driver to confirm</string>
     <string name="carrying_bags">Luggage/bag(s)</string>
-    <string name="travelling_with_kids">ravelling with kids</string>
+    <string name="travelling_with_kids">Travelling with kids</string>
     <string name="rider_with_kids">Families with children?</string>
     <string name="you_smoke">Smoking?</string>
     <string name="rider_can_carry_bags">Riders with bags?</string>
@@ -86,7 +86,13 @@
     <string name="no_emergencies">No Emergencies</string>
     <string name="emergency_string">If any users presses sos button we will show his/her details here you can help him/her voluntarily.</string>
     <string name="invite_contacts">Loading Contacts</string>
-
+    <string name="start_roaming">Start free roam</string>
+    <string name="get_small_distance_riders">(Get small distance riders)</string>
+    <string name="schedule_trip">Schedule a trip</string>
+    <string name="quick_ride">Quick ride</string>
+    <string name="schedule_your_ride">Schedule your ride</string>
+    <string name="small_distance_quick_ride">(Small distance quick ride)</string>
+    <string name="intercity_long_distance_ride">(Intercity long distance rides)</string>
 
 
 </resources>

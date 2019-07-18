@@ -18,4 +18,8 @@
     <dimen name="lbl_edit_image_control">100dp</dimen>
     <dimen name="padding_common">8dp</dimen>
     <dimen name="padding_common_big">20dp</dimen>
+
+    <dimen name="eyeOutlineStroke">5dp</dimen>
+    <dimen name="textSize">10dp</dimen>
+    <dimen name="hintStroke">3dp</dimen>
 </resources>

@@ -3,16 +3,12 @@ package com.carpool.tagalong.utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 import com.carpool.tagalong.R;
 
 public class DialogUtils {
@@ -28,8 +24,8 @@ public class DialogUtils {
 //        delayDialog.setCancelable(false);
 //        delayDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //
-//        TextView tv_txt_ok = delayDialog.findViewById(R.id.tv_driver_name);
-//        final TextView tv_slide = delayDialog.findViewById(R.id.tv_slide);
+//        com.carpool.tagalong.views.RegularTextView tv_txt_ok = delayDialog.findViewById(R.id.tv_driver_name);
+//        final com.carpool.tagalong.views.RegularTextView tv_slide = delayDialog.findViewById(R.id.tv_slide);
 //        final ImageView iv_drop_slider = delayDialog.findViewById(R.id.iv_drop_slider);
 //        final RelativeLayout ll_slider_parent = delayDialog.findViewById(R.id.ll_slider_parent);
 //        tv_txt_ok.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +136,8 @@ public class DialogUtils {
 //        delayDialog.setCancelable(true);
 //        delayDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //
-//        TextView tv_txt_ok = delayDialog.findViewById(R.id.tv_driver_name);
-//        final TextView tv_slide = delayDialog.findViewById(R.id.tv_slide);
+//        com.carpool.tagalong.views.RegularTextView tv_txt_ok = delayDialog.findViewById(R.id.tv_driver_name);
+//        final com.carpool.tagalong.views.RegularTextView tv_slide = delayDialog.findViewById(R.id.tv_slide);
 //        final ImageView iv_drop_slider = delayDialog.findViewById(R.id.iv_drop_slider);
 //        final RelativeLayout ll_slider_parent = delayDialog.findViewById(R.id.ll_slider_parent);
 //        tv_txt_ok.setOnClickListener(new View.OnClickListener() {
@@ -162,8 +158,8 @@ public class DialogUtils {
         delayDialog.setCancelable(true);
         delayDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        TextView title_text = delayDialog.findViewById(R.id.title_text);
-        final TextView message_text = delayDialog.findViewById(R.id.message_text);
+        com.carpool.tagalong.views.RegularTextView title_text = delayDialog.findViewById(R.id.title_text);
+        final com.carpool.tagalong.views.RegularTextView message_text = delayDialog.findViewById(R.id.message_text);
         final ImageView iv_topImage_image = delayDialog.findViewById(R.id.iv_topImage_image);
 
         title_text.setOnClickListener(new View.OnClickListener() {

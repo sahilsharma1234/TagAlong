@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -30,9 +29,9 @@ import retrofit2.Response;
 
 public class PaymentProfileFragment extends Fragment implements View.OnClickListener {
 
-    private TextView account_number, short_code, routing_number, bank_name;
+    private com.carpool.tagalong.views.RegularTextView account_number, short_code, routing_number, bank_name;
     private EditText account_number_edt, short_code_edt, routing_number_edt, bank_name_edt;
-    private TextView saveTxt, editTxt;
+    private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
 
     @Nullable
     @Override

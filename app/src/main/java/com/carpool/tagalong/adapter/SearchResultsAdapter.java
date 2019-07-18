@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.carpool.tagalong.R;
@@ -59,10 +58,10 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     public class SearchViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name;
-        TextView startLocation;
-        TextView endLocation;
-        TextView starttime,ridestarttime;
+        com.carpool.tagalong.views.RegularTextView name;
+        com.carpool.tagalong.views.RegularTextView startLocation;
+        com.carpool.tagalong.views.RegularTextView endLocation;
+        com.carpool.tagalong.views.RegularTextView starttime,ridestarttime;
         CircleImageView profile_pic;
 
         public SearchViewHolder(@NonNull View itemView) {

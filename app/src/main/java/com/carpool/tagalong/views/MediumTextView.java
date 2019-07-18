@@ -2,7 +2,7 @@ package com.carpool.tagalong.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
+import android.widget.TextView;
 
 
 public class MediumTextView extends android.support.v7.widget.AppCompatTextView {

@@ -3,7 +3,7 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:background="@drawable/bg_white_searchview">
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/documents_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +13,7 @@
         android:layout_marginLeft="20dp"
         android:textColor="@android:color/black"/>
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/documents_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

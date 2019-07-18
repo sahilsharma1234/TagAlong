@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +38,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -95,11 +93,11 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<String> placeIdList = null;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String txtDate, txtTime;
-    private TextView chengeDateTimeTxtview, date, time;
+    private com.carpool.tagalong.views.RegularTextView chengeDateTimeTxtview, date, time;
     private LocationManager locationManager;
     private ImageView startPin, endPin;
     private Spinner seatsSpinner;
-    private TextView seatSelected;
+    private com.carpool.tagalong.views.RegularTextView seatSelected;
     private LinearLayout toolbarLayout;
     private Button searchBtn;
     private String[] seatsCountArray = new String[]{"1", "2", "3", "4"};
@@ -137,7 +135,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
     private void setToolBar() {
 
         toolbarLayout = findViewById(R.id.toolbar_searchride);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         title.setText("Ride Search");

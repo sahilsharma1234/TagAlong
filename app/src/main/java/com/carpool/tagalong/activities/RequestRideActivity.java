@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -41,7 +40,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private Button onlinePaymentBtn, requestRide;
-    private TextView profileDriver, name, startLocation, endLocation, startTime, estimatedCost, seats, bags, kids, ratings;
+    private com.carpool.tagalong.views.RegularTextView profileDriver, name, startLocation, endLocation, startTime, estimatedCost, seats, bags, kids, ratings;
     private CircleImageView profile_pic;
     private Context context;
     private RelativeLayout progressBarLayout;
@@ -56,7 +55,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         context = this;
 
         toolbarLayout = findViewById(R.id.toolbar_request_ride);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         onlinePaymentBtn = findViewByIdAndCast(R.id.online_payment);

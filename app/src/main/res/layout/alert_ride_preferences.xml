@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white_searchview">
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/documents_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:layout_marginTop="35dp"
         android:gravity="center|left">
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -56,7 +56,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center|left">
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -89,7 +89,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center|left">
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -122,7 +122,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center|left">
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -144,7 +144,7 @@
                 android:layout_marginRight="20dp"
                 android:src="@drawable/ic_minus_stepper_pop_xhdpi" />
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/carry_bag_count_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

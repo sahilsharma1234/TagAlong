@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 
-
 public class RegularTextView extends android.support.v7.widget.AppCompatTextView {
     private static final String asset = "fonts/roboto/roboto_regular.ttf";
 

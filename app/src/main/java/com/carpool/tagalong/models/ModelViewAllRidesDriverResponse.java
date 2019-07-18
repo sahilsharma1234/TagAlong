@@ -47,6 +47,7 @@ public class ModelViewAllRidesDriverResponse {
     }
 
     public static class TimelineData {
+
         @SerializedName("_id")
         public String _id;
         @SerializedName("type")
@@ -80,6 +81,7 @@ public class ModelViewAllRidesDriverResponse {
     }
 
     public static class Data {
+
         @SerializedName("heading")
         public String heading;
         @SerializedName("timelineData")

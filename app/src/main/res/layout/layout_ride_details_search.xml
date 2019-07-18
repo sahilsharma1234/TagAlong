@@ -17,7 +17,7 @@
             android:layout_margin="15dp"
             android:orientation="vertical">
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/ride_timing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                     android:layout_height="30dp"
                     android:src="@drawable/avatar_avatar_12" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/driver_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,18 +64,18 @@
                     android:layout_marginLeft="10dp"
                     android:paddingTop="5dp">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/start_point_source_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
+                        android:gravity="center|start"
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:text="Alexandra Daniel"
                         android:textColor="@android:color/black"
                         android:textSize="12sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/strt_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                         android:text="ABC"
                         android:textSize="12sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/end_point_dest_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="12sp" />
 
-                    <!--<TextView-->
+                    <!--<com.carpool.tagalong.views.RegularTextView-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
                     <!--android:layout_below="@id/end_point_dest_name"-->
@@ -126,7 +126,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/cancel_ride_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

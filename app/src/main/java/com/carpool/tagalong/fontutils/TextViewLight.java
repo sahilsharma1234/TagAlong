@@ -10,7 +10,7 @@ import android.util.AttributeSet;
  * Project SignupLibrary Screen
  */
 
-public class TextViewLight extends android.support.v7.widget.AppCompatTextView {
+public class TextViewLight extends android.support.v7.widget.AppCompatTextView{
 
     private final String fontFamily = "grotesk_light.otf";
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -22,12 +21,12 @@ public class RecentRideChaildAdapter extends RecyclerView.Adapter<RecentRideChai
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView title, year, genre;
+        public com.carpool.tagalong.views.RegularTextView title, year, genre;
         public ImageView iv_play_video,iv_trip_img;
 
         public MyViewHolder(View view) {
             super(view);
-            // title = (TextView) view.findViewById(R.id.title);
+            // title = (com.carpool.tagalong.views.RegularTextView) view.findViewById(R.id.title);
             iv_play_video  = view.findViewById(R.id.iv_play_video);
             iv_trip_img  = view.findViewById(R.id.iv_trip_img);
         }

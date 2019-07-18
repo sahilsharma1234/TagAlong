@@ -9,16 +9,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.adapter.RecentRideDriverProfileAdapter;
+import com.carpool.tagalong.adapter.ViewAllDriverRidesAdapter;
 import com.carpool.tagalong.models.ModelGetDriverProfileResponse;
 import com.carpool.tagalong.models.ModelViewAllRidesDriverRequest;
 import com.carpool.tagalong.models.ModelViewAllRidesDriverResponse;
@@ -27,6 +30,8 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,7 +65,7 @@ public class ViewAllRidesDriverActivity extends AppCompatActivity {
 
         context = this;
         toolbarLayout = findViewById(R.id.toolbar_driverprofile);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         title.setText("Driver");
@@ -84,7 +89,6 @@ public class ViewAllRidesDriverActivity extends AppCompatActivity {
 
             driverId = getIntent().getExtras().getString("driverId");
         }
-
         getAllRidesOfDriver();
     }
 
@@ -114,9 +118,8 @@ public class ViewAllRidesDriverActivity extends AppCompatActivity {
                             if (response.body() != null && response.body().getStatus() == 1) {
 
                                 Log.i(TAG, "Response Driver Get All rides is: " + response.body().toString());
-
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-//                                handleResponse(response.body().getData());
+                                handleResponse(response.body().getData());
 
                             } else if (response.body() != null && response.body().getStatus() == 0) {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
@@ -146,6 +149,15 @@ public class ViewAllRidesDriverActivity extends AppCompatActivity {
         }
     }
 
-    private void handleResponse(ModelGetDriverProfileResponse.Data data) {
+    private void handleResponse(List<ModelViewAllRidesDriverResponse.Data> data) {
+
+        if(data != null && data.size() > 0){
+
+            ViewAllDriverRidesAdapter mAdapter = new ViewAllDriverRidesAdapter(this, data);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            driverRidesRecyclerView.setLayoutManager(mLayoutManager);
+            driverRidesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            driverRidesRecyclerView.setAdapter(mAdapter);
+        }
     }
 }

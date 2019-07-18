@@ -7,7 +7,7 @@
     android:paddingLeft="60dp"
     android:clipToPadding="false">
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/message_body"

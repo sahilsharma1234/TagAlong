@@ -31,7 +31,7 @@
                 android:paddingRight="25dp"
                 android:paddingBottom="20dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/driver_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <com.carpool.tagalong.views.RegularTextView
                                 android:id="@+id/profile_main_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                                 android:textColor="@android:color/black"
                                 android:textSize="18sp" />
 
-                            <TextView
+                            <com.carpool.tagalong.views.RegularTextView
                                 android:id="@+id/ratings"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -89,7 +89,7 @@
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <com.carpool.tagalong.views.RegularTextView
                                 android:id="@+id/de"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
 
                         </LinearLayout>
 
-                        <TextView
+                        <com.carpool.tagalong.views.RegularTextView
                             android:id="@+id/profile_driver_txt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                     android:layout_margin="20dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/ride_timing"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                             android:layout_marginLeft="10dp"
                             android:paddingTop="5dp">
 
-                            <TextView
+                            <com.carpool.tagalong.views.RegularTextView
                                 android:id="@+id/start_point_source_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                                 android:textColor="@android:color/black"
                                 android:textSize="12sp" />
 
-                            <TextView
+                            <com.carpool.tagalong.views.RegularTextView
                                 android:id="@+id/ride_start_timing"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                                 android:text="ABC"
                                 android:textSize="10sp" />
 
-                            <TextView
+                            <com.carpool.tagalong.views.RegularTextView
                                 android:id="@+id/end_point_dest_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -213,14 +213,14 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Seats"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/noOfSeats"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -238,14 +238,14 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bag/s"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/noOfBags"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -263,14 +263,14 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Kids"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/noOfKids"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -295,13 +295,13 @@
                 android:paddingRight="25dp"
                 android:paddingBottom="15dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/estimated_cost_of_the_ride"
                     android:textColor="@android:color/black" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/estimated_cost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -328,7 +328,7 @@
                 android:paddingRight="25dp"
                 android:paddingBottom="15dp">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/modepay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

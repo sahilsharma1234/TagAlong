@@ -20,16 +20,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.utils.Utils;
@@ -40,11 +39,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -53,7 +50,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -75,19 +71,16 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
     private ArrayList<String> placeIdList = null;
     private AutoCompleteTextView startTrip;
     private RelativeLayout startTime;
-    private TextView changeDateTime;
+    private com.carpool.tagalong.views.RegularTextView changeDateTime;
     private GooglePlacesAutocompleteAdapter googlePlacesAutocompleteAdapter;
     private ArrayList resultList;
     private Context context;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private ImageView startPin;
-
     @BindView(R.id.trip_start_time)
-    TextView trip_start_time;
-
+    com.carpool.tagalong.views.RegularTextView trip_start_time;
     @BindView(R.id.confirm_start_ride)
-    TextView confirm;
-
+    Button confirm;
     private String txtDate, txtTime;
     private String finalFormattedDate, finalFormattedTime;
 
@@ -101,6 +94,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_start_ride);
 
         ButterKnife.bind(this);
@@ -117,7 +111,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
         toolbarLayout = findViewById(R.id.toolbar_start_ride);
-        TextView title = toolbarLayout.findViewById(R.id.toolbar_title);
+        com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         title.setText("Start Ride");
@@ -231,11 +225,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
 //            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
     }
 
-//    @OnClick(R.id.et_start_trip)
-//    void openPlacesView() {
-//        openPlaceAutoCompleteView();
-//    }
-
     private ArrayList autocomplete(String input) {
 
         ArrayList resultList = null;
@@ -262,7 +251,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
 
             // Load the results into a StringBuilder
-
             int read;
 
             char[] buff = new char[1024];
@@ -493,63 +481,63 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         if (!txtDate.equals("")) {
             handleTimePicker();
         }
-}
-
-class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
-
-    public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
     }
 
-    @Override
-    public int getCount() {
-        return resultList.size();
-    }
+    class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
 
-    @Override
-    public String getItem(int index) {
-        return resultList.get(index).toString();
-    }
+        public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
+            super(context,textViewResourceId);
+        }
 
-    @Override
-    public Filter getFilter() {
+        @Override
+        public int getCount() {
+            return resultList.size();
+        }
 
-        Filter filter = new Filter() {
+        @Override
+        public String getItem(int index) {
+            return resultList.get(index).toString();
+        }
 
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
+        @Override
+        public Filter getFilter() {
 
-                FilterResults filterResults = new FilterResults();
+            Filter filter = new Filter() {
 
-                if (constraint != null) {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
 
-                    // Retrieve the autocomplete results.
+                    FilterResults filterResults = new FilterResults();
+
+                    if (constraint != null) {
+
+                        // Retrieve the autocomplete results.
 //                        if (!lastHit.equals(constraint.toString())) {
-                    resultList = autocomplete(constraint.toString());
+                        resultList = autocomplete(constraint.toString());
 //                            lastHit = constraint.toString();
 
-                    // Assign the data to the FilterResults
-                    filterResults.values = resultList;
+                        // Assign the data to the FilterResults
+                        filterResults.values = resultList;
 
-                    filterResults.count = resultList.size();
-                }
+                        filterResults.count = resultList.size();
+                    }
 //                    }
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-
-                if (results != null && results.count > 0) {
-                    notifyDataSetChanged();
-                } else {
-                    notifyDataSetInvalidated();
+                    return filterResults;
                 }
-            }
-        };
-        return filter;
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+            return filter;
+        }
     }
-}
 
     private void getCurrentDateTimeAndSet() {
 

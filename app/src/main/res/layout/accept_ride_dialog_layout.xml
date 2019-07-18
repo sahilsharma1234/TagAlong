@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/tv_driver_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                     android:textColor="@android:color/white"
                     android:textSize="18sp" />
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/tv_driver_Ratings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
 
             </LinearLayout>
 
-            <TextView
+            <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/tv_driver_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                     android:layout_gravity="center"
                     android:paddingRight="15dp">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_source_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                         android:text="12 Mar,10:20AM"
                         android:textSize="12sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_dest_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_navogate_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_s"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                         android:text="Payment"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_payment_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_payment_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -190,7 +190,7 @@
                         android:textColor="@color/green"
                         android:textSize="16sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_payment_status1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_sea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
                         android:text="Seat Selected"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_seat_selected"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -233,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_b"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_t"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -277,7 +277,7 @@
 
                 </RelativeLayout>
 
-                <TextView
+                <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/tv_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -298,7 +298,7 @@
                     android:layout_marginBottom="15dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_cancel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -314,7 +314,7 @@
                         android:textSize="15sp"
                         />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_Reject"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -329,7 +329,7 @@
                         android:textSize="15sp"
                         />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_acepted"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -345,7 +345,7 @@
                         android:textSize="15sp"
                         />
 
-                    <TextView
+                    <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_acept"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -393,7 +393,7 @@
                            android:weightSum="2"
                            >
 
-                           <TextView
+                           <com.carpool.tagalong.views.RegularTextView
                                android:id="@+id/tv_slide"
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"

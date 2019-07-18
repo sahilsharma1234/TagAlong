@@ -3,32 +3,21 @@ package com.carpool.tagalong.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.carpool.tagalong.R;
-import com.carpool.tagalong.activities.BaseActivity;
+import com.carpool.tagalong.activities.FreeRoamActivity;
 import com.carpool.tagalong.activities.HomeActivity;
 import com.carpool.tagalong.activities.SearchRideActivity;
 import com.carpool.tagalong.activities.StartRideActivity;
-import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +27,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment  implements View.OnClickListener{
+public class HomeFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -57,9 +46,10 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     * <p>
+     * //     * @param param1 Parameter 1.
+     * //     * @param param2 Parameter 2.
      *
-     //     * @param param1 Parameter 1.
-     //     * @param param2 Parameter 2.
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -85,10 +75,10 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         drivingCardView = view.findViewById(R.id.card_driving);
-        searchCardView  = view.findViewById(R.id.card_searching);
+        searchCardView = view.findViewById(R.id.card_searching);
         drivingCardView.setOnClickListener(this);
         searchCardView.setOnClickListener(this);
         // Inflate the layout for this fragment
@@ -117,52 +107,54 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
 
         int id = v.getId();
 
-        switch (id){
+        switch (id) {
 
             case R.id.card_driving:
                 isDocumentUploaded();
                 break;
 
             case R.id.card_searching:
-                handleCardSearchingClick();
+                showRidingAlert();
                 break;
         }
     }
 
-    private void handleCardSearchingClick() {
-
-        Intent intent;
-        intent = new Intent(getActivity(), SearchRideActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
+//    private void handleCardSearchingClick() {
+//
+////        Intent intent;
+////        intent = new Intent(getActivity(), SearchRideActivity.class);
+////        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+////        startActivity(intent);
+////        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//
+//    }
 
     private void isDocumentUploaded() {
 
-        if(TagALongPreferenceManager.getDocumentUploadedStatus(getActivity())){
+        if (TagALongPreferenceManager.getDocumentUploadedStatus(getActivity())) {
 
-            Intent intent = new Intent(getActivity(), StartRideActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//            Intent intent = new Intent(getActivity(), StartRideActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            showRoamingAlert();
 
-        }else{
+        } else {
             showDocumentAlert();
         }
     }
 
-    private void showDocumentAlert(){
+    private void showDocumentAlert() {
 
         try {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater     = getLayoutInflater();
-            View dialogLayout           = inflater.inflate(R.layout.document_upload_alert, null);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogLayout = inflater.inflate(R.layout.document_upload_alert, null);
             builder.setView(dialogLayout);
             builder.setCancelable(true);
 
-            final AlertDialog alert     = builder.create();
+            final AlertDialog alert = builder.create();
             Button upload_docu = dialogLayout.findViewById(R.id.upload_doc_btn);
             upload_docu.setOnClickListener(new View.OnClickListener() {
 
@@ -174,6 +166,103 @@ public class HomeFragment extends Fragment  implements View.OnClickListener{
                     activity.handleProfileLayoutClick(ProfileFragment.ID_DRIVING);
                 }
             });
+            alert.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void showRidingAlert() {
+
+        try {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogLayout = inflater.inflate(R.layout.rider_roam_dialog_lyt, null);
+            builder.setView(dialogLayout);
+            builder.setCancelable(true);
+
+            final AlertDialog alert = builder.create();
+
+            RelativeLayout quick_ride_rider = dialogLayout.findViewById(R.id.quick_rider_lyt);
+            RelativeLayout schedule_rider_trip_lyt = dialogLayout.findViewById(R.id.schedule_rider_trip_lyt);
+
+            quick_ride_rider.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    alert.cancel();
+                    Intent intent = new Intent(getActivity(), SearchRideActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("quickride", true);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
+            });
+
+            schedule_rider_trip_lyt.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    alert.cancel();
+
+                    Intent intent = new Intent(getActivity(), SearchRideActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                }
+            });
+
+            alert.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void showRoamingAlert() {
+
+        try {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogLayout = inflater.inflate(R.layout.driver_roam_dialog_lyt, null);
+            builder.setView(dialogLayout);
+            builder.setCancelable(true);
+
+            final AlertDialog alert = builder.create();
+
+            RelativeLayout free_roam_lyt = dialogLayout.findViewById(R.id.free_roam_lyt);
+            RelativeLayout schedule_trip_lyt = dialogLayout.findViewById(R.id.schedule_trip_lyt);
+
+            free_roam_lyt.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    alert.cancel();
+                    Intent intent = new Intent(getActivity(), FreeRoamActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
+            });
+
+            schedule_trip_lyt.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    alert.cancel();
+
+                    Intent intent = new Intent(getActivity(), StartRideActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                }
+            });
+
             alert.show();
         } catch (Exception exception) {
             exception.printStackTrace();

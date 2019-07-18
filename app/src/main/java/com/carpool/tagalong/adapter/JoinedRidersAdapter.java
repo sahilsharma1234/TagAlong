@@ -6,12 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
-import com.carpool.tagalong.models.ModelGetRideDetailsResponse;
 
 import java.util.List;
 
@@ -65,12 +63,12 @@ public class JoinedRidersAdapter extends RecyclerView.Adapter<JoinedRidersAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView nameUser, rating_user;
+        public com.carpool.tagalong.views.RegularTextView nameUser, rating_user;
         public CircleImageView rider_image;
 
         public MyViewHolder(View view) {
             super(view);
-            // title = (TextView) view.findViewById(R.id.title);
+            // title = (com.carpool.tagalong.views.RegularTextView) view.findViewById(R.id.title);
             rider_image = view.findViewById(R.id.image_user_profile);
             nameUser = view.findViewById(R.id.name_user);
             rating_user = view.findViewById(R.id.rider_rating);

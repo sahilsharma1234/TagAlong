@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.models.ContactList;
@@ -52,7 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
             // Otherwise each iteview's distance is too big.
             holder.rightMsgLayout.setVisibility(LinearLayout.VISIBLE);
-            holder.rightMsgTextView.setText(chatModel.getMsg());
+            holder.rightMsgcom.setText(chatModel.getMsg());
 
         }else{
 
@@ -62,7 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             // Remove left linearlayout.The value should be GONE, can not be INVISIBLE
             // Otherwise each iteview's distance is too big.
             holder.leftMsgLayout.setVisibility(LinearLayout.VISIBLE);
-            holder.leftMsgTextView.setText(chatModel.getMsg());
+            holder.leftMsgcom.setText(chatModel.getMsg());
 
         }
     }
@@ -78,9 +77,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         LinearLayout rightMsgLayout;
 
-        TextView leftMsgTextView;
+        com.carpool.tagalong.views.RegularTextView leftMsgcom;
 
-        TextView rightMsgTextView;
+        com.carpool.tagalong.views.RegularTextView rightMsgcom;
 
         public ViewHolder(View view) {
             super(view);
@@ -88,8 +87,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             if(view!=null) {
                 leftMsgLayout    =  view.findViewById(R.id.chat_left_msg_layout);
                 rightMsgLayout   =  view.findViewById(R.id.chat_right_msg_layout);
-                leftMsgTextView  =  view.findViewById(R.id.chat_left_msg_text_view);
-                rightMsgTextView =  view.findViewById(R.id.chat_right_msg_text_view);
+                leftMsgcom =  view.findViewById(R.id.chat_left_msg_text_view);
+                rightMsgcom =  view.findViewById(R.id.chat_right_msg_text_view);
             }
         }
     }

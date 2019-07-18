@@ -17,7 +17,7 @@
         android:paddingTop="@dimen/padding_10">
 
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="@dimen/lbl_edit_image_control"
             android:layout_height="wrap_content"
             android:text="@string/lbl_brightness" />
@@ -37,7 +37,7 @@
         android:paddingTop="@dimen/padding_10">
 
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="@dimen/lbl_edit_image_control"
             android:layout_height="wrap_content"
             android:text="@string/lbl_contrast" />
@@ -56,7 +56,7 @@
         android:paddingBottom="@dimen/padding_10"
         android:paddingTop="@dimen/padding_10">
 
-        <TextView
+        <com.carpool.tagalong.views.RegularTextView
             android:layout_width="@dimen/lbl_edit_image_control"
             android:layout_height="wrap_content"
             android:text="@string/lbl_saturation" />

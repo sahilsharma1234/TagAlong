@@ -116,7 +116,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
         public MyViewHolder(View view) {
             super(view);
-            // title = (TextView) view.findViewById(R.id.title);
+            // title = (com.carpool.tagalong.views.RegularTextView) view.findViewById(R.id.title);
             document_image     = view.findViewById(R.id.document);
             delete_document    = view.findViewById(R.id.delete);
             refresh_document   = view.findViewById(R.id.reload);

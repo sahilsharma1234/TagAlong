@@ -6,7 +6,6 @@
     android:background="@color/light_grey_color"
     tools:context=".activities.RecentRidesActivity">
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_recent_rides"
         android:layout_width="match_parent"
@@ -21,7 +20,7 @@
         android:visibility="gone"
         android:src="@drawable/ic_about_us_on_sidebar_xxxhdpi"/>
 
-    <TextView
+    <com.carpool.tagalong.views.RegularTextView
         android:id="@+id/no_recent_rides"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,6 +32,5 @@
         android:visibility="gone"
         android:textSize="@dimen/_16_px"
         />
-
 
 </RelativeLayout>

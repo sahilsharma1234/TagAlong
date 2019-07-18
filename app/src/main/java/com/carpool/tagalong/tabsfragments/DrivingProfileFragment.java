@@ -32,7 +32,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -74,9 +73,9 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     private static final int IMAGE_PICK_REQUEST = 135;
     private static final int GALLERY_PICTURE = 125;
     private static final int CAMERA_PICTURE = 126;
-    private TextView vehicleTxt, vehicleRegistrationTxt, vehicleYearTxt, vehicleColorTxt, vehicleModelTxt;
+    private com.carpool.tagalong.views.RegularTextView vehicleTxt, vehicleRegistrationTxt, vehicleYearTxt, vehicleColorTxt, vehicleModelTxt;
     private EditText vehicleRegNumEdt;
-    private TextView saveTxt, editTxt;
+    private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
     private RelativeLayout uploadImage, mainDocuLyt, progressBarLyt;
     private CheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
     private Spinner vehicleBrandSpinner, vehicleModelSpinner, vehicleColorSpinner, vehicleYearSpinner;
@@ -91,6 +90,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     private RecyclerView recyclerViewDocuments;
     private List<ModelDocuments> documentsList;
     private DocumentListAdapter documentListAdapter;
+    private Uri photoURi;
 
     @Nullable
     @Override
@@ -250,14 +250,15 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     File photoFile = null;
                     try {
                         photoFile = createImageFile();
+                        photoURi = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", photoFile);
                     } catch (IOException ex) {
                         // Error occurred while creating the File
 //                        Log.i(TAG, "IOException");
                     }
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", photoFile));
-                        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURi);
+//                        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivityForResult(takePictureIntent, CAMERA_PICTURE);
                     }
                 }
@@ -271,8 +272,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  // prefix
                 ".jpg",         // suffix
@@ -489,9 +489,9 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             if (requestCode == GALLERY_PICTURE) {
                 Image_Selecting_Task(data, 0);
-            } else if (requestCode == CAMERA_PICTURE) {
-                Image_Selecting_Task(data, 1);
             }
+        } else {
+            Image_Selecting_Task(data, 1);
         }
     }
 
@@ -557,7 +557,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             if (code == 0) {
                 Uri uri = data.getData();
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoURi);
                 if (bitmap != null) {
 
                     uploadDocToServer(uri);
