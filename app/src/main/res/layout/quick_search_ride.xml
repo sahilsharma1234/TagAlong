@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar_shadow" android:id="@+id/toolbar_quick_search"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_quick_search">
+
+        <LinearLayout
+            android:id="@+id/rootll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/startLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/background_elevation"
+            android:elevation="3dp"
+            android:layout_marginRight="15dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/et_start_trip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:textSize="16sp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_centerVertical="true"
+                android:hint="Pick me up at"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/ic_start_ride_point_xhdpi"
+                android:imeOptions="actionDone"
+                android:layout_alignParentLeft="true"
+                android:textColorHint="@android:color/black"/>
+
+            <ImageView
+                android:id="@+id/startPin"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/endTrip"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/startLayout"
+            android:layout_marginLeft="15dp"
+            android:elevation="3dp"
+            android:background="@drawable/background_elevation"
+            android:layout_marginRight="15dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/et_end_trip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_centerVertical="true"
+                android:hint="And take me to"
+                android:imeOptions="actionDone"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/ic_end_ride_point_xhdpi"
+                android:layout_alignParentLeft="true"
+                android:textColorHint="@android:color/black"/>
+
+            <ImageView
+                android:id="@+id/endPin"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/search_rides"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_shape_signin"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentBottom="true"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:text="Search Ride"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

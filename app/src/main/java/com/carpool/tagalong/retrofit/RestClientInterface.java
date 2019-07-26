@@ -14,7 +14,6 @@ import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetDriverProfileResponse;
 import com.carpool.tagalong.models.ModelGetRecentRidesResponse;
 import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
-import com.carpool.tagalong.models.ModelGetRideDetailsResponse;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
 import com.carpool.tagalong.models.ModelLogoutResponse;
@@ -48,6 +47,8 @@ import com.carpool.tagalong.models.chat.ModelGetChatRequest;
 import com.carpool.tagalong.models.emergencysos.ModelGetEmergencyRidesResponse;
 import com.carpool.tagalong.models.emergencysos.ModelSendEmergencySOSRequest;
 import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
+import com.carpool.tagalong.models.wepay.ModelAddCardRequest;
+import com.carpool.tagalong.models.wepay.ModelCard;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -56,7 +57,6 @@ import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.Part;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -118,8 +118,8 @@ public interface RestClientInterface {
     @retrofit2.http.POST("ride/cancel_ride")
     Call<ModelDocumentStatus> cancelRide(@Header("x-auth") String value, @Body ModelCancelOwnRideRequest modelCancelOwnRideRequest);
 
-    @retrofit2.http.POST("ride/paynow")
-    Call<ModelDocumentStatus> payNow(@Header("x-auth") String value, @Body ModelPaymentRequest modelPaymentRequest);
+//    @retrofit2.http.POST("ride/paynow")
+//    Call<ModelDocumentStatus> payNow(@Header("x-auth") String value, @Body ModelPaymentRequest modelPaymentRequest);
 
     @retrofit2.http.POST("ride/accept_ride")
     Call<ModelDocumentStatus> acceptRejectRide(@Header("x-auth") String value, @Body ModelAcceptRideRequest modelAcceptRideRequest);
@@ -173,15 +173,6 @@ public interface RestClientInterface {
     @retrofit2.http.GET("user/get_emergency_rides")
     Call<ModelGetEmergencyRidesResponse> getEmergencyRides(@Header("x-auth") String value);
 
-    @retrofit2.http.POST("user/add_card")
-    Call<ModelGetCurrentRideResponse> addCard(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
-
-    @retrofit2.http.POST("user/remove_card")
-    Call<ModelGetCurrentRideResponse> removeCard(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
-
-    @retrofit2.http.POST("user/make_card_default")
-    Call<ModelGetCurrentRideResponse> makeCardDefault(@Header("x-auth") String value, @Body ModelGetRideDetailsRequest modelGetRideDetailsRequest);
-
     @retrofit2.http.POST("user/press_panic_button")
     Call<ModelDocumentStatus> pressPanicButton(@Header("x-auth") String value, @Body ModelSendEmergencySOSRequest modelSendEmergencySOSRequest);
 
@@ -196,4 +187,15 @@ public interface RestClientInterface {
 
     @retrofit2.http.POST("chat/send_message")
     Call<ModelChatSendMessageResponse> sendMessage(@Header("x-auth") String value, @Body ChatSendMessageRequest chatSendMessageRequest);
+
+// ------------------------------------------- WEPAY APIs ---------------------------------------------------------------------//
+
+    @retrofit2.http.POST("user/add_card_wepay")
+    Call<ModelDocumentStatus> addCard(@Header("x-auth") String value, @Body ModelAddCardRequest modelAddCardRequest);
+
+    @retrofit2.http.POST("user/make_card_default_wepay")
+    Call<ModelDocumentStatus> makeCardDefault(@Header("x-auth") String value, @Body ModelCard modelCard);
+
+    @retrofit2.http.POST("user/remove_card_wepay")
+    Call<ModelDocumentStatus> removeCard(@Header("x-auth") String value, @Body ModelCard modelCard);
 }

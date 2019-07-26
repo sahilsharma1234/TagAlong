@@ -68,6 +68,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.michaelrocks.libphonenumber.android.NumberParseException;
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil;
+import io.michaelrocks.libphonenumber.android.Phonenumber;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -79,7 +82,10 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private static final int MY_PERMISSIONS_REQUEST = 132;
     private static final int IMAGE_PICK_REQUEST = 134;
+    private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
     private static String postPath = "";
+    private static ModelGetCurrentRideResponse modelGetRideDetailsResponse;
+    String rideID;
     private LinearLayout uploadPicLytBtn;
     private Button postImage;
     private LinearLayout toolbarLayout;
@@ -87,7 +93,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private com.carpool.tagalong.views.RegularTextView recent_ride_txt, userName, startLocationName, endLocationName, startRideTime, estimatedCostOfRide;
     private CircleImageView profilePic, postPic;
     private Button cancelButton, requestedBtn;
-    private static ModelGetCurrentRideResponse modelGetRideDetailsResponse;
     private RecyclerView onBoardRecyclerView;
     private RecyclerView timeLineRecView;
     private OnBoardRidersAdapter onBoardRidersAdapter;
@@ -98,9 +103,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private Context context;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-    private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
     private ArrayList<String> invitedGuestList;
-    String rideID;
     private RegularTextView rideDetailsText;
 
     @Override
@@ -116,7 +119,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         shareIcon = toolbarLayout.findViewById(R.id.share);
         emergency_icon = toolbarLayout.findViewById(R.id.emergency);
         shareIcon.setVisibility(View.VISIBLE);
-        emergency_icon.setVisibility(View.VISIBLE);
+        emergency_icon.setVisibility(View.GONE);
         title.setText("Current Ride");
         title.setVisibility(View.VISIBLE);
         titleImage.setVisibility(View.GONE);
@@ -253,7 +256,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         startLocationName.setText(startLocName);
         endLocationName.setText(endLocation);
         startRideTime.setText(rideTime);
-        estimatedCostOfRide.setText("$"+estimatedcost);
+        estimatedCostOfRide.setText("$" + estimatedcost);
 
         if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.REQUESTED) {
             requestedBtn.setVisibility(View.VISIBLE);
@@ -273,6 +276,9 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 ////                dropmessage.setVisibility(View.VISIBLE);
 ////                paynow.setVisibility(View.VISIBLE);
 //            }
+        }
+        if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.PICKUP) {
+            emergency_icon.setVisibility(View.VISIBLE);
         }
 
         timelineAdapter = new TimelineAdapter(context, timelineData);
@@ -347,10 +353,10 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private void handleChat() {
 
-        Intent intent = new Intent(context,ChatActivity.class);
+        Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra("receiverId", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
         intent.putExtra("userName", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserName());
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
@@ -365,7 +371,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             ModelSendEmergencySOSRequest modelSendEmergencySOSRequest = new ModelSendEmergencySOSRequest();
             modelSendEmergencySOSRequest.setRideId(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
 
-            if(TagALongPreferenceManager.getUserLocationLatitude(this)!= null) {
+            if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
                 modelSendEmergencySOSRequest.setLatitude(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
                 modelSendEmergencySOSRequest.setLongitude(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
             }
@@ -374,11 +380,11 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
                 RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-                Log.e("EMERGENCY REQUEST IS:", "****************************************"+modelSendEmergencySOSRequest.toString());
+                Log.e("EMERGENCY REQUEST IS:", "****************************************" + modelSendEmergencySOSRequest.toString());
 
                 if (restClientRetrofitService != null) {
 
-                    ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
 
                     restClientRetrofitService.pressPanicButton(TagALongPreferenceManager.getToken(context), modelSendEmergencySOSRequest).enqueue(new Callback<ModelDocumentStatus>() {
 
@@ -391,7 +397,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                                 if (response.body().getStatus() == 1) {
 
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                    UIUtils.alertBox(context,context.getString(R.string.emergency_send));
+                                    UIUtils.alertBox(context, context.getString(R.string.emergency_send));
                                 }
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -420,7 +426,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void launchContacts() {
-        Intent intent = new Intent(context,ContactsActivity.class);
+        Intent intent = new Intent(context, ContactsActivity.class);
         intent.putExtra("from", "event");
         startActivityForResult(intent, Constants.INVITE_GUEST_REQUEST_CODE);
     }
@@ -429,22 +435,32 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         ArrayList<Contact> selectedContacts = data.getParcelableArrayListExtra("SelectedContacts");
 
-        if(selectedContacts != null) {
+        if (selectedContacts != null) {
 
             if (selectedContacts.size() > 0) {
 
                 invitedGuestList = new ArrayList<>(selectedContacts.size());
 
-                if(selectedContacts.size() > 3){
+                if (selectedContacts.size() > 3) {
 
-                    for(int i = 0 ; i < 3;i++){
-
-                        invitedGuestList.add(selectedContacts.get(i).getPhone());
+                    for (int i = 0; i < 3; i++) {
+                        try {
+                            PhoneNumberUtil phoneUtil = PhoneNumberUtil.createInstance(context);
+                            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(selectedContacts.get(i).getPhone(), "");
+                            invitedGuestList.add(String.valueOf(numberProto.getNationalNumber()));
+                        } catch (NumberParseException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }else{
-                    for(int i = 0 ; i < selectedContacts.size();i++){
-
-                        invitedGuestList.add(selectedContacts.get(i).getPhone());
+                } else {
+                    for (int i = 0; i < selectedContacts.size(); i++) {
+                        try {
+                            PhoneNumberUtil phoneUtil = PhoneNumberUtil.createInstance(context);
+                            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(selectedContacts.get(i).getPhone(), "");
+                            invitedGuestList.add(String.valueOf(numberProto.getNationalNumber()));
+                        } catch (NumberParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 handletagUsers();
@@ -504,7 +520,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private void shareRideOnFacebook() {
 
         ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                .setContentUrl(Uri.parse("https://www.tagalongride.com/"))
                 .setShareHashtag(new ShareHashtag.Builder()
                         .setHashtag("#ConnectTheWorld")
                         .build()).build();
@@ -645,7 +661,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
                 if (restClientRetrofitService != null) {
-                    ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
 
                     restClientRetrofitService.tagUsers(TagALongPreferenceManager.getToken(context), modelTagUsers).enqueue(new Callback<ModelDocumentStatus>() {
 
@@ -884,7 +900,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 postPath = path;
                 reduceImageAndSet();
             }
-        }else if(requestCode == Constants.INVITE_GUEST_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == Constants.INVITE_GUEST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             handleGuestInvitation(data);
         }
     }
@@ -955,7 +971,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case android.R.id.home:
                 finish();
                 break;

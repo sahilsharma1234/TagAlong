@@ -444,6 +444,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             modelUpdateProfileRequest.setEmail(emailTxt.getText().toString());
             modelUpdateProfileRequest.setMobileNo(mobileNumberTxt.getText().toString());
             modelUpdateProfileRequest.setAddress(addressTxt.getText().toString());
+            modelUpdateProfileRequest.setZipcode("94025");
 
             if (genderSpinner.getSelectedItemPosition() != 0) {
                 modelUpdateProfileRequest.setGender(genderSpinner.getSelectedItem().toString());

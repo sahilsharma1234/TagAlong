@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -25,12 +24,10 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
-import com.carpool.tagalong.interfaces.getPolyline;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelRidePostRequest;
 import com.carpool.tagalong.models.ModelRidePostResponse;
@@ -46,8 +43,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,20 +55,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EndRideActivity extends BaseActivity implements View.OnClickListener {
 
@@ -102,13 +89,13 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
     private String startLocation;
     private String datetime;
     private CheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
-    private RelativeLayout progressBarLayout;
     private ImageView endPin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_ride);
+
         ButterKnife.bind(this);
 
         context = this;
@@ -119,11 +106,12 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
 
         argbEvaluator = new ArgbEvaluator();
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
+        DisplayMetrics displayMetrics   = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
         googlePlacesAutocompleteAdapter = new GooglePlacesAutocompleteAdapter(this, R.layout.list_item);
@@ -135,7 +123,6 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 endPin.setVisibility(View.VISIBLE);
-//                Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 getLatLongByPlace(placeIdList.get(position), Constants.END_RIDE);
             }
         });
@@ -180,13 +167,10 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
         if (getIntent().getExtras() != null) {
 
             if (getIntent().getExtras().containsKey(Constants.STARTLOCATION)) {
-
                 startLocation = getIntent().getExtras().get(Constants.STARTLOCATION).toString();
             }
             if (getIntent().getExtras().containsKey(Constants.DATETIME)) {
-
                 datetime = getIntent().getExtras().get(Constants.DATETIME).toString();
-
             }
         }
     }
@@ -198,51 +182,6 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             endRide.setText("");
             endPin.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    protected void setUpPolyLine() {
-        LatLng source = getSourceLatLng();
-        LatLng destination = getDestinationLatLong();
-        if (source != null && destination != null) {
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://maps.googleapis.com/maps/api/directions/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            getPolyline polyline = retrofit.create(getPolyline.class);
-
-            polyline.getPolylineData(source.latitude + "," + source.longitude, destination.latitude + "," + destination.longitude)
-                    .enqueue(new Callback<JsonObject>() {
-                        @Override
-                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-
-                            JsonObject gson = new JsonParser().parse(response.body().toString()).getAsJsonObject();
-                            try {
-
-                                Single.just(parse(new JSONObject(gson.toString())))
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Consumer<List<List<HashMap<String, String>>>>() {
-                                            @Override
-                                            public void accept(List<List<HashMap<String, String>>> lists) throws Exception {
-
-                                                drawPolyline(lists);
-                                            }
-                                        });
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<JsonObject> call, Throwable t) {
-
-                        }
-                    });
-        } else
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
     }
 
     private ArrayList autocomplete(String input) {
@@ -425,17 +364,14 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
         switch (id) {
 
             case R.id.confirm_end_ride:
-
                 handleConfirmEndRide();
                 break;
 
             case R.id.minus_stepper:
-
                 handleReduceCarryBag();
                 break;
 
             case R.id.plus_stepper:
-
                 handleIncreaseCarryBag();
                 break;
         }

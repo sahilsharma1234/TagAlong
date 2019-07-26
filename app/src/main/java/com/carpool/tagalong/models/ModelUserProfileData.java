@@ -1,5 +1,6 @@
 package com.carpool.tagalong.models;
 
+import com.carpool.tagalong.models.wepay.CreditCards;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public class ModelUserProfileData {
     public String trips;
     @SerializedName("profile_pic")
     public String profile_pic;
+    @SerializedName("zipcode")
+    public String zipcode;
     @SerializedName("driverDetails")
     public ModelUserDriverDetails driverDetails;
     @SerializedName("paymentDetails")
@@ -30,6 +33,9 @@ public class ModelUserProfileData {
     public List<ModelDocuments> documents;
     @SerializedName("gender")
     public String gender;
+
+    @SerializedName("card")
+    public List<CreditCards> card;
 
     @SerializedName("genderPrefrance")
     public String genderPrefrance;
@@ -138,6 +144,22 @@ public class ModelUserProfileData {
         this.documents = documents;
     }
 
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public List<CreditCards> getCard() {
+        return card;
+    }
+
+    public void setCard(List<CreditCards> card) {
+        this.card = card;
+    }
+
     @Override
     public String toString() {
         return "ModelUserProfileData{" +
@@ -149,10 +171,12 @@ public class ModelUserProfileData {
                 ", rating='" + rating + '\'' +
                 ", trips='" + trips + '\'' +
                 ", profile_pic='" + profile_pic + '\'' +
+                ", zipcode='" + zipcode + '\'' +
                 ", driverDetails=" + driverDetails +
                 ", paymentDetails=" + paymentDetails +
                 ", documents=" + documents +
                 ", gender='" + gender + '\'' +
+                ", card=" + card +
                 ", genderPrefrance='" + genderPrefrance + '\'' +
                 '}';
     }

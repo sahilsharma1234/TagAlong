@@ -28,11 +28,11 @@
 
             <ImageView
                 android:id="@+id/img1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:src="@drawable/ic_drive_profile_on_xxhdpi" />
+                android:src="@drawable/ic_gps" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,10 +77,10 @@
 
             <ImageView
                 android:id="@+id/img2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_drive_profile_on_xxhdpi" />
+                android:src="@drawable/ic_calender" />
 
             <LinearLayout
                 android:layout_width="match_parent"

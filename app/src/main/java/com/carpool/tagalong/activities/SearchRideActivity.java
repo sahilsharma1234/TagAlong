@@ -52,6 +52,7 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.service.LocationHelper;
 import com.carpool.tagalong.utils.LocationAddress;
+import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 
 import org.json.JSONArray;
@@ -150,6 +151,15 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi, null));
         } else {
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi));
+        }
+
+        if(getIntent().getExtras() != null){
+
+            if (getIntent().getExtras().containsKey("quickride")){
+
+
+
+            }
         }
     }
 
@@ -785,10 +795,9 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
                                 startActivity(intent);
 
                             } else if (response.body() != null && response.body().getStatus() == 0) {
-
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                UIUtils.alertBox(context,response.body().getMessage());
                             } else {
-                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                                UIUtils.alertBox(context,response.message());
                             }
                         }
 

@@ -19,7 +19,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
-
 import com.carpool.tagalong.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -42,15 +41,12 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.SquareCap;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
 public abstract class BaseActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -133,8 +129,9 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
     private void onLocationPermissionGranted() {
         if (!checkPermission()) return;
 
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.setMyLocationEnabled(true);
+
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -205,7 +202,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
                         }
                     });
         }
-
         return userLocation;
     }
 
@@ -241,7 +237,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 destination = place.getLatLng();
-                setUpPolyLine();
+//                setUpPolyLine();
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
@@ -274,8 +270,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
         options.icon(icon);
         mMap.addMarker(options);
     }
-
-    protected abstract void setUpPolyLine();
 
     private Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap = null;

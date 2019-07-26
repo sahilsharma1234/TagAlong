@@ -525,27 +525,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                 recyclerViewDocuments.setLayoutManager(mLayoutManager);
                 recyclerViewDocuments.setItemAnimator(new DefaultItemAnimator());
                 recyclerViewDocuments.setAdapter(documentListAdapter);
-//                ProgressDialogLoader.progressDialogCreation(getActivity(), "Loading document..");
-//
-//                Glide.with(getActivity())
-//                        .asBitmap().load(data.getDocuments().get(0).getUrl())
-//                        .listener(new RequestListener<Bitmap>() {
-//
-//                            @Override
-//                                      public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Bitmap> target, boolean b) {
-//                                          ProgressDialogLoader.progressDialogDismiss();
-//                                          Toast.makeText(getActivity(), "Some Error occurs!!", Toast.LENGTH_SHORT).show();
-//                                          return false;
-//                                      }
-//
-//                                      @Override
-//                                      public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
-//                                          ProgressDialogLoader.progressDialogDismiss();
-//                                          reduceImageAndSet(bitmap);
-//                                          return false;
-//                                      }
-//                                  }
-//                        ).submit();
             }
         }
     }
@@ -556,8 +535,11 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             Bitmap bitmap;
 
             if (code == 0) {
+
                 Uri uri = data.getData();
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoURi);
+
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+
                 if (bitmap != null) {
 
                     uploadDocToServer(uri);
@@ -576,31 +558,31 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         }
     }
 
-    private void reduceImageAndSet(Bitmap bitmap) {
-        // we'll start with the original picture already open to a file
-
-        try {
-
-            int origWidth = bitmap.getWidth();
-            int origHeight = bitmap.getHeight();
-
-            final int desHeight = 250;//or the width you need
-
-            if (origHeight > desHeight) {
-                // picture is wider than we want it, we calculate its target height
-                int destWidth = origWidth / (origHeight / desHeight);
-                // we create an scaled bitmap so it reduces the image, not just trim it
-                Bitmap b2 = Bitmap.createScaledBitmap(bitmap, destWidth, desHeight, false);
-                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                // compress to the format you want, JPEG, PNG...
-                // 70 is the 0-100 quality percentage
-                b2.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-                addImageLayout(b2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void reduceImageAndSet(Bitmap bitmap) {
+//        // we'll start with the original picture already open to a file
+//
+//        try {
+//
+//            int origWidth = bitmap.getWidth();
+//            int origHeight = bitmap.getHeight();
+//
+//            final int desHeight = 250;//or the width you need
+//
+//            if (origHeight > desHeight) {
+//                // picture is wider than we want it, we calculate its target height
+//                int destWidth = origWidth / (origHeight / desHeight);
+//                // we create an scaled bitmap so it reduces the image, not just trim it
+//                Bitmap b2 = Bitmap.createScaledBitmap(bitmap, destWidth, desHeight, false);
+//                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+//                // compress to the format you want, JPEG, PNG...
+//                // 70 is the 0-100 quality percentage
+//                b2.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+//                addImageLayout(b2);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void addImageLayout(Bitmap bitmap) {
 
@@ -798,7 +780,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     public void onResponse(Call<ModelGetCarBrandModelResponse> call, Response<ModelGetCarBrandModelResponse> response) {
 
                         if (response.body() != null) {
-                            Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                             handleResponse(response.body());
                         } else {
                             Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();

@@ -38,38 +38,34 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
 
+
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key"/>
+
+
+        <activity android:name=".activities.AddCardActivity"></activity>
         <activity
             android:name=".activities.EmergencyRideActivity"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeActivity" />
         </activity>
-
         <activity
             android:name=".activities.ContactsActivity"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.CurrentRideActivity" />
         </activity>
-
         <activity android:name=".activities.ViewAllRidesDriverActivity" />
-
         <activity
             android:name=".activities.ChatActivity"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.CurrentRideActivity" />
-
         </activity>
-
         <activity android:name=".activities.StripePaymentActivity" />
-
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main"
@@ -86,7 +82,9 @@
             android:name=".activities.StartRideActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeActivity" />
         </activity>
         <activity
             android:name=".activities.RequestRideActivity"
@@ -105,16 +103,22 @@
         <activity
             android:name=".activities.CurrentRideActivityDriver"
             android:screenOrientation="portrait">
-            <!--<meta-data
+
+            <!--
+                <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.HomeActivity" />-->
+                android:value=".activities.HomeActivity" />
+            -->
         </activity>
         <activity
             android:name=".activities.CurrentRideActivity"
             android:screenOrientation="portrait">
-            <!-- <meta-data
+
+            <!--
+                 <meta-data
                  android:name="android.support.PARENT_ACTIVITY"
-                 android:value=".activities.HomeActivity" />-->
+                 android:value=".activities.HomeActivity" />
+            -->
         </activity>
         <activity
             android:name=".activities.SearchRideActivity"
@@ -123,6 +127,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeActivity" />
         </activity>
+
+        <activity
+            android:name=".activities.QuickSearchRideActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait">
@@ -236,7 +247,21 @@
         <activity
             android:name=".activities.FreeRoamActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.CardHolderActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeActivity" />
+        </activity>
+
     </application>
 
 </manifest>

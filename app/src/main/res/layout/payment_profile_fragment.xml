@@ -25,7 +25,8 @@
                 <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Payment method" />
+                    android:text="Payment method"
+                    android:textColor="@color/black" />
 
                 <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/edit_payment_dtls"
@@ -45,8 +46,8 @@
                     android:text="SAVE"
                     android:textColor="@color/colorGold"
                     android:textSize="16sp"
-                    android:visibility="gone"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -87,9 +88,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
@@ -120,9 +121,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
@@ -154,10 +155,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:backgroundTint="@color/colorGold"
                         android:visibility="gone" />
 
                 </LinearLayout>
@@ -187,8 +188,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:singleLine="true"
                         android:backgroundTint="@color/colorGold"
+                        android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:visibility="gone" />
@@ -196,6 +197,44 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/preferences_user"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Saved Cards"
+                    android:textSize="16sp"
+                    android:textColor="@color/black" />
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/addCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="ADD CARD"
+                    android:textColor="@color/colorGold"
+                    android:textSize="18sp"
+                    android:textStyle="normal" />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/cardList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rel2"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp">
+
+            </android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>
 

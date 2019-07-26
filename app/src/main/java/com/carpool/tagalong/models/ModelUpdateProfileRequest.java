@@ -36,6 +36,16 @@ public class ModelUpdateProfileRequest {
     @SerializedName("bankName")
     public String bankName;
 
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    @SerializedName("zipcode")
+    public String zipcode;
     @SerializedName("gender")
     public String gender;
 
@@ -196,6 +206,7 @@ public class ModelUpdateProfileRequest {
                 ", routingNumber='" + routingNumber + '\'' +
                 ", shortCode='" + shortCode + '\'' +
                 ", bankName='" + bankName + '\'' +
+                ", zipcode='" + zipcode + '\'' +
                 ", gender='" + gender + '\'' +
                 ", genderPrefrance='" + genderPrefrance + '\'' +
                 '}';

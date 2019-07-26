@@ -8,11 +8,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.utils.LocationAddress;
 import com.carpool.tagalong.utils.Utils;
-
 
 /**
  * Created by sahilsharma on 28/11/17.
@@ -36,7 +34,6 @@ public class JobSchedulerService extends JobService {
 
                 Log.e(" Job Scheduler JOB RUNS", "********************** count ");
 
-//                if (locationcount % 3 == 0) {
                 if (locationHelper != null) {
                     mLastLocation = locationHelper.getmLastLocation();
                     if (locationHelper.checkPlayServices()) {
@@ -47,8 +44,6 @@ public class JobSchedulerService extends JobService {
                     }
                     getLocation();
                 }
-//                }
-
                 if (Build.VERSION.SDK_INT >= 21) {
                     Utils.scheduleApplicationPackageJob(JobSchedulerService.this);
                 }
@@ -70,13 +65,14 @@ public class JobSchedulerService extends JobService {
             Double longitude = mLastLocation.getLongitude();
 
             float accuracy   = mLastLocation.getAccuracy();
-            Log.e("Location fetched", "IS " + latitude + " " + longitude + " Accuracy " + accuracy);
+            Log.e("Location fetched", "is " + latitude + " " + longitude + " Accuracy " + accuracy);
 
             if (String.valueOf(latitude).equals("")) {
             }
 
             TagALongPreferenceManager.saveUserLocationLatitude(getApplicationContext(), String.valueOf(latitude));
             TagALongPreferenceManager.saveUserLocationLongitude(getApplicationContext(), String.valueOf(longitude));
+
             Utils.updateCoordinates1(mLastLocation,this);
             LocationAddress.getAddressFromLocation(latitude, longitude,
                     getApplicationContext(), new GeocoderHandler());

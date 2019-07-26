@@ -1,9 +1,13 @@
 package com.carpool.tagalong.tabsfragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,26 +16,38 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.activities.CardHolderActivity;
 import com.carpool.tagalong.activities.HomeActivity;
+import com.carpool.tagalong.adapter.wepayadapters.CreditCardAdapter;
+import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelUpdateProfileRequest;
 import com.carpool.tagalong.models.ModelUserProfileData;
+import com.carpool.tagalong.models.wepay.CreditCards;
+import com.carpool.tagalong.models.wepay.ModelCard;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
+import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PaymentProfileFragment extends Fragment implements View.OnClickListener {
+public class PaymentProfileFragment extends Fragment implements View.OnClickListener, CreditCardAdapter.RemoveCardListner {
 
     private com.carpool.tagalong.views.RegularTextView account_number, short_code, routing_number, bank_name;
     private EditText account_number_edt, short_code_edt, routing_number_edt, bank_name_edt;
-    private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
+    private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt, addCard;
+    private RecyclerView savedCards;
+    private List<CreditCards> creditCardsList = new ArrayList<>();
+    private CreditCardAdapter creditCardAdapter;
 
     @Nullable
     @Override
@@ -52,6 +68,10 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
         saveTxt = view.findViewById(R.id.save_payment_dtls);
         editTxt = view.findViewById(R.id.edit_payment_dtls);
 
+        savedCards = view.findViewById(R.id.cardList);
+        addCard = view.findViewById(R.id.addCard);
+        addCard.setOnClickListener(this);
+
         saveTxt.setOnClickListener(this);
         editTxt.setOnClickListener(this);
 
@@ -65,7 +85,6 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
         ModelUserProfileData data = DataManager.modelUserProfileData;
 
         if (data != null) {
-
             account_number.setText(data.getPaymentDetails().getAccountNumber());
             short_code.setText(data.getPaymentDetails().getShortCode());
             routing_number.setText(data.getPaymentDetails().getRoutingNumber());
@@ -187,6 +206,151 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
             case R.id.edit_payment_dtls:
                 editPayemntDetails();
                 break;
+
+            case R.id.addCard:
+                addCreditCard();
+                break;
+        }
+    }
+
+    private void addCreditCard() {
+        Intent intent = new Intent(getActivity(), CardHolderActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void removeCard(CreditCards creditCards) {
+
+        try {
+
+            if (Utils.isNetworkAvailable(getActivity())) {
+
+                ModelCard modelCard = new ModelCard();
+                modelCard.setWepay_card_id(creditCards.getWepay_card_id());
+
+                Log.i("CARD DETAILS", "PROFILE REQUEST: " + modelCard.toString());
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
+
+                    restClientRetrofitService.removeCard(TagALongPreferenceManager.getToken(getActivity()), modelCard).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                Utils.getUserProfile(getActivity());
+                            } else {
+                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                            }
+                            updateUI();
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("SAVE Payment DETAILS", "FAILURE SAVING PROFILE");
+                        }
+                    });
+                }
+            } else {
+                ProgressDialogLoader.progressDialogDismiss();
+                Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        updateUI();
+    }
+
+    private void updateUI(){
+
+        creditCardsList   = DataManager.getModelUserProfileData().getCard();
+        creditCardAdapter = new CreditCardAdapter(creditCardsList,getActivity(),this);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        savedCards.setLayoutManager(mLayoutManager);
+        savedCards.setAdapter(creditCardAdapter);
+    }
+
+    @Override
+    public void showCard(CreditCards creditCards) {
+
+        Intent intent = new Intent(getActivity(),CardHolderActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(Constants.CARD, creditCards);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void setDefault(CreditCards card) {
+
+        try {
+
+            creditCardAdapter.notifyDataSetChanged();
+
+            if (Utils.isNetworkAvailable(getActivity())) {
+
+                ModelCard modelCard = new ModelCard();
+                modelCard.setWepay_card_id(card.getWepay_card_id());
+
+                Log.i("CARD DETAILS", "PROFILE REQUEST: " + modelCard.toString());
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
+
+                    restClientRetrofitService.makeCardDefault(TagALongPreferenceManager.getToken(getActivity()), modelCard).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+                                UIUtils.alertBox(getActivity(), response.body().getMessage());
+                                // get user profile again to save updated profile
+                            } else {
+                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("SAVE Payment DETAILS", "FAILURE SAVING PROFILE");
+                        }
+                    });
+                }
+            } else {
+                ProgressDialogLoader.progressDialogDismiss();
+                Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

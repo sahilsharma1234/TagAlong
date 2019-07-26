@@ -180,50 +180,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    protected void setUpPolyLine() {
-//        LatLng source = new LatLng(getUserLocation().getLatitude(), getUserLocation().getLongitude());
-//        LatLng destination = getDestinationLatLong();
-//        if (source != null && destination != null) {
-//
-//            Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl("https://maps.googleapis.com/maps/api/directions/")
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build();
-//
-//            getPolyline polyline = retrofit.create(getPolyline.class);
-//
-//            polyline.getPolylineData(source.latitude + "," + source.longitude, destination.latitude + "," + destination.longitude)
-//                    .enqueue(new Callback<JsonObject>() {
-//                        @Override
-//                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-//
-//                            JsonObject gson = new JsonParser().parse(response.body().toString()).getAsJsonObject();
-//                            try {
-//
-//                                Single.just(parse(new JSONObject(gson.toString())))
-//                                        .subscribeOn(Schedulers.io())
-//                                        .observeOn(AndroidSchedulers.mainThread())
-//                                        .subscribe(new Consumer<List<List<HashMap<String, String>>>>() {
-//                                            @Override
-//                                            public void accept(List<List<HashMap<String, String>>> lists) throws Exception {
-//
-//                                                drawPolyline(lists);
-//                                            }
-//                                        });
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(@NonNull Call<JsonObject> call, Throwable t) {
-//
-//                        }
-//                    });
-//        } else
-//            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
-    }
+
 
     private ArrayList autocomplete(String input) {
 
@@ -414,6 +371,10 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
 
             case R.id.startPin:
                 handleStartPinClick();
+                break;
+
+            case android.R.id.home:
+                finish();
                 break;
         }
     }

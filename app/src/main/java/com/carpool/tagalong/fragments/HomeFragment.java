@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.FreeRoamActivity;
 import com.carpool.tagalong.activities.HomeActivity;
+import com.carpool.tagalong.activities.QuickSearchRideActivity;
 import com.carpool.tagalong.activities.SearchRideActivity;
 import com.carpool.tagalong.activities.StartRideActivity;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
@@ -192,7 +193,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
                     alert.cancel();
-                    Intent intent = new Intent(getActivity(), SearchRideActivity.class);
+                    Intent intent = new Intent(getActivity(), QuickSearchRideActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("quickride", true);
                     startActivity(intent);

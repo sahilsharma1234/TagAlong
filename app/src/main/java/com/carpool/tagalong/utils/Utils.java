@@ -11,10 +11,12 @@ import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
+import com.carpool.tagalong.models.ModelUserProfile;
 import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
@@ -24,6 +26,7 @@ import com.carpool.tagalong.service.JobSchedulerService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -187,7 +190,7 @@ public class Utils {
                 });
             }
         } else {
-            Toast.makeText(context, "PLease check your internet connection!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -271,5 +274,47 @@ public class Utils {
             }
         }
         return hasBeenScheduled;
+    }
+
+    public static void getUserProfile(final Context context) {
+
+        if (Utils.isNetworkAvailable(context)) {
+
+            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+            if (restClientRetrofitService != null) {
+                restClientRetrofitService.getUserProfile(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelUserProfile>() {
+
+                    @Override
+                    public void onResponse(Call<ModelUserProfile> call, Response<ModelUserProfile> response) {
+
+                        if (response.body() != null) {
+
+                            if (response.body().getStatus() == 1) {
+
+                                Log.i("PERSONAL DETAILS", "PROFILE RESPONSE: " + response.body().getData().toString());
+                                DataManager.modelUserProfileData = response.body().getData();
+
+                            } else {
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ModelUserProfile> call, Throwable t) {
+
+                        if (t != null && t.getMessage() != null) {
+                            t.printStackTrace();
+                        }
+                        Log.e("SIGN UP", "FAILURE verification");
+                    }
+                });
+            }
+        } else {
+            Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+        }
     }
 }
