@@ -1,6 +1,7 @@
 package com.carpool.tagalong.tabsfragments;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -37,13 +39,16 @@ import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.Utils;
+import com.hbb20.CountryCodePicker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -54,18 +59,22 @@ import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PersonalProfileFragment extends Fragment implements View.OnClickListener {
+public class PersonalProfileFragment extends Fragment implements View.OnClickListener,DatePickerDialog.OnDateSetListener {
 
     private static final int GALLERY_PICTURE = 125;
     HashMap<String, String> genderMap = new HashMap<>();
     HashMap<String, String> poolgenderMap = new HashMap<>();
-    private com.carpool.tagalong.views.RegularTextView nameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips;
-    private EditText nameEdt, emailEdt, mobileNumberEdt, addressEdt;
+    private com.carpool.tagalong.views.RegularTextView nameTxt, lastNameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips, zipCodeTxt, dobTxt,cityTxt,regionTxt;
+    private EditText nameEdt, emailEdt, mobileNumberEdt, addressEdt, zipCodeEdt, dobEdt, lastNameEdt,cityEdt,regionEdt;
     private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
     private Spinner genderSpinner, poolPreferenceSpinner;
     private String[] genderArray = new String[]{"Select Gender", "Male", "Female", "Other"};
     private String[] poolPreferenceArray = new String[]{"Select Pool Preference", "All", "Male", "Female"};
     private ImageView uploadProfilePic, profilePic;
+
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String txtDate, txtTime;
+    private CountryCodePicker countryCodePickerProfile;
 
     public PersonalProfileFragment() {
     }
@@ -75,14 +84,21 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.personal_profile_fragment, container, false);
-        nameTxt = view.findViewById(R.id.name_user_profile);
+
+        initializeViews(view);
+        return view;
+    }
+
+    private void initializeViews(View view) {
+
+        nameTxt  = view.findViewById(R.id.name_user_profile);
         emailTxt = view.findViewById(R.id.email_id_user);
         mobileNumberTxt = view.findViewById(R.id.mobile_nuber_user);
         addressTxt = view.findViewById(R.id.address_user);
-        gender = view.findViewById(R.id.gender_user_txt);
+        gender     = view.findViewById(R.id.gender_user_txt);
         poolGender = view.findViewById(R.id.pool_gender_txt);
-        nameEdt = view.findViewById(R.id.name_user_profile_edt);
-        emailEdt = view.findViewById(R.id.email_id_user_edt);
+        nameEdt    = view.findViewById(R.id.name_user_profile_edt);
+        emailEdt   = view.findViewById(R.id.email_id_user_edt);
         mobileNumberEdt = view.findViewById(R.id.mobile_nuber_user_edt);
         addressEdt = view.findViewById(R.id.address_user_edt);
         saveTxt = view.findViewById(R.id.save_personal_details);
@@ -91,12 +107,26 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         profilePic = view.findViewById(R.id.profile_pic);
         profileMainAddress = view.findViewById(R.id.profile_main_address);
         profileMianName = view.findViewById(R.id.profile_main_name);
-        genderSpinner = view.findViewById(R.id.gender_spinner);
-        poolPreferenceSpinner = view.findViewById(R.id.pool_gender_spinner);
+        genderSpinner   = view.findViewById(R.id.gender_spinner);
+        zipCodeEdt = view.findViewById(R.id.zipCodeUserEdt);
+        zipCodeTxt = view.findViewById(R.id.zipCodeUserTxt);
+        dobEdt     = view.findViewById(R.id.dobEdt);
+        cityEdt    = view.findViewById(R.id.city_edt);
+        cityTxt    = view.findViewById(R.id.city_txt);
+        regionTxt  = view.findViewById(R.id.region_txt);
+        regionEdt  = view.findViewById(R.id.region_edt);
+        dobEdt.setOnClickListener(this);
 
-        drove = view.findViewById(R.id.drove_txt);
+        dobTxt = view.findViewById(R.id.dobTxt);
+        dobEdt.setOnClickListener(this);
+        dobTxt.setOnClickListener(this);
+        lastNameEdt = view.findViewById(R.id.lastnameEdt);
+        lastNameTxt = view.findViewById(R.id.lastNameTxt);
+
+        poolPreferenceSpinner = view.findViewById(R.id.pool_gender_spinner);
+        drove  = view.findViewById(R.id.drove_txt);
         rating = view.findViewById(R.id.rating);
-        trips = view.findViewById(R.id.trips);
+        trips  = view.findViewById(R.id.trips);
 
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<String>
                 (getActivity(), android.R.layout.simple_spinner_item,
@@ -117,23 +147,28 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         editTxt.setOnClickListener(this);
         uploadProfilePic.setOnClickListener(this);
 
-        for (int i = 0; i < poolPreferenceArray.length; i++) {
-            poolgenderMap.put(String.valueOf(i), poolPreferenceArray[i]);
-        }
+        countryCodePickerProfile = view.findViewById(R.id.countryCodeSignIn);
+        countryCodePickerProfile.setCustomMasterCountries("us");
 
-        for (int i = 0; i < genderArray.length; i++) {
-            genderMap.put(String.valueOf(i), genderArray[i]);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < poolPreferenceArray.length; i++) {
+                    poolgenderMap.put(String.valueOf(i), poolPreferenceArray[i]);
+                }
 
-        return view;
+                for (int i = 0; i < genderArray.length; i++) {
+                    genderMap.put(String.valueOf(i), genderArray[i]);
+                }
+            }
+        }).start();
     }
-
 
     private boolean checkStoragePermission() {
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},123);
-            return false ;
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+            return false;
         }
         return true;
     }
@@ -147,6 +182,9 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         if (data != null) {
 
             nameTxt.setText(data.getUserName());
+            lastNameTxt.setText(data.getLast_name());
+            dobTxt.setText(data.getDob());
+            zipCodeTxt.setText(data.getZipcode() + "");
             emailTxt.setText(data.getEmail());
             mobileNumberTxt.setText(data.getMobileNo());
             addressTxt.setText(data.getAddress());
@@ -221,6 +259,10 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             case R.id.upload_profile_pic_btn:
                 uploadProfilePic();
                 break;
+
+            case R.id.dobEdt:
+                handleDateTimePickerAction();
+                break;
         }
     }
 
@@ -268,8 +310,8 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                     }
                 }
             }
-            if(bitmap != null)
-            reduceImageAndSet(bitmap);
+            if (bitmap != null)
+                reduceImageAndSet(bitmap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -367,7 +409,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
     private void uploadProfilePic() {
 
-        if(checkStoragePermission()) {
+        if (checkStoragePermission()) {
 
             Intent picIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             picIntent.putExtra("return-data", true);
@@ -385,15 +427,21 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         editTxt.setVisibility(View.VISIBLE);
         saveTxt.setVisibility(View.GONE);
 
-        nameTxt.setText(nameEdt.getText().toString());
-        emailTxt.setText(emailEdt.getText().toString());
-        mobileNumberTxt.setText(mobileNumberEdt.getText().toString());
-        addressTxt.setText(addressEdt.getText().toString());
+        nameTxt.setText(nameEdt.getText().toString().trim());
+        lastNameTxt.setText(lastNameEdt.getText().toString().trim());
+        emailTxt.setText(emailEdt.getText().toString().trim());
+        mobileNumberTxt.setText(mobileNumberEdt.getText().toString().trim());
+        addressTxt.setText(addressEdt.getText().toString().trim());
+        zipCodeTxt.setText(zipCodeEdt.getText().toString().trim());
+        dobTxt.setText(dobEdt.getText().toString().trim());
 
-        gender.setText(genderSpinner.getSelectedItem().toString());
-        poolGender.setText(poolPreferenceSpinner.getSelectedItem().toString());
+        gender.setText(genderSpinner.getSelectedItem().toString().trim());
+        poolGender.setText(poolPreferenceSpinner.getSelectedItem().toString().trim());
 
         nameEdt.setVisibility(View.GONE);
+        lastNameEdt.setVisibility(View.GONE);
+        zipCodeEdt.setVisibility(View.GONE);
+        dobEdt.setVisibility(View.GONE);
         emailEdt.setVisibility(View.GONE);
         mobileNumberEdt.setVisibility(View.GONE);
         addressEdt.setVisibility(View.GONE);
@@ -402,6 +450,9 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
         nameTxt.setVisibility(View.VISIBLE);
         emailTxt.setVisibility(View.VISIBLE);
+        lastNameTxt.setVisibility(View.VISIBLE);
+        dobTxt.setVisibility(View.VISIBLE);
+        zipCodeTxt.setVisibility(View.VISIBLE);
         mobileNumberTxt.setVisibility(View.VISIBLE);
         addressTxt.setVisibility(View.VISIBLE);
         gender.setVisibility(View.VISIBLE);
@@ -416,18 +467,33 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         editTxt.setVisibility(View.GONE);
 
         nameEdt.setText(nameTxt.getText().toString());
+        lastNameEdt.setText(lastNameTxt.getText().toString());
+        dobEdt.setText(dobTxt.getText().toString());
         emailEdt.setText(emailTxt.getText().toString());
         mobileNumberEdt.setText(mobileNumberTxt.getText().toString());
         addressEdt.setText(addressTxt.getText().toString());
+        zipCodeEdt.setText(zipCodeTxt.getText().toString());
+        cityEdt.setText(cityTxt.getText().toString());
+        regionEdt.setText(regionTxt.getText().toString());
 
         nameEdt.setVisibility(View.VISIBLE);
+        lastNameEdt.setVisibility(View.VISIBLE);
+        dobEdt.setVisibility(View.VISIBLE);
+        zipCodeEdt.setVisibility(View.VISIBLE);
+        cityEdt.setVisibility(View.VISIBLE);
         emailEdt.setVisibility(View.VISIBLE);
         mobileNumberEdt.setVisibility(View.VISIBLE);
         addressEdt.setVisibility(View.VISIBLE);
+        regionEdt.setVisibility(View.VISIBLE);
         genderSpinner.setVisibility(View.VISIBLE);
         poolPreferenceSpinner.setVisibility(View.VISIBLE);
 
         nameTxt.setVisibility(View.GONE);
+        lastNameTxt.setVisibility(View.GONE);
+        cityTxt.setVisibility(View.GONE);
+        regionTxt.setVisibility(View.GONE);
+        dobTxt.setVisibility(View.GONE);
+        zipCodeTxt.setVisibility(View.GONE);
         emailTxt.setVisibility(View.GONE);
         mobileNumberTxt.setVisibility(View.GONE);
         addressTxt.setVisibility(View.GONE);
@@ -442,14 +508,31 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
             modelUpdateProfileRequest.setUserName(nameTxt.getText().toString());
             modelUpdateProfileRequest.setEmail(emailTxt.getText().toString());
-            modelUpdateProfileRequest.setMobileNo(mobileNumberTxt.getText().toString());
             modelUpdateProfileRequest.setAddress(addressTxt.getText().toString());
-            modelUpdateProfileRequest.setZipcode("94025");
+            modelUpdateProfileRequest.setLast_name(lastNameTxt.getText().toString());
 
             if (genderSpinner.getSelectedItemPosition() != 0) {
                 modelUpdateProfileRequest.setGender(genderSpinner.getSelectedItem().toString());
             } else {
                 Toast.makeText(getActivity(), "Please select gender!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (mobileNumberTxt.getText().toString().length() < 10) {
+                Toast.makeText(getActivity(), "Please enter valid mobile number!", Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                modelUpdateProfileRequest.setMobileNo(countryCodePickerProfile.getSelectedCountryCode()+""+mobileNumberTxt.getText().toString());
+            }
+
+            if (zipCodeTxt.getText().toString().equalsIgnoreCase("")) {
+                Toast.makeText(getActivity(), "Please enter valid zipCode", Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                modelUpdateProfileRequest.setZipcode(Integer.parseInt(zipCodeTxt.getText().toString()));
+            }
+
+            if (!isValidEmaillId(emailTxt.getText().toString())) {
+                Toast.makeText(getActivity(), "Please enter valid email!", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -508,5 +591,44 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    private boolean isValidEmaillId(String email) {
+
+        return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
+                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
+    }
+
+    private void handleDateTimePickerAction() {
+
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        mYear  = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay   = c.get(Calendar.DAY_OF_MONTH);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, -18);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, mYear, mMonth, mDay);
+        datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        month = month + 1;
+        if (month < 10) {
+            txtDate = (year + "/" + "0" + month + "/" + dayOfMonth);
+        } else
+            txtDate = (year + "/" + month + "/" + dayOfMonth);
+
+        dobEdt.setText(txtDate);
     }
 }

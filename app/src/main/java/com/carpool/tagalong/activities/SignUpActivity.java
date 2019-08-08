@@ -24,6 +24,7 @@ import com.carpool.tagalong.models.ModelSignUpResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
+import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
@@ -37,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignUpActivity   extends AppCompatActivity  implements View.OnClickListener{
+public class SignUpActivity extends AppCompatActivity  implements View.OnClickListener{
 
     private Toolbar           toolbar;
     private Context           context;
@@ -209,6 +210,8 @@ public class SignUpActivity   extends AppCompatActivity  implements View.OnClick
 
     private void handleSignUp() {
 
+        UIUtils.hideSoftKeyboard(this);
+
         if(validateSignUpData()){
             signUp();
         }
@@ -304,7 +307,7 @@ public class SignUpActivity   extends AppCompatActivity  implements View.OnClick
                 });
             }
         }else{
-            Toast.makeText(context,"PLease check your internet connection!!",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Please check your internet connection!!",Toast.LENGTH_LONG).show();
         }
     }
 

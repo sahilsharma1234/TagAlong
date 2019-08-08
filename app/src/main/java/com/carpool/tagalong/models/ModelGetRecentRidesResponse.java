@@ -2,10 +2,10 @@ package com.carpool.tagalong.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ModelGetRecentRidesResponse {
-
+public class ModelGetRecentRidesResponse implements Serializable {
 
     @SerializedName("message")
     public String message;
@@ -14,7 +14,7 @@ public class ModelGetRecentRidesResponse {
     @SerializedName("rideData")
     public List<RideData> rideData;
 
-    public class RidersList {
+    public class RidersList implements Serializable {
         @SerializedName("userName")
         public String userName;
         @SerializedName("profile_pic")
@@ -45,7 +45,7 @@ public class ModelGetRecentRidesResponse {
         }
     }
 
-    public class TimelineData {
+    public class TimelineData implements Serializable {
         @SerializedName("_id")
         public String _id;
         @SerializedName("type")
@@ -98,7 +98,7 @@ public class ModelGetRecentRidesResponse {
         }
     }
 
-    public class RideData {
+    public class RideData implements Serializable{
         @SerializedName("_id")
         public String _id;
         @SerializedName("userId")

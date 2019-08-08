@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -176,5 +177,29 @@ public class UIUtils {
             }
             dismissDialog(alertDialog);
         }
+    }
+
+    /**
+     * Hide key board
+     *
+     * @param activity activity instance
+     */
+    public static void hideSoftKeyboard(Activity activity) {
+        View view = activity.getWindow().getDecorView();
+        hideSoftKeyboard(view, activity);
+    }
+
+    /**
+     * Hide Key board
+     *
+     * @param view     layout view
+     * @param activity activity instance
+     */
+    public static void hideSoftKeyboard(View view, Activity activity) {
+        if (view == null) {
+            return;
+        }
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

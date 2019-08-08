@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.StartRideActivity">
 
-    <include android:id="@+id/toolbar_start_ride" layout="@layout/toolbar_shadow"/>
+    <include
+        android:id="@+id/toolbar_start_ride"
+        layout="@layout/toolbar_shadow" />
 
     <RelativeLayout
-        android:layout_below="@id/toolbar_start_ride"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_start_ride">
 
         <LinearLayout
             android:id="@+id/rootll"
@@ -31,68 +34,73 @@
             android:id="@+id/startTripLyt"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:paddingLeft="20dp"
-            android:textSize="16sp"
             android:layout_margin="10dp"
             android:background="@drawable/bg_white_searchview"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:focusableInTouchMode="true"
+            android:textSize="16sp">
 
             <AutoCompleteTextView
                 android:id="@+id/et_start_trip"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:textSize="16sp"
-                android:singleLine="true"
-                android:background="@color/white"
-                android:hint="Start of trip"
-                android:paddingRight="20dp"
-                android:imeOptions="actionDone"
                 android:layout_alignParentLeft="true"
-                android:textColorHint="@android:color/black"/>
+                android:background="@color/white"
+                android:defaultFocusHighlightEnabled="false"
+                android:hint="Start of trip"
+                android:imeOptions="actionDone"
+                android:paddingRight="20dp"
+                android:singleLine="true"
+                android:textColorHint="@android:color/black"
+                android:nextFocusUp="@id/et_start_trip"
+                android:nextFocusLeft="@id/et_start_trip"
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/startPin"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:visibility="gone"
-                android:src="@drawable/cross"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:src="@drawable/cross"
+                android:visibility="gone" />
 
         </RelativeLayout>
-
 
         <RelativeLayout
             android:id="@+id/et_start_time"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:paddingLeft="20dp"
-            android:textSize="16sp"
+            android:layout_below="@id/startTripLyt"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_below="@id/startTripLyt"
             android:background="@drawable/bg_white_searchview"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:orientation="horizontal">
+            android:textSize="16sp">
+
+            <requestFocus />
 
             <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/trip_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:layout_centerVertical="true"
+                android:text="Date Time"
                 android:textColor="@android:color/black"
-                android:text="Date Time"/>
+                android:textSize="16sp" />
 
             <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/change_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="CHANGE"
                 android:textColor="@color/colorGold"
-                android:text="CHANGE"/>
+                android:textSize="16sp" />
 
         </RelativeLayout>
 
@@ -100,13 +108,13 @@
             android:id="@+id/confirm_start_ride"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_shape_signin"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:textSize="16sp"
             android:layout_marginBottom="30dp"
-            android:text="Confirm"/>
+            android:background="@drawable/button_shape_signin"
+            android:text="Confirm"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 

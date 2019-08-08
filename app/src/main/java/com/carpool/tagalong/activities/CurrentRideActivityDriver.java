@@ -199,7 +199,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         shareDialog = new ShareDialog(this);
     }
 
-    private void setUIData(){
+    private void setUIData() {
 
         timelineAdapter = new TimelineAdapter(context, timelineData);
         joinedRidersAdapter = new JoinedRidersAdapter(context, modelGetRideDetailsResponse.getRideData().getJoinRequest(), this);
@@ -280,8 +280,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void handleCurrentRideForDriver() {
 
         String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
-        String endLocation  = modelGetRideDetailsResponse.getRideData().getEndLocation();
-        String rideTime     = modelGetRideDetailsResponse.getRideData().getRideDateTime();
+        String endLocation = modelGetRideDetailsResponse.getRideData().getEndLocation();
+        String rideTime = modelGetRideDetailsResponse.getRideData().getRideDateTime();
         userName.setText(modelGetRideDetailsResponse.getRideData().getUserName());
         recent_ride_txt.setText("Ride created at " + rideTime);
 
@@ -810,7 +810,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                     showSubmitReviewDialog(onBoard);
-                                }else{
+                                } else {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
@@ -854,15 +854,15 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
             final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
             LayoutInflater inflater = this.getLayoutInflater();
-            final View dialogView   = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+            final View dialogView = inflater.inflate(R.layout.submit_review_dialog_layout, null);
             dialogBuilder.setCancelable(false);
             dialogBuilder.setView(dialogView);
 
             feedBackComments = dialogView.findViewById(R.id.feedback_comments);
-            submitFeedback   = dialogView.findViewById(R.id.submitReview);
-            user_image       = dialogView.findViewById(R.id.iv_user_profile_image);
-            iv_userName      = dialogView.findViewById(R.id.tv_driver_name);
-            ratingBar        = dialogView.findViewById(R.id.rating_bar);
+            submitFeedback = dialogView.findViewById(R.id.submitReview);
+            user_image = dialogView.findViewById(R.id.iv_user_profile_image);
+            iv_userName = dialogView.findViewById(R.id.tv_driver_name);
+            ratingBar = dialogView.findViewById(R.id.rating_bar);
 
             rating = ratingBar.getRating();
 
@@ -930,6 +930,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                                     } else {
                                         finish();
                                     }
+                                } else {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -982,7 +984,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 if (restClientRetrofitService != null) {
 
                     ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
-
                     restClientRetrofitService.cancelPickup(TagALongPreferenceManager.getToken(context), modelCancelOwnRideRequest).enqueue(new Callback<ModelDocumentStatus>() {
 
                         @Override
@@ -1094,8 +1095,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 RequestBody rideId = RequestBody.create(MediaType.parse("text/plain"), modelGetRideDetailsResponse.getRideData().get_id());
 
                 // Create a request body with file and image/video media type
-
                 RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
+
                 // Create MultipartBody.Part using file request-body,file name and part name
                 MultipartBody.Part part = MultipartBody.Part.createFormData("media", file.getName(), fileReqBody);
 
@@ -1122,7 +1123,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                                         selectedImageForPost.setVisibility(View.GONE);
                                         postPath = null;
                                         getPost();
-
                                     } else {
                                         Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                                     }
@@ -1240,9 +1240,9 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         com.carpool.tagalong.views.RegularTextView name = delayDialog.findViewById(R.id.tv_driver_name);
         CircleImageView profilePic = delayDialog.findViewById(R.id.iv_driver_profile_image);
 
-        com.carpool.tagalong.views.RegularTextView source_loc  = delayDialog.findViewById(R.id.tv_source_address);
-        com.carpool.tagalong.views.RegularTextView dest_loc    = delayDialog.findViewById(R.id.tv_dest_address);
-        com.carpool.tagalong.views.RegularTextView time        = delayDialog.findViewById(R.id.tv_date);
+        com.carpool.tagalong.views.RegularTextView source_loc = delayDialog.findViewById(R.id.tv_source_address);
+        com.carpool.tagalong.views.RegularTextView dest_loc = delayDialog.findViewById(R.id.tv_dest_address);
+        com.carpool.tagalong.views.RegularTextView time = delayDialog.findViewById(R.id.tv_date);
         com.carpool.tagalong.views.RegularTextView fare_amount = delayDialog.findViewById(R.id.tv_payment_amount);
         com.carpool.tagalong.views.RegularTextView payment_status = delayDialog.findViewById(R.id.tv_payment_status);
         com.carpool.tagalong.views.RegularTextView payment_status_notpaid = delayDialog.findViewById(R.id.tv_payment_status1);
@@ -1251,10 +1251,10 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         ImageView carrying_bags = delayDialog.findViewById(R.id.tv_bags);
         ImageView kids_allowed = delayDialog.findViewById(R.id.tv_traveling_with_children);
 
-        com.carpool.tagalong.views.RegularTextView accept   = delayDialog.findViewById(R.id.tv_acept);
+        com.carpool.tagalong.views.RegularTextView accept = delayDialog.findViewById(R.id.tv_acept);
         com.carpool.tagalong.views.RegularTextView accepted = delayDialog.findViewById(R.id.tv_acepted);
-        com.carpool.tagalong.views.RegularTextView cancel   = delayDialog.findViewById(R.id.tv_cancel);
-        com.carpool.tagalong.views.RegularTextView reject   = delayDialog.findViewById(R.id.tv_Reject);
+        com.carpool.tagalong.views.RegularTextView cancel = delayDialog.findViewById(R.id.tv_cancel);
+        com.carpool.tagalong.views.RegularTextView reject = delayDialog.findViewById(R.id.tv_Reject);
         com.carpool.tagalong.views.RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
         final SlideToActView slideToActView = delayDialog.findViewById(R.id.tv_slider);
 
@@ -1570,7 +1570,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
         com.carpool.tagalong.views.RegularTextView buttonPositive;
         com.carpool.tagalong.views.RegularTextView buttonNegative;
-        AlertDialog alertDialog = null;
+        AlertDialog alertDialog ;
         final ModelGetCurrentRideResponse.JoinRequest mjoinRequest = joinRequest;
         final EditText reasonText;
 
@@ -1624,61 +1624,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
         showDialog(joinReqModel, null);
     }
-
-//    private void getCurrentRide() {
-//
-//        try {
-//
-//            if (Utils.isNetworkAvailable(context)) {
-//
-//                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-//
-//                if (restClientRetrofitService != null) {
-//
-//                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
-//
-//                    restClientRetrofitService.getCurrentRide(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelGetCurrentRideResponse>() {
-//
-//                        @Override
-//                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
-//
-//                            ProgressDialogLoader.progressDialogDismiss();
-//
-//                            if (response.body() != null) {
-//                                int status = response.body().getStatus();
-//
-//                                if (status == 1) {
-//
-//                                    modelGetRideDetailsResponse = response.body();
-//                                    handleCurrentRideForDriver();
-//                                } else {
-//                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-//                                }
-//                            } else {
-//                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
-//
-//                            ProgressDialogLoader.progressDialogDismiss();
-//
-//                            if (t != null && t.getMessage() != null) {
-//                                t.printStackTrace();
-//                                Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
-//                            }
-//                            Log.e("Current Ride", "FAILURE verification");
-//                        }
-//                    });
-//                }
-//            } else {
-//                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

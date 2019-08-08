@@ -104,6 +104,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
 
     private void initializeViews() {
 
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
@@ -175,14 +176,14 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    private void handleEndPinClick() {
-
-        if (endPin.getVisibility() == View.VISIBLE) {
-            endRide.clearComposingText();
-            endRide.setText("");
-            endPin.setVisibility(View.GONE);
-        }
-    }
+//    private void handleEndPinClick() {
+//
+//        if (endPin.getVisibility() == View.VISIBLE) {
+//            endRide.clearComposingText();
+//            endRide.setText("");
+//            endPin.setVisibility(View.GONE);
+//        }
+//    }
 
     private ArrayList autocomplete(String input) {
 
@@ -433,6 +434,8 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             ImageView minus_stepper = dialogLayout.findViewById(R.id.minus_stepper);
             ImageView plus_stepper = dialogLayout.findViewById(R.id.plus_stepper);
             carryBagCountTxt = dialogLayout.findViewById(R.id.carry_bag_count_txt);
+
+            carryBagCountTxt.setText(carry_bag_count+"");
 
             smokeCheckBox = dialogLayout.findViewById(R.id.smoke_prefe_chck);
 

@@ -4,15 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class ModelUserDriverDetails {
 
-
     @SerializedName("smoke")
     public boolean smoke;
     @SerializedName("bags")
     public int bags;
     @SerializedName("allowKids")
     public boolean allowKids;
-    @SerializedName("vehicle")
-    public String vehicle;
+    @SerializedName("vehicleBrand")
+    public String vehicleBrand;
+    @SerializedName("vehicleModel")
+    public String vehicleModel;
     @SerializedName("vehicleNumber")
     public String vehicleNumber;
     @SerializedName("vehicleYear")
@@ -44,12 +45,20 @@ public class ModelUserDriverDetails {
         this.allowKids = allowKids;
     }
 
-    public String getVehicle() {
-        return vehicle;
+    public String getVehicleBrand() {
+        return vehicleBrand;
     }
 
-    public void setVehicle(String vehicle) {
-        this.vehicle = vehicle;
+    public void setVehicleBrand(String vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
+    }
+
+    public String getVehicleModel() {
+        return vehicleModel;
+    }
+
+    public void setVehicleModel(String vehicleModel) {
+        this.vehicleModel = vehicleModel;
     }
 
     public String getVehicleNumber() {
@@ -82,7 +91,8 @@ public class ModelUserDriverDetails {
                 "smoke=" + smoke +
                 ", bags=" + bags +
                 ", allowKids=" + allowKids +
-                ", vehicle='" + vehicle + '\'' +
+                ", vehicleBrand='" + vehicleBrand + '\'' +
+                ", vehicleModel='" + vehicleModel + '\'' +
                 ", vehicleNumber='" + vehicleNumber + '\'' +
                 ", vehicleYear=" + vehicleYear +
                 ", vehicleColor='" + vehicleColor + '\'' +

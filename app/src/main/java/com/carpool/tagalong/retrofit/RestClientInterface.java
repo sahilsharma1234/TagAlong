@@ -12,6 +12,8 @@ import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetDriverProfileResponse;
+import com.carpool.tagalong.models.ModelGetNearbyDriversRequest;
+import com.carpool.tagalong.models.ModelGetNearbyDriversResponse;
 import com.carpool.tagalong.models.ModelGetRecentRidesResponse;
 import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
@@ -48,7 +50,12 @@ import com.carpool.tagalong.models.emergencysos.ModelGetEmergencyRidesResponse;
 import com.carpool.tagalong.models.emergencysos.ModelSendEmergencySOSRequest;
 import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
 import com.carpool.tagalong.models.wepay.ModelAddCardRequest;
+import com.carpool.tagalong.models.wepay.ModelAddMerchantBankDetailsRequest;
 import com.carpool.tagalong.models.wepay.ModelCard;
+import com.carpool.tagalong.models.wepay.ModelGetKycStatusResposne;
+import com.carpool.tagalong.models.wepay.ModelGetWePayIframeRequest;
+import com.carpool.tagalong.models.wepay.ModelIframeResponse;
+import com.carpool.tagalong.models.wepay.ModelRegisterMerchantWePayRequest;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -188,6 +195,9 @@ public interface RestClientInterface {
     @retrofit2.http.POST("chat/send_message")
     Call<ModelChatSendMessageResponse> sendMessage(@Header("x-auth") String value, @Body ChatSendMessageRequest chatSendMessageRequest);
 
+    @retrofit2.http.POST("ride/nearest_driver_quick_ride")
+    Call<ModelGetNearbyDriversResponse> getNearestDrivers(@Header("x-auth") String value, @Body ModelGetNearbyDriversRequest modelGetNearbyDriversRequest);
+
 // ------------------------------------------- WEPAY APIs ---------------------------------------------------------------------//
 
     @retrofit2.http.POST("user/add_card_wepay")
@@ -198,4 +208,18 @@ public interface RestClientInterface {
 
     @retrofit2.http.POST("user/remove_card_wepay")
     Call<ModelDocumentStatus> removeCard(@Header("x-auth") String value, @Body ModelCard modelCard);
+
+    @retrofit2.http.POST("user/add_merchant_bank_details")
+    Call<ModelDocumentStatus> addMechantBankDetails(@Header("x-auth") String value, @Body ModelAddMerchantBankDetailsRequest modelAddMerchantBankDetailsRequest);
+
+    @retrofit2.http.POST("user/register_merchant_wepay")
+    Call<ModelDocumentStatus> registerMerchantOnWePay(@Header("x-auth") String value, @Body ModelRegisterMerchantWePayRequest modelRegisterMerchantWePayRequest);
+
+    @retrofit2.http.POST("account/get_update_uri")
+    Call<ModelIframeResponse> getIframeUrl(@Header("Authorization") String value, @Body ModelGetWePayIframeRequest modelGetWePayIframeRequest);
+
+    @retrofit2.http.POST("account/kyc")
+    Call<ModelGetKycStatusResposne> isKycDone(@Header("Authorization") String value, @Body ModelGetWePayIframeRequest modelGetWePayIframeRequest);
+
+
 }

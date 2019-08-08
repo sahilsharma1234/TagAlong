@@ -37,4 +37,6 @@ public class Constants {
     public static final int INVITE_GUEST_REQUEST_CODE = 007 ;
     public static final String DEFAULT_CARD = "defaultCard";
     public static final String CARD = "card";
+    public static final String RIDE_DETAIL = "ride_detail";
+    public static final String IFRAME_MODE = "iframe";
 }

@@ -379,6 +379,7 @@
                         android:layout_marginTop="5dp"
                         android:backgroundTint="@color/colorGold"
                         android:singleLine="true"
+                        android:imeOptions="actionDone"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:visibility="gone" />

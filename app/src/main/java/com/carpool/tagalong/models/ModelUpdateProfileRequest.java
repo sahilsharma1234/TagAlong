@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class ModelUpdateProfileRequest {
 
-
     @SerializedName("userName")
     public String userName;
     @SerializedName("mobileNo")
@@ -19,8 +18,10 @@ public class ModelUpdateProfileRequest {
     public int bags;
     @SerializedName("allowKids")
     public boolean allowKids;
-    @SerializedName("vehicle")
-    public String vehicle;
+    @SerializedName("vehicleBrand")
+    public String vehicleBrand;
+    @SerializedName("vehicleModel")
+    public String vehicleModel;
     @SerializedName("vehicleNumber")
     public String vehicleNumber;
     @SerializedName("vehicleYear")
@@ -35,22 +36,60 @@ public class ModelUpdateProfileRequest {
     public String shortCode;
     @SerializedName("bankName")
     public String bankName;
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
-    }
-
+    @SerializedName("last_name")
+    public String last_name;
+    @SerializedName("dob")
+    public String dob;
+    @SerializedName("ssn")
+    public String ssn;
     @SerializedName("zipcode")
-    public String zipcode;
+    public int zipcode;
     @SerializedName("gender")
     public String gender;
-
     @SerializedName("genderPrefrance")
     public String genderPrefrance;
+    @SerializedName("checkrStatus")
+    public String   checkrStatus;
+    @SerializedName("city")
+    public String city;
+    @SerializedName("region")
+    public String region;
+    @SerializedName("original_ip")
+    public String original_ip;
+    @SerializedName("original_device")
+    public String original_device;
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getOriginal_ip() {
+        return original_ip;
+    }
+
+    public void setOriginal_ip(String original_ip) {
+        this.original_ip = original_ip;
+    }
+
+    public String getOriginal_device() {
+        return original_device;
+    }
+
+    public void setOriginal_device(String original_device) {
+        this.original_device = original_device;
+    }
 
     public String getUserName() {
         return userName;
@@ -108,13 +147,7 @@ public class ModelUpdateProfileRequest {
         this.allowKids = allowKids;
     }
 
-    public String getVehicle() {
-        return vehicle;
-    }
 
-    public void setVehicle(String vehicle) {
-        this.vehicle = vehicle;
-    }
 
     public String getVehicleNumber() {
         return vehicleNumber;
@@ -188,6 +221,62 @@ public class ModelUpdateProfileRequest {
         this.genderPrefrance = genderPrefrance;
     }
 
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
+
+    public int getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(int zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public String getCheckrStatus() {
+        return checkrStatus;
+    }
+
+    public void setCheckrStatus(String checkrStatus) {
+        this.checkrStatus = checkrStatus;
+    }
+
+    public String getVehicleBrand() {
+        return vehicleBrand;
+    }
+
+    public void setVehicleBrand(String vehicleBrand) {
+        this.vehicleBrand = vehicleBrand;
+    }
+
+    public String getVehicleModel() {
+        return vehicleModel;
+    }
+
+    public void setVehicleModel(String vehicleModel) {
+        this.vehicleModel = vehicleModel;
+    }
+
     @Override
     public String toString() {
         return "ModelUpdateProfileRequest{" +
@@ -198,7 +287,8 @@ public class ModelUpdateProfileRequest {
                 ", smoke=" + smoke +
                 ", bags=" + bags +
                 ", allowKids=" + allowKids +
-                ", vehicle='" + vehicle + '\'' +
+                ", vehicleBrand='" + vehicleBrand + '\'' +
+                ", vehicleModel='" + vehicleModel + '\'' +
                 ", vehicleNumber='" + vehicleNumber + '\'' +
                 ", vehicleYear=" + vehicleYear +
                 ", vehicleColor='" + vehicleColor + '\'' +
@@ -206,9 +296,17 @@ public class ModelUpdateProfileRequest {
                 ", routingNumber='" + routingNumber + '\'' +
                 ", shortCode='" + shortCode + '\'' +
                 ", bankName='" + bankName + '\'' +
-                ", zipcode='" + zipcode + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", dob='" + dob + '\'' +
+                ", ssn='" + ssn + '\'' +
+                ", zipcode=" + zipcode +
                 ", gender='" + gender + '\'' +
                 ", genderPrefrance='" + genderPrefrance + '\'' +
+                ", checkrStatus='" + checkrStatus + '\'' +
+                ", city='" + city + '\'' +
+                ", region='" + region + '\'' +
+                ", original_ip='" + original_ip + '\'' +
+                ", original_device='" + original_device + '\'' +
                 '}';
     }
 }

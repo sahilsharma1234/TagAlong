@@ -1,14 +1,16 @@
 package com.carpool.tagalong.utils;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.DisplayMetrics;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -61,20 +63,20 @@ public class Utils {
         return finalString;
     }
 
-    public static String getRideDateFromDateString(String dateString) {
-
-        String finalString = "";
-
-        try {
-            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
-            long dateMillis = date.getTime();
-            SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd-MM-yyyy"); // the day of the week spelled out completely
-            finalString = simpleDateformat.format(dateMillis);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return finalString;
-    }
+//    public static String getRideDateFromDateString(String dateString) {
+//
+//        String finalString = "";
+//
+//        try {
+//            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dateString);
+//            long dateMillis = date.getTime();
+//            SimpleDateFormat simpleDateformat = new SimpleDateFormat("dd-MM-yyyy"); // the day of the week spelled out completely
+//            finalString = simpleDateformat.format(dateMillis);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return finalString;
+//    }
 
     public static String getRidePostDateFromDateString(String dateString) {
 
@@ -128,7 +130,7 @@ public class Utils {
 
                             List<Integer> data = response.body().getData();
 
-                            if( data != null && data.size() > 0){
+                            if (data != null && data.size() > 0) {
                                 DataManager.setYearsList(data);
                             }
 
@@ -143,12 +145,12 @@ public class Utils {
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }
-                        Log.e("SAVE DRIVING DETAILS", "FAILURE SAVING PROFILE");
+                        Log.e(TAG, "FAILURE SAVING PROFILE");
                     }
                 });
             }
         } else {
-            Toast.makeText(context, "PLease check your internet connection!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -170,7 +172,7 @@ public class Utils {
 
                             List<String> data = response.body().getData();
 
-                            if( data != null && data.size() > 0){
+                            if (data != null && data.size() > 0) {
                                 DataManager.setColorList(data);
                             }
 
@@ -185,7 +187,7 @@ public class Utils {
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }
-                        Log.e("SAVE DRIVING DETAILS", "FAILURE SAVING PROFILE");
+                        Log.e(TAG, "FAILURE SAVING PROFILE");
                     }
                 });
             }
@@ -202,7 +204,7 @@ public class Utils {
 
             if (restClientRetrofitService != null) {
 
-                ModelUpdateCoordinates modelUpdateCoordinates  = new ModelUpdateCoordinates();
+                ModelUpdateCoordinates modelUpdateCoordinates = new ModelUpdateCoordinates();
                 modelUpdateCoordinates.setLatitude(location.getLatitude());
                 modelUpdateCoordinates.setLongitude(location.getLongitude());
 
@@ -223,40 +225,40 @@ public class Utils {
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }
-                        Log.e("SAVE DRIVING DETAILS", "FAILURE SAVING PROFILE");
+                        Log.e(TAG, "FAILURE SAVING PROFILE");
                     }
                 });
             }
         } else {
-            Toast.makeText(context, "PLease check your internet connection!!", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
         }
     }
 
-    public static String getScreenWidthHeightInPixels(Activity context) {
-
-        String coordinates = "";
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        context.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
-        coordinates = width + "~" + height;
-        return coordinates;
-    }
-
-    public static int getDpAsPixels(Context context, int dp) {
-
-        float scale = context.getResources().getDisplayMetrics().density;
-        int dpAsPixels = (int) (dp * scale + 0.5f);
-        return dpAsPixels;
-    }
+//    public static String getScreenWidthHeightInPixels(Activity context) {
+//
+//        String coordinates = "";
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        context.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+//        int width = displayMetrics.widthPixels;
+//        int height = displayMetrics.heightPixels;
+//        coordinates = width + "~" + height;
+//        return coordinates;
+//    }
+//
+//    public static int getDpAsPixels(Context context, int dp) {
+//
+//        float scale = context.getResources().getDisplayMetrics().density;
+//        int dpAsPixels = (int) (dp * scale + 0.5f);
+//        return dpAsPixels;
+//    }
 
     public static void scheduleApplicationPackageJob(Context context) {
 
         ComponentName serviceComponent = new ComponentName(context, JobSchedulerService.class);
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo.Builder builder = new JobInfo.Builder(3, serviceComponent);
-        builder.setMinimumLatency(2* 1000); // wait at least
-        builder.setOverrideDeadline(1* 60 * 1000);
+        builder.setMinimumLatency(2 * 1000); // wait at least
+        builder.setOverrideDeadline(1 * 60 * 1000);
         builder.setPersisted(true);
         jobScheduler.schedule(builder.build());
     }
@@ -292,7 +294,7 @@ public class Utils {
 
                             if (response.body().getStatus() == 1) {
 
-                                Log.i("PERSONAL DETAILS", "PROFILE RESPONSE: " + response.body().getData().toString());
+                                Log.i(TAG, "PROFILE RESPONSE: " + response.body().getData().toString());
                                 DataManager.modelUserProfileData = response.body().getData();
 
                             } else {
@@ -309,12 +311,24 @@ public class Utils {
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }
-                        Log.e("SIGN UP", "FAILURE verification");
+                        Log.e(TAG, "FAILURE verification");
                     }
                 });
             }
         } else {
             Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static String getDeviceImeiNumber(Context context) {
+
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "Please provide permission from settings to this app",Toast.LENGTH_SHORT).show();
+            return "";
+        }
+        String device_id = tm.getDeviceId();
+        return device_id;
     }
 }

@@ -19,10 +19,12 @@ public class RecentRideAdapter extends RecyclerView.Adapter<RecentRideAdapter.My
 
     private List<ModelGetRecentRidesResponse.RideData> rideList;
     private Activity activity;
+    private RecentRideInterface recentRideInterface;
 
-    public RecentRideAdapter(Activity activity, List<ModelGetRecentRidesResponse.RideData> rideList) {
+    public RecentRideAdapter(Activity activity, List<ModelGetRecentRidesResponse.RideData> rideList, RecentRideInterface recentRideInterface) {
         this.rideList = rideList;
         this.activity = activity;
+        this.recentRideInterface = recentRideInterface;
     }
 
     @Override
@@ -33,23 +35,7 @@ public class RecentRideAdapter extends RecyclerView.Adapter<RecentRideAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-//
-//        holder.title.setText(rideList.get(position).getHeading());
-//        holder.date.setText(rideList.get(position).getRideDate());
-//        holder.distance.setText(rideList.get(position).getDistBtwSrcDest());
-//
-//        List<ModelGetRecentRidesResponse.TimelineData> timelineData = rideList.get(position).getTimelineData();
-//
-//        if(timelineData != null && timelineData.size() > 0) {
-//            RecentRideChaildAdapter mAdapter = new RecentRideChaildAdapter(timelineData);
-//
-//            LinearLayoutManager mLayoutManager
-//                    = new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false);
-//            holder.recycler_view_item_images.setLayoutManager(mLayoutManager);
-//            holder.recycler_view_item_images.setItemAnimator(new DefaultItemAnimator());
-//            holder.recycler_view_item_images.setAdapter(mAdapter);
-//        }
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         holder.srcLocName.setText(rideList.get(position).getStartLocation());
         holder.destLocName.setText(rideList.get(position).getEndLocation());
@@ -63,27 +49,23 @@ public class RecentRideAdapter extends RecyclerView.Adapter<RecentRideAdapter.My
 
         Glide.with(activity).load(rideList.get(position).getDriverPic()).apply(options).into(holder.driverProfileIMage);
 
-//        if(rideList.get(position).getRidersList() != null && rideList.get(position).getRidersList().size() >0) {
-//
-//            for (int i = 0; i < rideList.get(position).getRidersList().size(); i++) {
-//
-//                CircleImageView circleImageView = new CircleImageView(activity);
-//
-//                RelativeLayout.LayoutParams imParams =
-//                        new RelativeLayout.LayoutParams(((int) (activity.getResources().getDimension(R.dimen.imageViewSize))), ((int) activity.getResources().getDimension(R.dimen.imageViewSize)));
-//                circleImageView.setId(i);
-//                int margin = (int) ((activity.getResources().getDimension(R.dimen.imageViewSize) / 2) * i);
-//                imParams.leftMargin = margin;
-//                holder.rl_rider_parent.addView(circleImageView, imParams);
-//
-//                Glide.with(activity).load(rideList.get(position).getRidersList().get(i).getProfile_pic()).apply(options).into(holder.driverProfileIMage);
-//            }
-//        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recentRideInterface.onRecentRideClick(rideList.get(position));
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return rideList.size();
+    }
+
+    public interface RecentRideInterface {
+
+        void onRecentRideClick(ModelGetRecentRidesResponse.RideData rideData);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -108,7 +90,7 @@ public class RecentRideAdapter extends RecyclerView.Adapter<RecentRideAdapter.My
 
             date = view.findViewById(R.id.dateTime);
             distance = view.findViewById(R.id.rideDistance);
-            srcLocName  = view.findViewById(R.id.start_point_source_name);
+            srcLocName = view.findViewById(R.id.start_point_source_name);
             destLocName = view.findViewById(R.id.end_point_dest_name);
             driverProfileIMage = view.findViewById(R.id.driverImage);
         }

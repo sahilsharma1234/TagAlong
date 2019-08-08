@@ -94,5 +94,7 @@
     <string name="small_distance_quick_ride">(Small distance quick ride)</string>
     <string name="intercity_long_distance_rides">(Intercity long distance rides)</string>
     <string name="intercity_long_distance_ride">(Intercity long distance rides)</string>
+    <string name="ride_completed">Ride has been completed</string>
+    <string name="total_amount_paid">Toatal amount paid</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.carpool.tagalong.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.activities.RideDetailActivity;
 import com.carpool.tagalong.adapter.RecentRideAdapter;
+import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.models.ModelGetRecentRidesResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
@@ -36,7 +39,7 @@ import retrofit2.Response;
  * Use the {@link RecentRidesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecentRidesFragment extends Fragment {
+public class RecentRidesFragment extends Fragment implements RecentRideAdapter.RecentRideInterface {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -126,7 +129,7 @@ public class RecentRidesFragment extends Fragment {
 
     private void initAdapter(List<ModelGetRecentRidesResponse.RideData> rideData) {
 
-        mAdapter = new RecentRideAdapter(getActivity(), rideData);
+        mAdapter = new RecentRideAdapter(getActivity(), rideData, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recycler_view_recent_rides.setLayoutManager(mLayoutManager);
         recycler_view_recent_rides.setItemAnimator(new DefaultItemAnimator());
@@ -201,6 +204,17 @@ public class RecentRidesFragment extends Fragment {
 
     private void handleRecentRideResposne(List<ModelGetRecentRidesResponse.RideData> rideData) {
         initAdapter(rideData);
+    }
+
+    @Override
+    public void onRecentRideClick(ModelGetRecentRidesResponse.RideData rideData) {
+
+        if(rideData != null) {
+            Intent intent = new Intent(getActivity(), RideDetailActivity.class);
+            intent.putExtra(Constants.RIDE_DETAIL,rideData);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            getActivity().startActivity(intent);
+        }
     }
 
     /**

@@ -44,14 +44,6 @@ public class CreditCardAdapter extends RecyclerView.Adapter<CreditCardAdapter.Vi
 
         holder.defaultCardCheck.setOnCheckedChangeListener(null);
 
-//        if(position == selectedPosition){
-//
-//            holder.defaultCardCheck.setChecked(true);
-//
-//        }else{
-//            holder.defaultCardCheck.setChecked(false);
-//        }
-
         if(cardList.get(position).isDefault()){
             selectedPosition = position;
         }

@@ -131,7 +131,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
                             if (response.body() != null) {
 
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 Log.i("Get All rides", "Get all rides RESPONSE " + response.body().toString());
 
                                 initAdapter(response.body().getRideData());
@@ -240,7 +240,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
                             if (response.body() != null) {
 
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 Log.i(CurrentUpcomingFragment.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
                                 handleRideResponse(response.body(), rideId);
 

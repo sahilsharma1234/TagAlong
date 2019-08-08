@@ -852,7 +852,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
         if (month < 10) {
             txtDate = (dayOfMonth + "/" + "0" + month + "/" + year);
         } else
-            txtDate = (dayOfMonth + "/" + (month + 1) + "/" + year);
+            txtDate = (dayOfMonth + "/" + month  + "/" + year);
 
         Utils.getDateFromDateString(txtDate);
         if (!txtDate.equals("")) {

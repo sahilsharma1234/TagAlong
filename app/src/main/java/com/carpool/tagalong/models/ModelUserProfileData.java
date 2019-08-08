@@ -29,16 +29,76 @@ public class ModelUserProfileData {
     public ModelUserDriverDetails driverDetails;
     @SerializedName("paymentDetails")
     public ModelPaymentDetails paymentDetails;
+
+    @SerializedName("wepayDetails")
+    public ModelWePayDetails wepayDetails;
+
     @SerializedName("documents")
     public List<ModelDocuments> documents;
     @SerializedName("gender")
     public String gender;
-
+    @SerializedName("checkrStatus")
+    public String checkrStatus;
     @SerializedName("card")
     public List<CreditCards> card;
-
     @SerializedName("genderPrefrance")
     public String genderPrefrance;
+    @SerializedName("_id")
+    public String _id;
+    @SerializedName("dob")
+    public String dob;
+    @SerializedName("ssn")
+    public String ssn;
+    @SerializedName("last_name")
+    public String last_name;
+
+    public ModelWePayDetails getWepayDetails() {
+        return wepayDetails;
+    }
+
+    public void setWepayDetails(ModelWePayDetails wepayDetails) {
+        this.wepayDetails = wepayDetails;
+    }
+
+    public String getCheckrStatus() {
+        return checkrStatus;
+    }
+
+    public void setCheckrStatus(String checkrStatus) {
+        this.checkrStatus = checkrStatus;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
 
     public String getGender() {
         return gender;
@@ -174,10 +234,62 @@ public class ModelUserProfileData {
                 ", zipcode='" + zipcode + '\'' +
                 ", driverDetails=" + driverDetails +
                 ", paymentDetails=" + paymentDetails +
+                ", wepayDetails=" + wepayDetails +
                 ", documents=" + documents +
                 ", gender='" + gender + '\'' +
+                ", checkrStatus='" + checkrStatus + '\'' +
                 ", card=" + card +
                 ", genderPrefrance='" + genderPrefrance + '\'' +
+                ", _id='" + _id + '\'' +
+                ", dob='" + dob + '\'' +
+                ", ssn='" + ssn + '\'' +
+                ", last_name='" + last_name + '\'' +
                 '}';
+    }
+
+    public static class Card {
+        @SerializedName("wepay_card_id")
+        public String wepay_card_id;
+        @SerializedName("number")
+        public String number;
+        @SerializedName("exp_month")
+        public String exp_month;
+        @SerializedName("exp_year")
+        public String exp_year;
+        @SerializedName("isDefault")
+        public boolean isDefault;
+        @SerializedName("_id")
+        public String _id;
+    }
+
+    public static class DriverDetails {
+        @SerializedName("smoke")
+        public boolean smoke;
+        @SerializedName("bags")
+        public int bags;
+        @SerializedName("allowKids")
+        public boolean allowKids;
+        @SerializedName("vehicle")
+        public String vehicle;
+        @SerializedName("vehicleNumber")
+        public String vehicleNumber;
+        @SerializedName("vehicleYear")
+        public String vehicleYear;
+        @SerializedName("vehicleColor")
+        public String vehicleColor;
+    }
+
+    public static class PaymentDetails {
+        @SerializedName("accountNumber")
+        public String accountNumber;
+        @SerializedName("shortCode")
+        public String shortCode;
+        @SerializedName("bankName")
+        public String bankName;
+        @SerializedName("routingNumber")
+        public String routingNumber;
+    }
+
+    public static class Documents {
     }
 }

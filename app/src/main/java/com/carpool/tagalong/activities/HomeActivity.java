@@ -87,7 +87,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private ActionBarDrawerToggle mDrawerToggle;
-    private LinearLayout homeLayout, recentRidesLayout, currentRideLayout, profileLayout, hepSupportLyt, aboutUsLyt, rides_emergency_lyt;
+    private LinearLayout homeLayout, recentRidesLayout, currentRideLayout, profileLayout, hepSupportLyt, aboutUsLyt, rides_emergency_lyt, nameLayout;
     private Fragment fragment;
     private com.carpool.tagalong.views.RegularTextView userName, address;
     private Button logoutButton;
@@ -152,6 +152,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         homeLayout = headerView.findViewById(R.id.home_layout);
         recentRidesLayout = headerView.findViewById(R.id.recent_ride_layout);
         currentRideLayout = headerView.findViewById(R.id.current_ride_layout);
+        nameLayout        = headerView.findViewById(R.id.linear);
 //        filterLayout     =  headerView.findViewById(R.id.filter);
         profileLayout = headerView.findViewById(R.id.profile_layout);
         userName = headerView.findViewById(R.id.user_name);
@@ -206,6 +207,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Glide.with(context).load(TagALongPreferenceManager.getDeviceProfile(this).getProfile_pic()).apply(options).into(userImage);
         }
 
+        nameLayout.setOnClickListener(this);
         homeLayout.setOnClickListener(this);
         recentRidesLayout.setOnClickListener(this);
         currentRideLayout.setOnClickListener(this);
@@ -327,8 +329,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
 
         handleDrawer();
+        drawer.closeDrawer(GravityCompat.START);
 
         switch (id) {
+
+            case R.id.linear:
+                handleProfileLayoutClick(ProfileFragment.ID_PERSONAL);
+                break;
 
             case R.id.home_layout:
                 handleHomeLayoutClick();
@@ -360,7 +367,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
         }
-        drawer.closeDrawer(GravityCompat.START);
     }
 
     private void handleEmergencyRides() {
@@ -579,17 +585,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         RegularTextView homeText = homeLayout.findViewById(R.id.homeTextView);
         RegularTextView currentRideTextView = currentRideLayout.findViewById(R.id.current_ride_textView);
-        RegularTextView recentRideTextView = recentRidesLayout.findViewById(R.id.recent_rides_textView);
-        RegularTextView profileTextView = profileLayout.findViewById(R.id.profile_textView);
+        RegularTextView recentRideTextView  = recentRidesLayout.findViewById(R.id.recent_rides_textView);
+        RegularTextView profileTextView     = profileLayout.findViewById(R.id.profile_textView);
         RegularTextView helpSupportTextView = hepSupportLyt.findViewById(R.id.help_and_supportTextView);
-        RegularTextView aboutUscomTextView = aboutUsLyt.findViewById(R.id.about_us_textview);
-        RegularTextView emergencyTextView = rides_emergency_lyt.findViewById(R.id.emergency_rides);
+        RegularTextView aboutUscomTextView  = aboutUsLyt.findViewById(R.id.about_us_textview);
+        RegularTextView emergencyTextView   = rides_emergency_lyt.findViewById(R.id.emergency_rides);
 
         Drawable img0 = getResources().getDrawable(R.drawable.ic_emergency_off_sidebar);
         emergencyTextView.setCompoundDrawablesWithIntrinsicBounds(img0, null, null, null);
         emergencyTextView.setTextColor(getResources().getColor(R.color.drawer_text_color));
 
-        Drawable img = getResources().getDrawable(R.drawable.ic_home_on_sidebar_xxhdpi);
+        Drawable img  = getResources().getDrawable(R.drawable.ic_home_on_sidebar_xxhdpi);
         homeText.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         homeText.setTextColor(getResources().getColor(R.color.drawer_text_color));
 
@@ -612,6 +618,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Drawable img5 = getResources().getDrawable(R.drawable.ic_about_us_off_sidebar_xxhdpi);
         aboutUscomTextView.setCompoundDrawablesWithIntrinsicBounds(img5, null, null, null);
         aboutUscomTextView.setTextColor(getResources().getColor(R.color.drawer_text_color));
+
     }
 
     @Override
@@ -720,11 +727,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
-//
-//    @Override
-//    protected void setUpPolyLine() {
-//
-//    }
 
     public void refresh() {
 
@@ -839,7 +841,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
                 //starting saving location in preferences
                 if (!Utils.isJobServiceOn(this)) {
                     Utils.scheduleApplicationPackageJob(this);
@@ -893,5 +894,4 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
 }

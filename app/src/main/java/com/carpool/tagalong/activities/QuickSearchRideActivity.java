@@ -2,7 +2,6 @@ package com.carpool.tagalong.activities;
 
 import android.Manifest;
 import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,7 +25,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -40,9 +38,14 @@ import android.widget.Toast;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.models.ModelGetNearbyDriversRequest;
+import com.carpool.tagalong.models.ModelGetNearbyDriversResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
+import com.carpool.tagalong.retrofit.ApiClient;
+import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.service.LocationHelper;
 import com.carpool.tagalong.utils.LocationAddress;
+import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 import com.carpool.tagalong.views.DirectionsJSONParser;
@@ -74,6 +77,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
@@ -94,6 +100,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.rootll)
     LinearLayout rootll;
     ArgbEvaluator argbEvaluator;
+    ArrayList<LatLng> points;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private ArrayList<String> placeIdList = null;
@@ -107,7 +114,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private GooglePlacesAutocompleteAdapterEndTrip googlePlacesAutocompleteAdapterEndTrip;
     private TextWatcher startTextWatcher;
     private RegularTextView carryBagCountTxt;
-    ArrayList<LatLng> points;
     private CheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
     private Button searchRide;
     private BroadcastReceiver listener = new BroadcastReceiver() {
@@ -122,7 +128,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         public boolean handleMessage(Message msg) {
 
             try {
-
                 locationHelper = LocationHelper.getInstance(context);
 
                 if (locationHelper != null) {
@@ -184,11 +189,11 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
     private void initializeViews() {
 
-        startTrip   = findViewById(R.id.et_start_trip);
-        endTrip     = findViewById(R.id.et_end_trip);
-        startPin    = findViewById(R.id.startPin);
-        endPin      = findViewById(R.id.endPin);
-        searchRide  = findViewById(R.id.search_rides);
+        startTrip = findViewById(R.id.et_start_trip);
+        endTrip = findViewById(R.id.et_end_trip);
+        startPin = findViewById(R.id.startPin);
+        endPin = findViewById(R.id.endPin);
+        searchRide = findViewById(R.id.search_rides);
 
         startPin.setOnClickListener(this);
         endPin.setOnClickListener(this);
@@ -401,6 +406,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         if (flag.equals(Constants.START_RIDE)) {
             this.startLat = lat;
             this.startlongt = lng;
+            showNearbyDrivers(lat, lng);
+
         } else {
             this.endLat = lat;
             this.endLng = lng;
@@ -425,7 +432,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
 
         if (startLat != null && endLat != null) {
-            String url = getDirectionsUrl(new LatLng(startLat,startlongt), new LatLng(endLat,endLng));
+            String url = getDirectionsUrl(new LatLng(startLat, startlongt), new LatLng(endLat, endLng));
 
             DownloadTask downloadTask = new DownloadTask();
             // Start downloading json data from Google Directions API
@@ -438,7 +445,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         try {
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(endLat, endLng))
-                    .zoom(17)
+                    .zoom(10)
                     .build();
 
 //        addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
@@ -529,14 +536,14 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         try {
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
-                    .zoom(17)
+                    .target(new LatLng(startLat, startlongt))
+                    .zoom(10)
                     .build();
 
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
             MarkerOptions options = new MarkerOptions();
-            options.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
+            options.position(new LatLng(startLat, startlongt));
             BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_start_ride_point_xhdpi);
             options.icon(icon);
             mMap.addMarker(options);
@@ -567,7 +574,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             Toast.makeText(context, "Location can't be empty!!", Toast.LENGTH_LONG).show();
             return;
         }
-
         showPreferencesAlert();
 //        searchRides();
     }
@@ -814,7 +820,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                 @Override
                 public void onClick(View v) {
                     alert.cancel();
-                    UIUtils.alertBox(context,"This is in progress!!!");
+                    UIUtils.alertBox(context, "This is in progress!!!");
 
                 }
             });
@@ -858,6 +864,119 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
         carry_bag_count = carry_bag_count - 1;
         carryBagCountTxt.setText(carry_bag_count + "");
+    }
+
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + API_KEY;
+
+        return url;
+    }
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.connect();
+
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+
+            br.close();
+
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
+
+    private void showNearbyDrivers(double lat, double lng) {
+
+        try {
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                ModelGetNearbyDriversRequest modelGetNearbyDriversRequest = new ModelGetNearbyDriversRequest();
+                modelGetNearbyDriversRequest.setCurrentLat(lat);
+                modelGetNearbyDriversRequest.setCurrentLong(lng);
+
+//                ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                Log.i(TAG, "Get Nearby driver request  is: " + modelGetNearbyDriversRequest.toString());
+
+                if (restClientRetrofitService != null) {
+
+                    restClientRetrofitService.getNearestDrivers(TagALongPreferenceManager.getToken(context), modelGetNearbyDriversRequest).enqueue(new Callback<ModelGetNearbyDriversResponse>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetNearbyDriversResponse> call, Response<ModelGetNearbyDriversResponse> response) {
+
+//                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null && response.body().getStatus() == 1) {
+
+                            } else if (response.body() != null && response.body().getStatus() == 0) {
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetNearbyDriversResponse> call, Throwable t) {
+//                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Toast.makeText(context, "Some error occurred!! Please try again!", Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "FAILURE ");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+//            ProgressDialogLoader.progressDialogDismiss();
+            Toast.makeText(context, "Some error occurs.Please try again!!", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
@@ -1021,11 +1140,15 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                             }
                         });
                         startTrip.setText(locationAddress);
+
                         addStartMarker();
                         startTrip.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.cross), null);
                         startPin.setVisibility(View.VISIBLE);
                         startLat = Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(context));
                         startlongt = Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(context));
+                        addStartMarker();
+                        showNearbyDrivers(startLat,startlongt);
+
                     }
                     break;
                 default:
@@ -1033,7 +1156,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
     }
 
-    private class DownloadTask extends AsyncTask<String,String,String> {
+    private class DownloadTask extends AsyncTask<String, String, String> {
 
         @Override
         protected String doInBackground(String... url) {
@@ -1110,64 +1233,5 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 // Drawing polyline in the Google Map for the i-th route
             mMap.addPolyline(lineOptions);
         }
-    }
-
-    private String getDirectionsUrl(LatLng origin, LatLng dest) {
-
-        // Origin of route
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
-        // Sensor enabled
-        String sensor = "sensor=false";
-        String mode = "mode=driving";
-
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
-
-        // Output format
-        String output = "json";
-
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+ "&key=" + API_KEY;
-
-        return url;
-    }
-
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(strUrl);
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.connect();
-
-            iStream = urlConnection.getInputStream();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
-            StringBuffer sb = new StringBuffer();
-
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-            data = sb.toString();
-
-            br.close();
-
-        } catch (Exception e) {
-            Log.d("Exception", e.toString());
-        } finally {
-            iStream.close();
-            urlConnection.disconnect();
-        }
-        return data;
     }
 }

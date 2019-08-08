@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -27,6 +28,7 @@ import com.carpool.tagalong.models.ModelSignInResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
+import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
@@ -66,15 +68,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         forgotPassword = findViewById(R.id.forgotPassword);
         progressBarLayout = findViewById(R.id.lytBarSignIn);
         countryCodePickerSignIn = findViewById(R.id.countryCodeSignIn);
-//
-//        countryCodePickerSignIn.setAutoDetectedCountry(true);
-//        countryCodePickerSignIn.detectLocaleCountry(true);
         countryCodePickerSignIn.setCustomMasterCountries("us");
 
         login.setOnClickListener(this);
         forgotPassword.setOnClickListener(this);
         makeSignUpTextSpannable();
-
 //        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
 
 //        callbackManager = CallbackManager.Factory.create();
@@ -155,6 +153,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private void handleLogin() {
 
+        UIUtils.hideSoftKeyboard(this);
         if (validateLoginData()) {
             signIn();
         }
@@ -234,21 +233,34 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             Log.i(TAG, "Sign IN response is: " + response.body().toString());
 
                             Toast.makeText(context, "Login Successful!!", Toast.LENGTH_LONG).show();
-
-                            // this is done here and to be used in driving fragment to get year list once the user login into app
-                            Utils.getYearsList(context);
-
-                            // this is done here and to be used in driving fragment to get color list once the user login into app
-                            Utils.getColorList(context);
-
-                            Intent intent;
-                            intent = new Intent(context, HomeActivity.class);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                             TagALongPreferenceManager.saveToken(context, response.body().getToken());
                             TagALongPreferenceManager.saveDeviceProfile(context, response.body().getData());
-                            isDocumentUploaded();
+
+                            if(response.body().getData().isVerifyMobile()) {
+
+                                Intent intent;
+                                intent = new Intent(context, HomeActivity.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                                new Handler().post(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        // this is done here and to be used in driving fragment to get year list once the user login into app
+                                        Utils.getYearsList(context);
+                                        // this is done here and to be used in driving fragment to get color list once the user login into app
+                                        Utils.getColorList(context);
+                                        isDocumentUploaded();
+                                    }
+                                });
+                            }else{
+                                Intent intent;
+                                intent = new Intent(context, VerificationActivity.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            }
+
                             finish();
 
                         } else if (response.body() != null && response.body().getStatus() == 0) {
@@ -348,6 +360,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private class URLSpanNoUnderline extends URLSpan {
+
         public URLSpanNoUnderline(String url) {
             super(url);
         }

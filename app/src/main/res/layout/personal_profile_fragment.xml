@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/light_grey_color" android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/light_grey_color">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -16,8 +18,8 @@
                 android:id="@+id/imgLyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="30dp"
-                android:background="@drawable/hero_bg_profile">
+                android:background="@drawable/hero_bg_profile"
+                android:padding="30dp">
 
                 <RelativeLayout
                     android:id="@+id/image_profile_user"
@@ -28,7 +30,7 @@
                         android:id="@+id/profile_pic"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:src="@drawable/avatar_avatar_12"/>
+                        android:src="@drawable/avatar_avatar_12" />
 
                     <ImageView
                         android:layout_width="120dp"
@@ -40,11 +42,10 @@
                         android:id="@+id/upload_profile_pic_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_camera_driving_xxhdpi"
-                        android:layout_centerHorizontal="true"
                         android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
                         android:paddingBottom="5dp"
-                        />
+                        android:src="@drawable/ic_camera_driving_xxhdpi" />
 
                 </RelativeLayout>
 
@@ -52,8 +53,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_toRightOf="@id/image_profile_user"
                     android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/image_profile_user"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
@@ -61,17 +62,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Alexandra Daniels"
-                        android:textSize="24sp"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="@android:color/black"
+                        android:textSize="24sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/profile_main_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Alexandra Daniels"
-                        android:textSize="16sp"
                         android:layout_marginTop="5dp"
-                        />
+                        android:text="Alexandra Daniels"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -81,82 +81,81 @@
                 android:id="@+id/user_drive_details"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@android:color/white"
                 android:layout_below="@id/imgLyt"
+                android:background="@android:color/white"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:weightSum="3"
-                >
+                android:weightSum="3">
 
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Total Miles"/>
+                        android:text="Total Miles"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/drove_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
                         android:layout_marginTop="5dp"
-                        android:text="200 km+"/>
+                        android:text="200 km+"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Rating"/>
+                        android:text="Rating"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
                         android:layout_marginTop="5dp"
-                        android:text="4.5"/>
+                        android:text="4.5"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Trips"/>
+                        android:text="Trips"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/trips"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
                         android:layout_marginTop="5dp"
-                        android:text="40"/>
+                        android:text="40"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -174,75 +173,75 @@
                 <com.carpool.tagalong.views.RegularTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="Personal details"/>
+                    android:text="Personal details"
+                    android:textSize="12sp" />
 
                 <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/edit_personal_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:text="EDIT"
-                    android:textSize="16sp"
-                    android:textStyle="normal"
                     android:textColor="@color/colorGold"
-                    android:layout_alignParentRight="true"/>
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
 
                 <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/save_personal_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:text="SAVE"
+                    android:textColor="@color/colorGold"
                     android:textSize="16sp"
                     android:textStyle="normal"
-                    android:textColor="@color/colorGold"
-                    android:layout_alignParentRight="true"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
                 android:layout_below="@id/rel1"
                 android:layout_marginTop="10dp"
+                android:background="@android:color/white"
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingTop="10dp"
+                android:paddingRight="20dp"
                 android:paddingBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Full name"/>
+                        android:text="First name"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/name_user_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
                         android:layout_marginTop="5dp"
-                        android:text=""/>
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
 
                     <EditText
                         android:id="@+id/name_user_profile_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
-                        android:textSize="16sp"
-                        android:singleLine="true"
                         android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:backgroundTint="@color/colorGold"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -255,171 +254,376 @@
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Phone number"/>
+                        android:text="Last Name"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/mobile_nuber_user"
+                        android:id="@+id/lastNameTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
                         android:layout_marginTop="5dp"
-                        android:text=""/>
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
 
                     <EditText
-                        android:id="@+id/mobile_nuber_user_edt"
+                        android:id="@+id/lastnameEdt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:backgroundTint="@color/colorGold"
-                        android:textSize="16sp"
-                        android:singleLine="true"
-                        android:editable="false"
-                        android:inputType="number"
                         android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:backgroundTint="@color/colorGold"
+                        android:editable="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_marginTop="15dp"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/countryCodeSignIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:backgroundTint="#bf9b30"
+                        app:ccp_countryPreference="US"
+                        app:ccp_defaultNameCode="US"
+                        app:ccp_showFlag="false"
+                        app:ccp_showFullName="false"
+                        app:ccp_showNameCode="false"
+                        app:ccp_showPhoneCode="true" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10_px"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
+
+                        <com.carpool.tagalong.views.RegularTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Phone number"
+                            android:textSize="12sp" />
+
+                        <com.carpool.tagalong.views.RegularTextView
+                            android:id="@+id/mobile_nuber_user"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text=""
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp" />
+
+                        <EditText
+                            android:id="@+id/mobile_nuber_user_edt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:backgroundTint="@color/colorGold"
+                            android:editable="false"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:singleLine="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Email"/>
+                        android:text="Email"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/email_id_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
                         android:layout_marginTop="5dp"
-                        android:text=""/>
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
 
                     <EditText
                         android:id="@+id/email_id_user_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:singleLine="true"
+                        android:layout_marginTop="5dp"
                         android:backgroundTint="@color/colorGold"
                         android:inputType="textEmailAddress|text"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date of birth"
+                        android:textSize="12sp" />
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/dobTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/dobEdt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textIsSelectable="false"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
                 <LinearLayout
 
                     android:layout_width="match_parent"
-                    android:layout_marginTop="15dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Mailing Address"/>
+                        android:text="Mailing Address"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/address_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
                         android:layout_marginTop="5dp"
-                        android:text=""/>
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
 
                     <EditText
                         android:id="@+id/address_user_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
+                        android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:backgroundTint="@color/colorGold"
-                        android:layout_marginTop="5dp"
-                        android:singleLine="true"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
                 <LinearLayout
 
                     android:layout_width="match_parent"
-                    android:layout_marginTop="15dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Gender"/>
+                        android:text="City"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/gender_user_txt"
+                        android:id="@+id/city_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
                         android:layout_marginTop="5dp"
-                        android:text=""/>
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
 
-                    <Spinner
-                        android:id="@+id/gender_spinner"
+                    <EditText
+                        android:id="@+id/city_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
+                        android:singleLine="true"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        style="@android:style/Widget.Spinner"
-                        android:backgroundTint="@color/colorGold"
-                        android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
                 <LinearLayout
 
                     android:layout_width="match_parent"
-                    android:layout_marginTop="15dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Region"
+                        android:textSize="12sp" />
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/region_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/region_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ZipCode"
+                        android:textSize="12sp" />
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/zipCodeUserTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/zipCodeUserEdt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gender"
+                        android:textSize="12sp" />
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/gender_user_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <Spinner
+                        android:id="@+id/gender_spinner"
+                        style="@android:style/Widget.Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:layout_marginBottom="10dp"
                     android:orientation="vertical">
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:text="Driver/Rider gender preference"/>
+                        android:text="Driver/Rider gender preference"
+                        android:textSize="12sp" />
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/pool_gender_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
                         android:layout_marginTop="5dp"
-                        android:text=""/>
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
 
                     <Spinner
                         android:id="@+id/pool_gender_spinner"
+                        style="@android:style/Widget.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:backgroundTint="@color/colorGold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        style="@android:style/Widget.Spinner"
-                        android:backgroundTint="@color/colorGold"
-                        android:layout_marginTop="5dp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

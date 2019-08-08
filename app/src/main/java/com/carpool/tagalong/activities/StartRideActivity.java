@@ -180,8 +180,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-
-
     private ArrayList autocomplete(String input) {
 
         ArrayList resultList = null;
@@ -234,7 +232,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         }
 
         try {
-
             // Create a JSON object hierarchy from the results
 
             JSONObject jsonObj = new JSONObject(jsonResults.toString());
@@ -279,7 +276,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
 
             @Override
             protected void onPostExecute(Void dummy) {
-
                 addMarker();
             }
         }.execute();
@@ -324,9 +320,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
             conn = (HttpURLConnection) url.openConnection();
 
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
-
             // Load the results into a StringBuilder
-
             int read;
 
             char[] buff = new char[1024];
@@ -348,7 +342,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
             // Create a JSON object hierarchy from the results
             JSONObject jsonObj = new JSONObject(jsonResults.toString());
             parse(jsonObj, flag);
-
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Cannot process JSON results", e);
         }
@@ -403,28 +396,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, this,mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis() - 1000);
-
-//        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-//
-//                new DatePickerDialog.OnDateSetListener() {
-//
-//                    @Override
-//                    public void onDateSet(DatePicker view, int year,
-//                                          int monthOfYear, int dayOfMonth) {
-//
-//                        view.setMinDate(System.currentTimeMillis() -1000);
-//                        monthOfYear = monthOfYear + 1;
-//                        if (monthOfYear < 10) {
-//                            txtDate = (dayOfMonth + "/" + "0" + monthOfYear + "/" + year);
-//                        } else
-//                            txtDate = (dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-//
-//                        Utils.getDateFromDateString(txtDate);
-//                        if (!txtDate.equals("")) {
-//                            handleTimePicker();
-//                        }
-//                    }
-//                }, mYear, mMonth, mDay);
 
         datePickerDialog.show();
     }

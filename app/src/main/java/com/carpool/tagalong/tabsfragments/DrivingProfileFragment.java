@@ -406,7 +406,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             //brand set
             for (int i = 0; i < vehicleBrandArrayList.size(); i++) {
 
-                if (data.getDriverDetails().getVehicle().equalsIgnoreCase(vehicleBrandArrayList.get(i))) {
+                if (data.getDriverDetails().getVehicleBrand().equalsIgnoreCase(vehicleBrandArrayList.get(i))) {
 
                     vehicleBrandSpinner.setSelection(i);
                     break;
@@ -416,10 +416,13 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             // model set
             for (int i = 0; i < vehicleModelArrayList.size(); i++) {
 
-                if (data.getDriverDetails().getVehicle().equalsIgnoreCase(vehicleModelArrayList.get(i))) {
+                if(data.getDriverDetails().getVehicleModel() != null) {
 
-                    vehicleModelSpinner.setSelection(i);
-                    break;
+                    if (data.getDriverDetails().getVehicleModel().equalsIgnoreCase(vehicleModelArrayList.get(i))) {
+
+                        vehicleModelSpinner.setSelection(i);
+                        break;
+                    }
                 }
             }
 
@@ -435,7 +438,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             // color set
             for (int i = 0; i < vehicleColorArrayList.size(); i++) {
 
-                if (data.getDriverDetails().getVehicle().equalsIgnoreCase(vehicleColorArrayList.get(i))) {
+                if (data.getDriverDetails().getVehicleColor().equalsIgnoreCase(vehicleColorArrayList.get(i))) {
 
                     vehicleColorSpinner.setSelection(i);
                     break;
@@ -489,9 +492,9 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             if (requestCode == GALLERY_PICTURE) {
                 Image_Selecting_Task(data, 0);
+            } else {
+                Image_Selecting_Task(data, 1);
             }
-        } else {
-            Image_Selecting_Task(data, 1);
         }
     }
 
@@ -508,7 +511,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         if (data != null) {
 
             vehicleColorTxt.setText(data.getDriverDetails().getVehicleColor());
-            vehicleTxt.setText(data.getDriverDetails().getVehicle());
+            vehicleTxt.setText(data.getDriverDetails().getVehicleBrand());
+            vehicleModelTxt.setText(data.getDriverDetails().getVehicleModel());
             vehicleRegistrationTxt.setText(data.getDriverDetails().getVehicleNumber());
             vehicleYearTxt.setText(data.getDriverDetails().getVehicleYear() + "");
 
@@ -725,7 +729,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             modelUpdateProfileRequest.setSmoke(smokeCheckBox.isChecked() ? true : false);
             modelUpdateProfileRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
             modelUpdateProfileRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
-            modelUpdateProfileRequest.setVehicle(vehicleTxt.getText().toString());
+            modelUpdateProfileRequest.setVehicleBrand(vehicleTxt.getText().toString());
+            modelUpdateProfileRequest.setVehicleModel(vehicleModelTxt.getText().toString());
             modelUpdateProfileRequest.setVehicleNumber(vehicleRegistrationTxt.getText().toString());
             modelUpdateProfileRequest.setVehicleYear(Integer.parseInt(vehicleYearTxt.getText().toString()));
             modelUpdateProfileRequest.setVehicleColor(vehicleColorTxt.getText().toString());
