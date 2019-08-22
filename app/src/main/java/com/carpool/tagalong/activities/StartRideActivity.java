@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.utils.Utils;
@@ -39,9 +40,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -50,6 +53,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -66,6 +70,10 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
     @BindView(R.id.rootll)
     LinearLayout rootll;
     ArgbEvaluator argbEvaluator;
+    @BindView(R.id.trip_start_time)
+    com.carpool.tagalong.views.RegularTextView trip_start_time;
+    @BindView(R.id.confirm_start_ride)
+    Button confirm;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private ArrayList<String> placeIdList = null;
@@ -77,10 +85,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
     private Context context;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private ImageView startPin;
-    @BindView(R.id.trip_start_time)
-    com.carpool.tagalong.views.RegularTextView trip_start_time;
-    @BindView(R.id.confirm_start_ride)
-    Button confirm;
     private String txtDate, txtTime;
     private String finalFormattedDate, finalFormattedTime;
 
@@ -239,7 +243,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
             JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
 
             // Extract the Place descriptions from the results
-
             resultList = new ArrayList(predsJsonArray.length());
             placeIdList = new ArrayList(predsJsonArray.length());
 
@@ -304,7 +307,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
     private void performPlaceAPIHit(String placeID, String flag) {
 
         HttpURLConnection conn = null;
-
         StringBuilder jsonResults = new StringBuilder();
 
         try {
@@ -374,14 +376,14 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
 
     private void handleConfirmStartRide() {
 
-        if(startTrip.getText().equals("") || getSourceLatLng() == null){
-            Toast.makeText(context,"Please enter start location", Toast.LENGTH_LONG).show();
+        if (startTrip.getText().equals("") || getSourceLatLng() == null) {
+            Toast.makeText(context, "Please enter start location", Toast.LENGTH_LONG).show();
             return;
         }
 
         Intent intent = new Intent(context, EndRideActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(Constants.DATETIME, finalFormattedDate +" "+finalFormattedTime);
+        intent.putExtra(Constants.DATETIME, finalFormattedDate + " " + finalFormattedTime);
         intent.putExtra(Constants.STARTLOCATION, startTrip.getText().toString());
         startActivity(intent);
     }
@@ -394,7 +396,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this,mYear, mMonth, mDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis() - 1000);
 
         datePickerDialog.show();
@@ -409,65 +411,11 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         } else
             txtDate = (dayOfMonth + "/" + (month + 1) + "/" + year);
 
-        Utils.getDateFromDateString(txtDate);
+        finalFormattedDate = Utils.getRidePostDateFromDateString(txtDate);
+
+//        Utils.getDateFromDateString(txtDate);
         if (!txtDate.equals("")) {
             handleTimePicker();
-        }
-    }
-
-    class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
-
-        public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
-            super(context,textViewResourceId);
-        }
-
-        @Override
-        public int getCount() {
-            return resultList.size();
-        }
-
-        @Override
-        public String getItem(int index) {
-            return resultList.get(index).toString();
-        }
-
-        @Override
-        public Filter getFilter() {
-
-            Filter filter = new Filter() {
-
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-
-                    FilterResults filterResults = new FilterResults();
-
-                    if (constraint != null) {
-
-                        // Retrieve the autocomplete results.
-//                        if (!lastHit.equals(constraint.toString())) {
-                        resultList = autocomplete(constraint.toString());
-//                            lastHit = constraint.toString();
-
-                        // Assign the data to the FilterResults
-                        filterResults.values = resultList;
-
-                        filterResults.count = resultList.size();
-                    }
-//                    }
-                    return filterResults;
-                }
-
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-
-                    if (results != null && results.count > 0) {
-                        notifyDataSetChanged();
-                    } else {
-                        notifyDataSetInvalidated();
-                    }
-                }
-            };
-            return filter;
         }
     }
 
@@ -527,15 +475,19 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
 
         txtTime = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
 
+        if (txtTime.length() < 2) {
+            txtTime = "0" + txtTime;
+        }
+
 //        date.setText(txtDate);
         if (minute < 10) {
             String s = 0 + "" + minute;
-            trip_start_time.setText(txtDate+" "+txtTime + ":" + s + " " + am_pm);
+            trip_start_time.setText(txtDate + " " + txtTime + ":" + s + " " + am_pm);
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate + " " + txtTime + ":" + s + ":" + "00" + " " + am_pm);
         } else {
-            trip_start_time.setText(txtDate+" "+txtTime + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
+            trip_start_time.setText(txtDate + " " + txtTime + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate + " " + txtTime + ":" + datetime.get(Calendar.MINUTE) + ":" + "00" + " " + am_pm);
         }
-//        trip_start_time.setText(txtDate +" "+ txtTime);
-        finalFormattedTime = Utils.getRideTimeFromDateString(txtTime + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
     }
 
     private void addMarker() {
@@ -559,5 +511,61 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(listener);
+    }
+
+    class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
+
+        public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
+            super(context, textViewResourceId);
+        }
+
+        @Override
+        public int getCount() {
+            return resultList.size();
+        }
+
+        @Override
+        public String getItem(int index) {
+            return resultList.get(index).toString();
+        }
+
+        @Override
+        public Filter getFilter() {
+
+            Filter filter = new Filter() {
+
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+
+                    FilterResults filterResults = new FilterResults();
+
+                    if (constraint != null) {
+
+                        // Retrieve the autocomplete results.
+//                        if (!lastHit.equals(constraint.toString())) {
+                        resultList = autocomplete(constraint.toString());
+//                            lastHit = constraint.toString();
+
+                        // Assign the data to the FilterResults
+                        filterResults.values = resultList;
+
+                        filterResults.count = resultList.size();
+                    }
+//                    }
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+            return filter;
+        }
     }
 }

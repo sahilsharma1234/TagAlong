@@ -95,6 +95,12 @@
     <string name="intercity_long_distance_ride">(Intercity long distance rides)</string>
     <string name="ride_completed">Ride has been completed</string>
     <string name="total_amount_paid">Toatal amount paid</string>
+    <string name="reached_string">Looks like you have reached/ndon\'t forget to review.</string>
+    <string name="register_wepay_merchant">Do you want to register as driver to receive payments when you drive?</string>
+    <string name="verify_wepay">You haven\'t verified your account on wepay..Please verify!!</string>
+    <string name="onboard_welcome">Welcome on board!!</string>
+    <string name="driver_picked">Driver has picked you up, enjoy ride!</string>
+    <string name="your_otp">Share this OTP while driver pick you up</string>
 
 
 </resources>

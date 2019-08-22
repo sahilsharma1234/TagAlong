@@ -49,7 +49,6 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.Utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -136,9 +135,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         vehicleModelArrayList.add(0, "Select model");
         vehicleColorArrayList.add(0, "Select color");
 
-        getCarModelBrandListFromServer();
-
-        handleStartSetup();
     }
 
     private void handleStartSetup() {
@@ -320,14 +316,15 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                 case MY_PERMISSIONS_REQUEST:
 
                     if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
-                        Image_Picker_Dialog();
                     } else {
                         showAlertDialog("This app needs storage permission", "Need Storage Permission", false, 1);
                     }
                     break;
             }
 
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ) {
+                Image_Picker_Dialog();
             }
 
         } catch (Exception e) {
@@ -363,38 +360,42 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
     private void handleSaveDrivingPreferences() {
 
-        String brand = vehicleBrandSpinner.getSelectedItem().toString();
-        String model = vehicleModelSpinner.getSelectedItem().toString();
-        String year = vehicleYearSpinner.getSelectedItem().toString();
-        String color = vehicleColorSpinner.getSelectedItem().toString();
+        try {
+            String brand = vehicleBrandSpinner.getSelectedItem().toString();
+            String model = vehicleModelSpinner.getSelectedItem().toString();
+            String year = vehicleYearSpinner.getSelectedItem().toString();
+            String color = vehicleColorSpinner.getSelectedItem().toString();
 
-        if (brand.equalsIgnoreCase("Select Brand") || model.equalsIgnoreCase("Select model") || year.equalsIgnoreCase("select model year") || color.equalsIgnoreCase("Select color")) {
-            Toast.makeText(getActivity(), "Please fill all the details!!", Toast.LENGTH_SHORT).show();
-            return;
+            if (brand.equalsIgnoreCase("Select Brand") || model.equalsIgnoreCase("Select model") || year.equalsIgnoreCase("select model year") || color.equalsIgnoreCase("Select color")) {
+                Toast.makeText(getActivity(), "Please fill all the details!!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            editTxt.setVisibility(View.VISIBLE);
+            saveTxt.setVisibility(View.GONE);
+
+            vehicleTxt.setText(brand);
+            vehicleRegistrationTxt.setText(vehicleRegNumEdt.getText().toString());
+            vehicleYearTxt.setText(year);
+            vehicleColorTxt.setText(color);
+            vehicleModelTxt.setText(model);
+
+            vehicleBrandSpinner.setVisibility(View.GONE);
+            vehicleRegNumEdt.setVisibility(View.GONE);
+            vehicleYearSpinner.setVisibility(View.GONE);
+            vehicleColorSpinner.setVisibility(View.GONE);
+            vehicleModelSpinner.setVisibility(View.GONE);
+
+            vehicleTxt.setVisibility(View.VISIBLE);
+            vehicleRegistrationTxt.setVisibility(View.VISIBLE);
+            vehicleYearTxt.setVisibility(View.VISIBLE);
+            vehicleColorTxt.setVisibility(View.VISIBLE);
+            vehicleModelTxt.setVisibility(View.VISIBLE);
+
+            saveDrivingDetails();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        editTxt.setVisibility(View.VISIBLE);
-        saveTxt.setVisibility(View.GONE);
-
-        vehicleTxt.setText(brand);
-        vehicleRegistrationTxt.setText(vehicleRegNumEdt.getText().toString());
-        vehicleYearTxt.setText(year);
-        vehicleColorTxt.setText(color);
-        vehicleModelTxt.setText(model);
-
-        vehicleBrandSpinner.setVisibility(View.GONE);
-        vehicleRegNumEdt.setVisibility(View.GONE);
-        vehicleYearSpinner.setVisibility(View.GONE);
-        vehicleColorSpinner.setVisibility(View.GONE);
-        vehicleModelSpinner.setVisibility(View.GONE);
-
-        vehicleTxt.setVisibility(View.VISIBLE);
-        vehicleRegistrationTxt.setVisibility(View.VISIBLE);
-        vehicleYearTxt.setVisibility(View.VISIBLE);
-        vehicleColorTxt.setVisibility(View.VISIBLE);
-        vehicleModelTxt.setVisibility(View.VISIBLE);
-
-        saveDrivingDetails();
     }
 
     private void editDrivingPreferences() {
@@ -499,9 +500,24 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        createDocumentsList();
+    public void onResume() {
+        super.onResume();
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+
+                getCarModelBrandListFromServer();
+                handleStartSetup();
+            }
+        });
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                createDocumentsList();
+            }
+        });
     }
 
     private void createDocumentsList() {

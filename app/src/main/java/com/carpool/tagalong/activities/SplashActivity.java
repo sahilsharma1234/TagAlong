@@ -1,5 +1,6 @@
 package com.carpool.tagalong.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -132,5 +133,26 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.i(TAG, "INSIDE ACTIVITY RESULT."+ requestCode + " "+resultCode+ " "+ Activity.RESULT_OK);
+
+        switch (requestCode) {
+            // Check for the integer request code originally supplied to startResolutionForResult().
+            case 123:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Log.i(TAG, "User agreed to make required location settings changes.");
+                        moveFurther();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Log.i(TAG, "User chose not to make required location settings changes.");
+                        break;
+                }
+                break;
+        }
     }
 }

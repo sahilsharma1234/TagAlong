@@ -24,6 +24,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -65,6 +67,7 @@ import com.carpool.tagalong.utils.BitmapUtils;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
+import com.carpool.tagalong.views.RegularEditText;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -297,7 +300,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             navigate.setVisibility(View.GONE);
         } else if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.STARTED) {
             notStarted.setVisibility(View.GONE);
-            cancelRideDriver.setVisibility(View.GONE);
+            cancelRideDriver.setVisibility(View.VISIBLE);
             navigate.setVisibility(View.VISIBLE);
             button_ride.setVisibility(View.GONE);
         }
@@ -717,8 +720,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             ModelPickupRider modelPickupRider = new ModelPickupRider();
 //            Location location = ((HomeActivity) getActivity()).location;
             if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
-                modelPickupRider.setDropLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
-                modelPickupRider.setDropLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
+                modelPickupRider.setPickupLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
+                modelPickupRider.setPickupLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
             }
 
             if (onBoard != null)
@@ -1256,7 +1259,32 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         com.carpool.tagalong.views.RegularTextView cancel = delayDialog.findViewById(R.id.tv_cancel);
         com.carpool.tagalong.views.RegularTextView reject = delayDialog.findViewById(R.id.tv_Reject);
         com.carpool.tagalong.views.RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
+
+        final RegularEditText otpView =  delayDialog.findViewById(R.id.otp_pickup);
         final SlideToActView slideToActView = delayDialog.findViewById(R.id.tv_slider);
+
+        otpView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if(otpView.getText().toString().length() < 4){
+                    slideToActView.setVisibility(View.GONE);
+                }else{
+                    slideToActView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         if (joinRequest != null) {
 

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    android:padding="@dimen/_10_px">
+
+    <View
+        android:layout_width="30dp"
+        android:layout_height="5dp"
+        android:background="@color/grey"
+        android:layout_centerHorizontal="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_20_px">
+
+        <com.carpool.tagalong.views.RegularTextView
+            android:id="@+id/dd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driver details"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:id="@+id/l1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dd"
+            android:layout_marginTop="@dimen/_10_px"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/driverImage"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/avatar_avatar_12"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/driverDtls"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_10_px">
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/drivernameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ABC"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/driverRating"
+                    android:layout_below="@id/drivernameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ABC"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_star_on_review_pop_mdpi"
+                    android:layout_below="@id/drivernameText"
+                    android:layout_toRightOf="@id/driverRating"/>
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/countPickup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ABC"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_below="@id/driverRating"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_5_px"
+                    android:layout_marginLeft="@dimen/_20_px"
+                    android:src="@drawable/ic_call"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/cancelRide"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textAllCaps="true"
+            android:text="Cancel Ride"
+            android:layout_below="@id/l1"
+            android:layout_marginTop="@dimen/_20_px"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

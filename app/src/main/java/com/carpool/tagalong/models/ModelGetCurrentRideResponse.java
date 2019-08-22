@@ -203,6 +203,7 @@ public class ModelGetCurrentRideResponse implements Serializable {
     }
 
     public class OnBoard implements Serializable {
+
         @SerializedName("_id")
         public String _id;
         @SerializedName("bags")
@@ -233,7 +234,6 @@ public class ModelGetCurrentRideResponse implements Serializable {
         public String profile_pic;
         @SerializedName("rating")
         public double rating;
-
         @SerializedName("payStatus")
         public boolean payStatus;
 
@@ -475,6 +475,9 @@ public class ModelGetCurrentRideResponse implements Serializable {
         @SerializedName("payStatus")
         public boolean payStatus;
 
+        @SerializedName("pickupVerificationCode")
+        public int pickupVerificationCode;
+
         public boolean isPayStatus() {
             return payStatus;
         }
@@ -601,6 +604,14 @@ public class ModelGetCurrentRideResponse implements Serializable {
 
         public void setDriverDetails(DriverDetails driverDetails) {
             this.driverDetails = driverDetails;
+        }
+
+        public int getPickupVerificationCode() {
+            return pickupVerificationCode;
+        }
+
+        public void setPickupVerificationCode(int pickupVerificationCode) {
+            this.pickupVerificationCode = pickupVerificationCode;
         }
     }
 

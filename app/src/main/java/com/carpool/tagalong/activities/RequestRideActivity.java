@@ -26,6 +26,7 @@ import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
+import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -60,7 +61,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         onlinePaymentBtn = findViewByIdAndCast(R.id.online_payment);
 //        cashBtn = findViewByIdAndCast(R.id.cash_payment);
-        requestRide   = findViewByIdAndCast(R.id.request_ride_btn);
+        requestRide = findViewByIdAndCast(R.id.request_ride_btn);
         profileDriver = findViewByIdAndCast(R.id.profile_driver_txt);
 
         name = findViewById(R.id.profile_main_name);
@@ -70,8 +71,8 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         profile_pic = findViewById(R.id.image_profile_user);
         estimatedCost = findViewById(R.id.estimated_cost);
         seats = findViewById(R.id.noOfSeats);
-        bags = findViewById(R.id.noOfBags);
-        kids = findViewById(R.id.noOfKids);
+        bags  = findViewById(R.id.noOfBags);
+        kids  = findViewById(R.id.noOfKids);
         ratings = findViewById(R.id.ratings);
         progressBarLayout = findViewById(R.id.requestRideProgressBar);
 
@@ -124,13 +125,19 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 
         if (id == R.id.request_ride_btn) {
 
-            requestRide();
+            if (DataManager.getModelUserProfileData().getCard().size() > 0) {
+
+                requestRide();
+            }
+            else {
+                UIUtils.alertBox(context,"Firstly please add your credit card details in profile!!");
+            }
 
         } else if (id == R.id.profile_driver_txt) {
 
             Intent intent;
             intent = new Intent(RequestRideActivity.this, DriverProfileActivity.class);
-            intent.putExtra(Constants.DRIVER_DATA,modelSearchRideResponseData.getUserId());
+            intent.putExtra(Constants.DRIVER_DATA, modelSearchRideResponseData.getUserId());
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -156,18 +163,19 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         Intent intent = new Intent("launchCurrentRideFragment");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAndRemoveTask();
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            finishAndRemoveTask();
+//        }
     }
 
     private void requestRide() {
 
         ModelRequestRide modelRequestRide = new ModelRequestRide();
+
         modelRequestRide.setRideId(modelSearchRideResponseData.getRideId());
         modelRequestRide.setDriverId(modelSearchRideResponseData.getUserId());
-        modelRequestRide.setStartLocation(modelSearchRideResponseData.getStartLocation());
-        modelRequestRide.setEndLocation(modelSearchRideResponseData.getEndLocation());
+        modelRequestRide.setStartLocation(modelSearchRideRequest.getStartLocation());
+        modelRequestRide.setEndLocation(modelSearchRideRequest.getEndLocation());
         modelRequestRide.setStartLat(modelSearchRideRequest.getStartLat());
         modelRequestRide.setEndLat(modelSearchRideRequest.getEndLat());
         modelRequestRide.setStartLong(modelSearchRideRequest.getStartLong());
@@ -182,11 +190,11 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 
         if (Utils.isNetworkAvailable(context)) {
 
-            ProgressDialogLoader.progressDialogCreation(this,context.getString(R.string.please_wait));
+            ProgressDialogLoader.progressDialogCreation(this, context.getString(R.string.please_wait));
 
             RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-            Log.i(TAG, "Request Ride request is: " + modelSearchRideRequest.toString());
+            Log.i(TAG, "Request Ride request is: " + modelRequestRide.toString());
 
             if (restClientRetrofitService != null) {
 

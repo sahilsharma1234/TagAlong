@@ -6,14 +6,14 @@
 
     <Button
         android:id="@+id/kyc"
-        android:layout_width="160dp"
-        android:layout_height="60dp"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:background="@drawable/button_shape_signin"
-        android:text="Do KYC"
+        android:text="Complete your KYC"
         android:textAllCaps="false"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:visibility="gone"
         android:textColor="@color/white"
         android:layout_marginBottom="30dp"/>
@@ -32,192 +32,246 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/user_drive_details"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
 
                 <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/reg_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Payment method"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:text="@string/register_wepay_merchant"
                     android:textColor="@color/black" />
 
-                <com.carpool.tagalong.views.RegularTextView
-                    android:id="@+id/edit_payment_dtls"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="EDIT"
-                    android:textColor="@color/colorGold"
-                    android:textSize="16sp"
-                    android:textStyle="normal" />
 
                 <com.carpool.tagalong.views.RegularTextView
-                    android:id="@+id/save_payment_dtls"
+                    android:id="@+id/reg_txt3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="SAVE"
-                    android:textColor="@color/colorGold"
-                    android:textSize="16sp"
-                    android:textStyle="normal"
-                    android:visibility="gone" />
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:text="@string/verify_wepay"
+                    android:visibility="gone"
+                    android:textColor="@color/black" />
+
+                <Button
+                    android:id="@+id/register_on_wepay"
+                    android:layout_width="180dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/reg_txt"
+                    android:layout_centerHorizontal="true"
+                    android:text="Register"
+                    android:background="@drawable/button_shape_signin"
+                    android:layout_marginTop="90dp"/>
+
+                <Button
+                    android:id="@+id/verify_wepay"
+                    android:layout_width="180dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/reg_txt3"
+                    android:layout_centerHorizontal="true"
+                    android:text="Verify"
+                    android:visibility="gone"
+                    android:background="@drawable/button_shape_signin"
+                    android:layout_marginTop="70dp"/>
+
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/preferences_user"
+           <!-- <RelativeLayout
+                android:id="@+id/rel3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rel1"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/white"
-                android:orientation="vertical"
+                android:layout_below="@id/user_drive_details"
+                android:layout_marginTop="20dp"
                 android:paddingLeft="20dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                android:gravity="center"
+                android:visibility="gone"
+                android:paddingRight="20dp"
+                >
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/reg_txt3"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:text="@string/verify_wepay"
+                    android:textColor="@color/black" />
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Account number" />
-
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/account_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text=""
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/account_number_edt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:backgroundTint="@color/colorGold"
-                        android:singleLine="true"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
-
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Account Nickname" />
-
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/short_code"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text=""
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-
-                    <EditText
-                        android:id="@+id/short_code_edt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:backgroundTint="@color/colorGold"
-                        android:singleLine="true"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/verify_wepay"
+                    android:layout_width="180dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/reg_txt3"
+                    android:layout_centerHorizontal="true"
+                    android:text="Register"
+                    android:background="@drawable/button_shape_signin"
+                    android:layout_marginTop="80dp"/>
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
+            </RelativeLayout>-->
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Routing Number" />
+            <!--  <LinearLayout
+                  android:id="@+id/preferences_user"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@id/rel1"
+                  android:layout_marginTop="10dp"
+                  android:background="@android:color/white"
+                  android:orientation="vertical"
+                  android:paddingLeft="20dp"
+                  android:paddingTop="10dp"
+                  android:paddingBottom="10dp">
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/routing_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text=""
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/routing_no_edt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:backgroundTint="@color/colorGold"
-                        android:singleLine="true"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Account number" />
 
-                </LinearLayout>
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:id="@+id/account_number"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:text=""
+                          android:textColor="@android:color/black"
+                          android:textSize="18sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
+                      <EditText
+                          android:id="@+id/account_number_edt"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:backgroundTint="@color/colorGold"
+                          android:singleLine="true"
+                          android:textColor="@android:color/black"
+                          android:textSize="16sp"
+                          android:visibility="gone" />
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Financial Intuition or Bank Name" />
+                  </LinearLayout>
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/bank_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text=""
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/bank_name_edt"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:backgroundTint="@color/colorGold"
-                        android:singleLine="true"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Account Nickname" />
 
-                </LinearLayout>
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:id="@+id/short_code"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:text=""
+                          android:textColor="@android:color/black"
+                          android:textSize="18sp" />
 
-            </LinearLayout>
+                      <EditText
+                          android:id="@+id/short_code_edt"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:backgroundTint="@color/colorGold"
+                          android:singleLine="true"
+                          android:textColor="@android:color/black"
+                          android:textSize="16sp"
+                          android:visibility="gone" />
+
+                  </LinearLayout>
+
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:orientation="vertical">
+
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Routing Number" />
+
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:id="@+id/routing_number"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:text=""
+                          android:textColor="@android:color/black"
+                          android:textSize="18sp" />
+
+                      <EditText
+                          android:id="@+id/routing_no_edt"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:backgroundTint="@color/colorGold"
+                          android:singleLine="true"
+                          android:textColor="@android:color/black"
+                          android:textSize="16sp"
+                          android:visibility="gone" />
+
+                  </LinearLayout>
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:orientation="vertical">
+
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="Financial Intuition or Bank Name" />
+
+                      <com.carpool.tagalong.views.RegularTextView
+                          android:id="@+id/bank_name"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:text=""
+                          android:textColor="@android:color/black"
+                          android:textSize="18sp" />
+
+                      <EditText
+                          android:id="@+id/bank_name_edt"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="5dp"
+                          android:backgroundTint="@color/colorGold"
+                          android:singleLine="true"
+                          android:textColor="@android:color/black"
+                          android:textSize="16sp"
+                          android:visibility="gone" />
+
+                  </LinearLayout>
+
+              </LinearLayout>
+  -->
+
 
             <RelativeLayout
                 android:id="@+id/rel2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/preferences_user"
-                android:layout_marginTop="20dp"
+                android:layout_below="@id/rel1"
+                android:layout_marginTop="30dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
 

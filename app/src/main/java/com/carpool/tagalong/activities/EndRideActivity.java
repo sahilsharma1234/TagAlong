@@ -176,14 +176,14 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-//    private void handleEndPinClick() {
-//
-//        if (endPin.getVisibility() == View.VISIBLE) {
-//            endRide.clearComposingText();
-//            endRide.setText("");
-//            endPin.setVisibility(View.GONE);
-//        }
-//    }
+    private void handleEndPinClick() {
+
+        if (endPin.getVisibility() == View.VISIBLE) {
+            endRide.clearComposingText();
+            endRide.setText("");
+            endPin.setVisibility(View.GONE);
+        }
+    }
 
     private ArrayList autocomplete(String input) {
 
@@ -375,6 +375,10 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             case R.id.plus_stepper:
                 handleIncreaseCarryBag();
                 break;
+
+            case R.id.endPin:
+                handleEndPinClick();
+                break;
         }
     }
 
@@ -520,12 +524,12 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
 
                                 Intent intent = new Intent("launchCurrentRideFragment");
-
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
                                 finish();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    finishAndRemoveTask();
-                                }
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                                    finishAndRemoveTask();
+//                                }
                             } else if (response.body() != null && response.body().getStatus() == 0) {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }

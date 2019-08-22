@@ -19,8 +19,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/avatar_avatar_12" />
 
         <LinearLayout
@@ -36,7 +36,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Android Studio"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="24sp" />
 
             <com.carpool.tagalong.views.RegularTextView
                 android:id="@+id/user_address"
@@ -45,7 +45,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="Android Studio"
                 android:textColor="@android:color/black"
-                android:textSize="12sp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -106,10 +106,12 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_current_ride_off_sidebar_xxhdpi"
                     android:drawablePadding="30dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:padding="10dp"
                     android:text="@string/currentupcoming"
                     android:textColor="@color/drawer_text_color"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
             </LinearLayout>
 

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar_shadow" android:id="@+id/toolbar_quick_search"/>
+    <include
+        android:id="@+id/toolbar_quick_search"
+        layout="@layout/toolbar_shadow" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,36 +32,36 @@
             android:id="@+id/startLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
             android:background="@drawable/background_elevation"
-            android:elevation="3dp"
-            android:layout_marginRight="15dp">
+            android:elevation="3dp">
 
             <AutoCompleteTextView
                 android:id="@+id/et_start_trip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:textSize="16sp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:backgroundTint="@android:color/transparent"
-                android:layout_centerVertical="true"
-                android:hint="Pick me up at"
-                android:drawablePadding="10dp"
-                android:drawableRight="@drawable/ic_start_ride_point_xhdpi"
-                android:imeOptions="actionDone"
                 android:layout_alignParentLeft="true"
-                android:textColorHint="@android:color/black"/>
+                android:layout_centerVertical="true"
+                android:backgroundTint="@android:color/transparent"
+                android:drawableRight="@drawable/ic_start_ride_point_xhdpi"
+                android:drawablePadding="10dp"
+                android:ellipsize="end"
+                android:hint="Pick me up at"
+                android:imeOptions="actionDone"
+                android:paddingLeft="20dp"
+                android:singleLine="true"
+                android:textColorHint="@android:color/black"
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/startPin"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentRight="true"
-                android:visibility="gone"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -66,54 +69,228 @@
             android:id="@+id/endTrip"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
             android:layout_below="@id/startLayout"
             android:layout_marginLeft="15dp"
-            android:elevation="3dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
             android:background="@drawable/background_elevation"
-            android:layout_marginRight="15dp">
+            android:elevation="3dp">
 
             <AutoCompleteTextView
                 android:id="@+id/et_end_trip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:textSize="16sp"
-                android:singleLine="true"
-                android:backgroundTint="@android:color/transparent"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:backgroundTint="@android:color/transparent"
+                android:drawableRight="@drawable/ic_end_ride_point_xhdpi"
+                android:drawablePadding="10dp"
                 android:hint="And take me to"
                 android:imeOptions="actionDone"
-                android:drawablePadding="10dp"
-                android:drawableRight="@drawable/ic_end_ride_point_xhdpi"
-                android:layout_alignParentLeft="true"
-                android:textColorHint="@android:color/black"/>
+                android:paddingLeft="20dp"
+                android:singleLine="true"
+                android:textColorHint="@android:color/black"
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/endPin"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:layout_alignParentRight="true"/>
+                android:visibility="gone" />
 
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/search_rides"
+        <RelativeLayout
+            android:id="@+id/rideSearchResultLyt"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="20dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/button_shape_signin"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="20dp"
+            android:layout_height="200dp"
             android:layout_alignParentBottom="true"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:text="Search Ride"/>
+            android:background="@color/white"
+            android:visibility="gone"
+            android:padding="15dp">
+
+            <RelativeLayout
+                android:id="@+id/headerLyt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ride details" />
+
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/_10_px"
+                    android:gravity="center"
+                    android:text="Ride cost" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/headerLyt"
+                android:layout_marginTop="@dimen/_10_px">
+
+                <ImageView
+                    android:id="@+id/img2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_ride_overview_xxhpi" />
+
+                <RelativeLayout
+                    android:id="@+id/ride_details1"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="@dimen/_10_px"
+                    android:layout_toLeftOf="@id/costLyt"
+                    android:layout_toRightOf="@id/img2"
+                    android:gravity="center">
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/start_point_source_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center|start"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/end_point_dest_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:ellipsize="end"
+                        android:gravity="center|start"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+
+                    <!--<com.carpool.tagalong.views.RegularTextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@id/end_point_dest_name"-->
+                    <!--android:textSize="12sp"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="ABC"/>-->
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/costLyt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <!--<com.carpool.tagalong.views.RegularTextView-->
+                    <!--android:id="@+id/estimatedCost"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text=""-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="18sp" />-->
+
+                    <com.romainpiel.shimmer.ShimmerTextView
+                        android:id="@+id/estimatedCost"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="           "
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:reflectionColor="@color/colorGold" />
+
+                    <com.romainpiel.shimmer.ShimmerTextView
+                        android:id="@+id/eta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5_px"
+                        android:text="           "
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:reflectionColor="@color/colorGold" />
+
+                    <!--<com.carpool.tagalong.views.RegularTextView-->
+                    <!--android:id="@+id/eta"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/_5_px"-->
+                    <!--android:text=""-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="14sp" />-->
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/payBookNow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/button_shape_gold_rectangle"
+                android:text="@string/payandbooknow"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/payAndBookDisable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/grey"
+                android:text="@string/payandbooknow"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/bookedCabDriverDetails"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            android:background="@color/white">
+
+        </RelativeLayout>
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/search_rides"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/button_shape_signin"
+        android:text="Search Ride"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
 </RelativeLayout>

@@ -114,6 +114,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
     private TextWatcher startTextWatcher;
     private LocationHelper locationHelper;
     private Location mLastLocation;
+    private String finalFormattedTime,finalFormattedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,15 +152,6 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi, null));
         } else {
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi));
-        }
-
-        if(getIntent().getExtras() != null){
-
-            if (getIntent().getExtras().containsKey("quickride")){
-
-
-
-            }
         }
     }
 
@@ -321,17 +313,19 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
     private void getCurrentDateTimeAndSet() {
 
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
+        mYear  = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
-        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mDay   = c.get(Calendar.DAY_OF_MONTH);
+        mHour  = c.get(Calendar.HOUR_OF_DAY);
         mMinute = c.get(Calendar.MINUTE);
-        mMonth = mMonth + 1;
+        mMonth  = mMonth + 1;
 
         if (mMonth < 10) {
             txtDate = (mDay + "/" + "0" + mMonth + "/" + mYear);
         } else
             txtDate = (mDay + "/" + (mMonth + 1) + "/" + mYear);
+
+        finalFormattedDate = Utils.getRidePostDateFromDateString(txtDate);
 
         onTimeSet1(mHour, mMinute);
     }
@@ -579,12 +573,18 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
 
         txtTime = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
 
+        if(txtTime.length() < 2){
+            txtTime = "0"+txtTime;
+        }
+
         date.setText(txtDate);
         if (minute < 10) {
             String s = 0 + "" + minute;
-            time.setText(txtTime + ":" + s + " " + am_pm);
+            time.setText(txtTime + ":" + s + ":"+"00"+ " " + am_pm);
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate+" "+txtTime + ":" + s+ ":" + "00"+" "+am_pm);
         } else {
-            time.setText(txtTime + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
+            time.setText(txtTime + ":" + datetime.get(Calendar.MINUTE) + ":"+ "00"+ " " + am_pm);
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate+" "+txtTime + ":" + datetime.get(Calendar.MINUTE)+ ":" + "00" +" "+am_pm);
         }
     }
 
@@ -756,7 +756,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
             modelSearchRideRequest.setEndLong(endLng);
             modelSearchRideRequest.setStartLocation(startTrip.getText().toString());
             modelSearchRideRequest.setEndLocation(endTrip.getText().toString());
-            modelSearchRideRequest.setRideDateTime(Utils.getRidePostDateFromDateString(date.getText().toString()) + " " + Utils.getRideTimeFromDateString(time.getText().toString()));
+            modelSearchRideRequest.setRideDateTime(finalFormattedDate + " " +finalFormattedTime);
             modelSearchRideRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
             modelSearchRideRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
             int seats = Integer.parseInt(seatsCountArray[seatsSpinner.getSelectedItemPosition()]);
@@ -854,7 +854,9 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
         } else
             txtDate = (dayOfMonth + "/" + month  + "/" + year);
 
-        Utils.getDateFromDateString(txtDate);
+        finalFormattedDate = Utils.getRidePostDateFromDateString(txtDate);
+
+//        Utils.getDateFromDateString(txtDate);
         if (!txtDate.equals("")) {
             handleTimePicker();
         }

@@ -47,7 +47,7 @@ public class RecentRidesFragment extends Fragment implements RecentRideAdapter.R
 
     RecyclerView recycler_view_recent_rides;
     private RecentRideAdapter mAdapter;
-    private com.carpool.tagalong.views.RegularTextView  norideTxt;
+    private com.carpool.tagalong.views.RegularTextView norideTxt;
     private ImageView noRideImg;
 
     // TODO: Rename and change types of parameters
@@ -96,9 +96,6 @@ public class RecentRidesFragment extends Fragment implements RecentRideAdapter.R
         recycler_view_recent_rides = view.findViewById(R.id.recycler_view_recent_rides);
         noRideImg = view.findViewById(R.id.norideImg);
         norideTxt = view.findViewById(R.id.no_recent_rides);
-
-        getRecentRides();
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -109,6 +106,13 @@ public class RecentRidesFragment extends Fragment implements RecentRideAdapter.R
 //            mListener.onFragmentInteraction(uri);
 //        }
 //    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getRecentRides();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -168,7 +172,7 @@ public class RecentRidesFragment extends Fragment implements RecentRideAdapter.R
                                 recycler_view_recent_rides.setVisibility(View.VISIBLE);
 
                                 handleRecentRideResposne(rideData);
-                            }else{
+                            } else {
 
                                 noRideImg.setVisibility(View.VISIBLE);
                                 norideTxt.setVisibility(View.VISIBLE);
@@ -209,10 +213,10 @@ public class RecentRidesFragment extends Fragment implements RecentRideAdapter.R
     @Override
     public void onRecentRideClick(ModelGetRecentRidesResponse.RideData rideData) {
 
-        if(rideData != null) {
+        if (rideData != null) {
             Intent intent = new Intent(getActivity(), RideDetailActivity.class);
-            intent.putExtra(Constants.RIDE_DETAIL,rideData);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(Constants.RIDE_DETAIL, rideData);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             getActivity().startActivity(intent);
         }
     }

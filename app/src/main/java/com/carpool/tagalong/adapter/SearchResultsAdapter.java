@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.RequestRideActivity;
+import com.carpool.tagalong.glide.GlideApp;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelSearchRideResponseData;
 
@@ -46,8 +49,16 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         searchViewHolder.endLocation.setText(modelSearchRideResponseDataList.get(i).getEndLocation().trim());
         searchViewHolder.starttime.setText("Ride Created on "+modelSearchRideResponseDataList.get(i).getRideDateTime());
         searchViewHolder.ridestarttime.setText(modelSearchRideResponseDataList.get(i).getRideDateTime());
-        Glide.with(context)
+
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.drawable.avatar_avatar_12)
+                .error(R.drawable.avatar_avatar_12);
+
+        GlideApp.with(context)
                 .load(modelSearchRideResponseDataList.get(i).getProfile_pic())
+                .apply(options)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(searchViewHolder.profile_pic);
     }
 

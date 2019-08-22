@@ -39,4 +39,14 @@ public class Constants {
     public static final String CARD = "card";
     public static final String RIDE_DETAIL = "ride_detail";
     public static final String IFRAME_MODE = "iframe";
+
+    public static final String TYPE_RIDES = "1";
+    public static final String TYPE_ALERT = "2";
+    public static final String TYPE_CHAT  = "3";
+    public static final String TYPE_PANIC_BUTTON = "5";
+    public static final String TYPE_PICKUP = "6";
+    public static final String TYPE_DROP   = "7";
+    public static final String TYPE_QUICKRIDE = "8";
+    public static final String TYPE_RIDE_CANCELLED_BY_PASSENGER = "4";
+
 }

@@ -291,10 +291,20 @@
                     android:textSize="16sp"
                     />
 
+                <com.carpool.tagalong.views.RegularEditText
+                    android:id="@+id/otp_pickup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Please enter otp shared by rider"
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:layout_marginTop="10dp"
+                    />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="15dp"
                     android:orientation="horizontal">
 

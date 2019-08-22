@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.glide.GlideApp;
+import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelGetRecentRidesResponse;
 
 import java.util.List;
@@ -47,7 +49,11 @@ public class RecentRideAdapter extends RecyclerView.Adapter<RecentRideAdapter.My
                 .placeholder(R.drawable.avatar_avatar_12)
                 .error(R.drawable.avatar_avatar_12);
 
-        Glide.with(activity).load(rideList.get(position).getDriverPic()).apply(options).into(holder.driverProfileIMage);
+        if(rideList.get(position).isDrive()){
+            GlideApp.with(activity).load(DataManager.getModelUserProfileData().getProfile_pic()).apply(options).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.driverProfileIMage);
+        }else{
+            GlideApp.with(activity).load(rideList.get(position).getDriverPic()).apply(options).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.driverProfileIMage);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +61,6 @@ public class RecentRideAdapter extends RecyclerView.Adapter<RecentRideAdapter.My
                 recentRideInterface.onRecentRideClick(rideList.get(position));
             }
         });
-
     }
 
     @Override
@@ -70,23 +75,11 @@ public class RecentRideAdapter extends RecyclerView.Adapter<RecentRideAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-//        public com.carpool.tagalong.views.RegularTextView title, date, distance;
-//        public RecyclerView recycler_view_item_images;
-//        public RelativeLayout rl_rider_parent;
-//        private CircleImageView driverProfileIMage;
-
         com.carpool.tagalong.views.RegularTextView srcLocName, destLocName, date, distance;
         CircleImageView driverProfileIMage;
 
         public MyViewHolder(View view) {
             super(view);
-//            title = view.findViewById(R.id.tv_ride_title);
-//            date = view.findViewById(R.id.tv_ride_date);
-//            distance = view.findViewById(R.id.tv_ride_distance);
-//
-//            recycler_view_item_images = view.findViewById(R.id.recycler_view_item_images);
-//            rl_rider_parent = view.findViewById(R.id.rl_rider_parent);
-//            driverProfileIMage = view.findViewById(R.id.iv_driver_profile_image);
 
             date = view.findViewById(R.id.dateTime);
             distance = view.findViewById(R.id.rideDistance);

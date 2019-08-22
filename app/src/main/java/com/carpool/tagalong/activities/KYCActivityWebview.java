@@ -1,5 +1,6 @@
 package com.carpool.tagalong.activities;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -59,20 +63,6 @@ public class KYCActivityWebview extends AppCompatActivity {
         }
 
         kycWebview.setWebChromeClient(new WebChromeClient());
-
-//        kycWebview.setWebViewClient(new WebViewClient() {
-//            @SuppressWarnings("deprecation")
-//            @Override
-//            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-//                Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
-//            }
-//            @TargetApi(android.os.Build.VERSION_CODES.M)
-//            @Override
-//            public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError rerr) {
-//                // Redirect to deprecated method, so you can use it in all SDK versions
-//                onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
-//            }
-//        });
 
         ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
         getIframeURl();

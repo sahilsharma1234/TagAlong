@@ -18,7 +18,9 @@ import com.carpool.tagalong.activities.HomeActivity;
 import com.carpool.tagalong.activities.QuickSearchRideActivity;
 import com.carpool.tagalong.activities.SearchRideActivity;
 import com.carpool.tagalong.activities.StartRideActivity;
+import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
+import com.carpool.tagalong.utils.UIUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -115,8 +117,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.card_searching:
-                showRidingAlert();
+                handleRiding();
                 break;
+        }
+    }
+
+    private void handleRiding() {
+
+        if(DataManager.ridingstatus){
+            showRidingAlert();
+        }else {
+            UIUtils.alertBox(getActivity(),"Please add credit card first in profile!!");
         }
     }
 
@@ -138,8 +149,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //            startActivity(intent);
 //            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            showRoamingAlert();
-
+            if(DataManager.bookingStatus) {
+                showRoamingAlert();
+            }else {
+                UIUtils.alertBox(getActivity(),"Please register as a driver in profile section first!!");
+            }
         } else {
             showDocumentAlert();
         }

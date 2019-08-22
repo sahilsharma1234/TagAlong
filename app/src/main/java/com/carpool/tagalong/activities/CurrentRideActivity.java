@@ -42,11 +42,13 @@ import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.OnBoardRidersAdapter;
 import com.carpool.tagalong.adapter.TimelineAdapter;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.fragments.CurrentUpcomingFragment;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.Contact;
 import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
+import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
 import com.carpool.tagalong.models.ModelRateRiderequest;
@@ -90,7 +92,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
     private static String postPath = "";
     private static ModelGetCurrentRideResponse modelGetRideDetailsResponse;
-    private String rideID;
+    private static String rideID;
     private LinearLayout uploadPicLytBtn;
     private Button postImage;
     private LinearLayout toolbarLayout;
@@ -109,16 +111,41 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private ArrayList<String> invitedGuestList;
-    private RegularTextView rideDetailsText;
+    private RegularTextView rideDetailsText, cabDetails, expectedTimeOfArrival, otp;
+    private RelativeLayout trackRideLyt;
+
+    private BroadcastReceiver pickedUpListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showPickedUpDialog(CurrentRideActivity.this);
+        }
+    };
+
+    private BroadcastReceiver droppedListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showDroppedDialog(CurrentRideActivity.this);
+        }
+    };
 
     private BroadcastReceiver listener = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
+           getRideDetails(rideID);
         }
     };
-    
+
+    private BroadcastReceiver cancelledListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,8 +154,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         toolbarLayout = findViewById(R.id.toolbar_current_ride);
         com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
-        toolbar = toolbarLayout.findViewById(R.id.toolbar);
-
+        toolbar   = toolbarLayout.findViewById(R.id.toolbar);
         shareIcon = toolbarLayout.findViewById(R.id.share);
         emergency_icon = toolbarLayout.findViewById(R.id.emergency);
         shareIcon.setVisibility(View.VISIBLE);
@@ -152,10 +178,16 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             rideID = getIntent().getStringExtra("rideId");
 
         }
-//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         initializeViews();
-        LocalBroadcastManager.getInstance(this).registerReceiver(listener,
-                new IntentFilter("endRide"));
+
+//        LocalBroadcastManager.getInstance(this).registerReceiver(pickedUpListener,
+//                new IntentFilter("pickedup "));
+//
+//        LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
+//                new IntentFilter("dropped"));
+//
+//        LocalBroadcastManager.getInstance(this).registerReceiver(listener,
+//                new IntentFilter("fetchRide"));
     }
 
     private void initializeViews() {
@@ -168,13 +200,18 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         startRideTime = findViewById(R.id.startRideTime);
         estimatedCostOfRide = findViewById(R.id.estimated_cost);
         profilePic = findViewById(R.id.user_image);
-        postPic = findViewById(R.id.image_user_1);
+        postPic    = findViewById(R.id.image_user_1);
         cancelButton = findViewById(R.id.cancel_ride_txt);
         requestedBtn = findViewById(R.id.button_ride);
 //        paynow       = findViewById(R.id.button_payNow);
         uploadPicLytBtn = findViewById(R.id.post_image_layout);
-        postImage = findViewById(R.id.post_image_btn);
+        postImage       = findViewById(R.id.post_image_btn);
         rideDetailsText = findViewById(R.id.ride_details_text);
+        cabDetails      = findViewById(R.id.car_details);
+        expectedTimeOfArrival = findViewById(R.id.expected_time_of_arrival);
+
+        trackRideLyt  = findViewById(R.id.track_ride_lyt);
+        otp            = findViewById(R.id.otp);
 
 //        paynow.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
@@ -188,6 +225,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         dropmessage1 = findViewById(R.id.drop_message1);
 
         dropmessage1.setOnClickListener(this);
+        trackRideLyt.setOnClickListener(this);
 
         shareIcon.setOnClickListener(this);
         emergency_icon.setOnClickListener(this);
@@ -199,58 +237,62 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         shareDialog = new ShareDialog(this);
     }
 
-//    private void getRideDetails(final String rideId) {
-//
-//        try {
-//            if (Utils.isNetworkAvailable(context)) {
-//
-//                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-//
-//                if (restClientRetrofitService != null) {
-//
-//                    ModelGetRideDetailsRequest modelGetRideDetailsRequest = new ModelGetRideDetailsRequest();
-//                    modelGetRideDetailsRequest.setRideId(rideId);
-//
-//                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
-//
-//                    restClientRetrofitService.getRideDetails(TagALongPreferenceManager.getToken(this), modelGetRideDetailsRequest).enqueue(new Callback<ModelGetCurrentRideResponse>() {
-//
-//                        @Override
-//                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
-//
-//                            ProgressDialogLoader.progressDialogDismiss();
-//
-//                            if (response.body() != null) {
-//
-//                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-//                                Log.i(CurrentUpcomingFragment.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
+    private void getRideDetails(final String rideId) {
+
+        try {
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ModelGetRideDetailsRequest modelGetRideDetailsRequest = new ModelGetRideDetailsRequest();
+                    modelGetRideDetailsRequest.setRideId(rideId);
+
+                    ProgressDialogLoader.progressDialogCreation(CurrentRideActivity.this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.getRideDetails(TagALongPreferenceManager.getToken(this), modelGetRideDetailsRequest).enqueue(new Callback<ModelGetCurrentRideResponse>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                Log.i(CurrentUpcomingFragment.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
+
 //                                handleCurrentRideForRider();
-//
-//                                modelGetRideDetailsResponse = response.body();
-//
-//                            } else {
-//                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
-//                            ProgressDialogLoader.progressDialogDismiss();
-//                            if (t != null && t.getMessage() != null) {
-//                                t.printStackTrace();
-//                            }
-//                            Log.e("Get All rides", "FAILURE GETTING ALL RIDES");
-//                        }
-//                    });
-//                }
-//            } else {
-//                Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            ProgressDialogLoader.progressDialogDismiss();
-//        }
-//    }
+
+                                modelGetRideDetailsResponse = response.body();
+
+                                finish();
+                                startActivity(getIntent());
+
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Get All rides", "FAILURE GETTING ALL RIDES");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ProgressDialogLoader.progressDialogDismiss();
+        }
+    }
 
     private void handleCurrentRideForRider() {
 
@@ -261,17 +303,20 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         if (driverDetails != null) {
             String name = driverDetails.getUserName();
             userName.setText(name);
+            cabDetails.setText(driverDetails.getVehicle() +" "+driverDetails.getVehicleNumber());
         }
 
         String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
         String endLocation = modelGetRideDetailsResponse.getRideData().getEndLocation();
         String rideTime = modelGetRideDetailsResponse.getRideData().getRideDateTime();
         String estimatedcost = String.valueOf(modelGetRideDetailsResponse.getRideData().getEstimatedFare());
+        otp.setText(modelGetRideDetailsResponse.getRideData().getPickupVerificationCode()+"");
 
         startLocationName.setText(startLocName);
         endLocationName.setText(endLocation);
         startRideTime.setText(rideTime);
         estimatedCostOfRide.setText("$" + estimatedcost);
+        expectedTimeOfArrival.setText("ETA:05 min");
 
         if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.REQUESTED) {
             requestedBtn.setVisibility(View.VISIBLE);
@@ -365,7 +410,22 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             case R.id.drop_message1:
                 handleChat();
                 break;
+
+            case R.id.track_ride_lyt:
+                handleTrackRide();
+                break;
         }
+    }
+
+    private void handleTrackRide() {
+
+        Intent intent = new Intent(context, TrackDriverActivity.class);
+        intent.putExtra("driverId", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
+        intent.putExtra("rideLat", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
+        intent.putExtra("rideLongt", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
     }
 
     private void handleChat() {
@@ -729,6 +789,19 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onResume() {
         super.onResume();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
+                new IntentFilter("dropped"));
+
+//        LocalBroadcastManager.getInstance(this).registerReceiver(listener,
+//                new IntentFilter("fetchRide"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(cancelledListener,
+                new IntentFilter("launchCurrentRideFragment"));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(pickedUpListener,
+                new IntentFilter("pickedup"));
+
     }
 
     private void showCustomCancelRideDialog(Activity context) {
@@ -1013,17 +1086,16 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
             final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
             LayoutInflater inflater = this.getLayoutInflater();
-            final View dialogView = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+            final View dialogView   = inflater.inflate(R.layout.submit_review_dialog_layout, null);
             dialogBuilder.setCancelable(false);
             dialogBuilder.setView(dialogView);
 
             feedBackComments = dialogView.findViewById(R.id.feedback_comments);
-            submitFeedback = dialogView.findViewById(R.id.submitReview);
-            user_image = dialogView.findViewById(R.id.iv_user_profile_image);
-            iv_userName = dialogView.findViewById(R.id.tv_driver_name);
-            ratingBar = dialogView.findViewById(R.id.rating_bar);
-
-            rating = ratingBar.getRating();
+            submitFeedback   = dialogView.findViewById(R.id.submitReview);
+            user_image       = dialogView.findViewById(R.id.iv_user_profile_image);
+            iv_userName      = dialogView.findViewById(R.id.tv_driver_name);
+            ratingBar        = dialogView.findViewById(R.id.rating_bar);
+            rating           = ratingBar.getRating();
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -1083,8 +1155,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
 
                                 if (response.body().getStatus() == 1) {
-
-                                        finish();
+                                    finish();
                                 } else {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 }
@@ -1111,6 +1182,96 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             }
         } catch (Exception e) {
             ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
+    }
+
+    private void showPickedUpDialog(Activity context) {
+
+        Button okButton;
+        final AlertDialog alertDialog;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.welcome_onboard, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            alertDialog = dialogBuilder.create();
+
+            okButton = dialogView.findViewById(R.id.ok);
+
+            okButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    alertDialog.cancel();
+                    finish();
+                }
+            });
+
+            alertDialog.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void showDroppedDialog(Activity context) {
+
+        Button reviewButton;
+        AlertDialog alertDialog;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.ok_review_dialog_layout, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            alertDialog  = dialogBuilder.create();
+            final AlertDialog finalAlertDialog = alertDialog;
+            reviewButton = dialogView.findViewById(R.id.review_ride);
+            alertDialog  = dialogBuilder.create();
+
+            reviewButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    showSubmitReviewDialog();
+                    finalAlertDialog.cancel();
+                }
+            });
+
+            alertDialog.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            unregisterReceiver(pickedUpListener);
+            unregisterReceiver(droppedListener);
+            unregisterReceiver(listener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            unregisterReceiver(pickedUpListener);
+            unregisterReceiver(droppedListener);
+            unregisterReceiver(listener);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

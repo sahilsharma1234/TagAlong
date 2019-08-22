@@ -10,12 +10,14 @@
         android:layout_height="match_parent">
 
         <com.carpool.tagalong.views.RegularTextView
-            android:id="@+id/name_user_chat"
+            android:id="@+id/rating_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:layout_centerVertical="true"
+            android:drawableRight="@drawable/ic_star_on_review_pop_xhdpi"
+            android:drawablePadding="5dp"
             android:textColor="@color/colorGold"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/_20_px"

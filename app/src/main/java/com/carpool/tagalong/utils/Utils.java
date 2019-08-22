@@ -20,6 +20,7 @@ import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
 import com.carpool.tagalong.models.ModelUserProfile;
 import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
+import com.carpool.tagalong.models.wepay.CreditCards;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
@@ -28,6 +29,7 @@ import com.carpool.tagalong.service.JobSchedulerService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -101,11 +103,11 @@ public class Utils {
 
         try {
 
-            Date date = new SimpleDateFormat("hh:mm a").parse(dateString);
-            long dateMillis = date.getTime();
+            Date date = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a", Locale.US).parse(dateString);
+//            long dateMillis = date.getTime();
 
-            SimpleDateFormat simpleDateformat = new SimpleDateFormat("HH:mm:ss");
-            finalString = simpleDateformat.format(dateMillis);
+            SimpleDateFormat simpleDateformat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            finalString = simpleDateformat.format(date);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -296,6 +298,17 @@ public class Utils {
 
                                 Log.i(TAG, "PROFILE RESPONSE: " + response.body().getData().toString());
                                 DataManager.modelUserProfileData = response.body().getData();
+
+                               List<CreditCards> creditCardsList = response.body().getData().getCard();
+
+                                if (creditCardsList != null) {
+
+                                    if (creditCardsList.size() < 1) {
+                                        DataManager.ridingstatus = false;
+                                    } else if (creditCardsList.size() >= 1) {
+                                        DataManager.ridingstatus = true;
+                                    }
+                                }
 
                             } else {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();

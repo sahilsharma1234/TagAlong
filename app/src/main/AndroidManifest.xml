@@ -38,12 +38,21 @@
         android:theme="@style/MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activities.KYCActivityWebview"></activity>
+        <activity android:name=".activities.QuickRideDriverActivity"></activity>
+        <activity
+            android:name=".activities.AboutUsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.HelpAndSupport"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.KYCActivityWebview"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TrackDriverActivity"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".activities.RideDetailActivity" />
 
         <meta-data
@@ -137,7 +146,11 @@
         </activity>
         <activity
             android:name=".activities.QuickSearchRideActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeActivity" />
+        </activity>
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait">

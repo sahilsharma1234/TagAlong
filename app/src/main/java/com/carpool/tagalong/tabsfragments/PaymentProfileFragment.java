@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,7 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
@@ -30,7 +31,6 @@ import com.carpool.tagalong.adapter.wepayadapters.CreditCardAdapter;
 import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelDocumentStatus;
-import com.carpool.tagalong.models.ModelUpdateProfileRequest;
 import com.carpool.tagalong.models.ModelUserProfile;
 import com.carpool.tagalong.models.ModelUserProfileData;
 import com.carpool.tagalong.models.wepay.CreditCards;
@@ -56,15 +56,16 @@ import retrofit2.Response;
 public class PaymentProfileFragment extends Fragment implements View.OnClickListener, CreditCardAdapter.RemoveCardListner {
 
     private static final int ADD_CARD = 111;
-    private com.carpool.tagalong.views.RegularTextView account_number, short_code, routing_number, bank_name;
-    private EditText account_number_edt, short_code_edt, routing_number_edt, bank_name_edt;
-    private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt, addCard;
+    //    private com.carpool.tagalong.views.RegularTextView account_number, short_code, routing_number, bank_name;
+//    private EditText account_number_edt, short_code_edt, routing_number_edt, bank_name_edt;
+//    private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt, addCard;
+    private com.carpool.tagalong.views.RegularTextView addCard;
     private RecyclerView savedCards;
     private List<CreditCards> creditCardsList = new ArrayList<>();
     private CreditCardAdapter creditCardAdapter;
-    private Button doKycBtn;
-    private boolean flag = false;
+    private Button doKycBtn, registerOnwePay, verify;
     private String url = "https://www.tagalongride.com/wepay_kyc.html?update_uri=";
+    private TextView register, verifyTxt;
 
     @Nullable
     @Override
@@ -72,39 +73,76 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
 
         View view = inflater.inflate(R.layout.payment_profile_fragment, container, false);
 
-        account_number = view.findViewById(R.id.account_number);
-        short_code = view.findViewById(R.id.short_code);
-        routing_number = view.findViewById(R.id.routing_number);
-        bank_name = view.findViewById(R.id.bank_name);
-
-        account_number_edt = view.findViewById(R.id.account_number_edt);
-        short_code_edt = view.findViewById(R.id.short_code_edt);
-        routing_number_edt = view.findViewById(R.id.routing_no_edt);
-        bank_name_edt = view.findViewById(R.id.bank_name_edt);
-
-        saveTxt = view.findViewById(R.id.save_payment_dtls);
-        editTxt = view.findViewById(R.id.edit_payment_dtls);
-
         savedCards = view.findViewById(R.id.cardList);
-        addCard = view.findViewById(R.id.addCard);
-        doKycBtn = view.findViewById(R.id.kyc);
+        addCard    = view.findViewById(R.id.addCard);
+        doKycBtn   = view.findViewById(R.id.kyc);
+        register   = view.findViewById(R.id.reg_txt);
+        verifyTxt  = view.findViewById(R.id.reg_txt3);
+        registerOnwePay = view.findViewById(R.id.register_on_wepay);
+        verify = view.findViewById(R.id.verify_wepay);
 
         doKycBtn.setOnClickListener(this);
         addCard.setOnClickListener(this);
+        registerOnwePay.setOnClickListener(this);
+        verify.setOnClickListener(this);
 
-        saveTxt.setOnClickListener(this);
-        editTxt.setOnClickListener(this);
+        handleWePayRegistrationDetails();
 
-        if (checkPhonePermission()) {
+        return view;
+    }
+
+
+    private void handleWePayRegistrationDetails() {
+
+        if (Build.VERSION.SDK_INT >= 26) {
+
+            if (checkPhonePermission()) {
+
+                if (DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("")) {
+
+                    register.setVisibility(View.VISIBLE);
+                    verifyTxt.setVisibility(View.GONE);
+                    verify.setVisibility(View.GONE);
+                    registerOnwePay.setVisibility(View.VISIBLE);
+//                    saveMerchantPaymentDetails();
+                } else if (!DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("") && !DataManager.getModelUserProfileData().getWepayDetails().getWePayVerificationStatus().equals("registered")) {
+                    register.setVisibility(View.GONE);
+                    verifyTxt.setVisibility(View.VISIBLE);
+                    verify.setVisibility(View.VISIBLE);
+                    registerOnwePay.setVisibility(View.GONE);
+                } else {
+
+                    register.setVisibility(View.GONE);
+                    verifyTxt.setVisibility(View.GONE);
+                    verify.setVisibility(View.GONE);
+                    registerOnwePay.setVisibility(View.GONE);
+
+                    isKycDone();
+                }
+            }
+        } else {
 
             if (DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("")) {
-                saveMerchantPaymentDetails();
+
+                register.setVisibility(View.VISIBLE);
+                verifyTxt.setVisibility(View.GONE);
+                verify.setVisibility(View.GONE);
+                registerOnwePay.setVisibility(View.VISIBLE);
+//                    saveMerchantPaymentDetails();
+            } else if (!DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("") && !DataManager.getModelUserProfileData().getWepayDetails().getWePayVerificationStatus().equals("registered")) {
+                register.setVisibility(View.GONE);
+                verifyTxt.setVisibility(View.VISIBLE);
+                verify.setVisibility(View.VISIBLE);
+                registerOnwePay.setVisibility(View.GONE);
             } else {
+
+                register.setVisibility(View.GONE);
+                verifyTxt.setVisibility(View.GONE);
+                verify.setVisibility(View.GONE);
+                registerOnwePay.setVisibility(View.GONE);
                 isKycDone();
             }
         }
-
-        return view;
     }
 
     private void isKycDone() {
@@ -128,10 +166,20 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
 
                                 if (response.code() == 200) {
 
-                                    if (response.body().getState().equals("verified")) {
-                                        doKycBtn.setVisibility(View.GONE);
-                                    }else{
+                                    if (response.body().getState().equals("unsubmitted")) {
+//                                        doKycBtn.setVisibility(View.VISIBLE);
+                                        DataManager.bookingStatus = false;
                                         getIframeURl();
+                                    } else if (response.body().getState().equals("verified")) {
+                                        // i have to stop driver form booking ride
+                                        DataManager.bookingStatus = true;
+                                        doKycBtn.setVisibility(View.GONE);
+                                    } else if (!response.body().getState().equals("verified")) {
+                                        // i have to stop driver form booking ride
+                                        DataManager.bookingStatus = false;
+                                        doKycBtn.setVisibility(View.GONE);
+                                    } else {
+                                        UIUtils.alertBox(getActivity(), "Your WePay KYC status is " + response.body().getState());
                                     }
                                 }
                             }
@@ -162,95 +210,95 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
         ModelUserProfileData data = DataManager.modelUserProfileData;
 
         if (data != null) {
-            account_number.setText(data.getPaymentDetails().getAccountNumber());
-            short_code.setText(data.getPaymentDetails().getShortCode());
-            routing_number.setText(data.getPaymentDetails().getRoutingNumber());
-            bank_name.setText(data.getPaymentDetails().getBankName());
+//            account_number.setText(data.getPaymentDetails().getAccountNumber());
+//            short_code.setText(data.getPaymentDetails().getShortCode());
+//            routing_number.setText(data.getPaymentDetails().getRoutingNumber());
+//            bank_name.setText(data.getPaymentDetails().getBankName());
             creditCardsList = data.getCard();
 
             updateUI();
         }
     }
 
-    private void handleSavePaymentDetails() {
-
-        editTxt.setVisibility(View.VISIBLE);
-        saveTxt.setVisibility(View.GONE);
-
-        account_number.setText(account_number_edt.getText().toString());
-        short_code.setText(short_code_edt.getText().toString());
-        routing_number.setText(routing_number_edt.getText().toString());
-        bank_name.setText(bank_name_edt.getText().toString());
-
-        account_number_edt.setVisibility(View.GONE);
-        short_code_edt.setVisibility(View.GONE);
-        routing_number_edt.setVisibility(View.GONE);
-        bank_name_edt.setVisibility(View.GONE);
-
-        account_number.setVisibility(View.VISIBLE);
-        short_code.setVisibility(View.VISIBLE);
-        routing_number.setVisibility(View.VISIBLE);
-        bank_name.setVisibility(View.VISIBLE);
-
-        savePaymentDetails();
-        saveMerchantPaymentDetails();
-    }
-
-    private void savePaymentDetails() {
-
-        try {
-
-            if (Utils.isNetworkAvailable(getActivity())) {
-
-                ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
-                modelUpdateProfileRequest.setAccountNumber(account_number.getText().toString());
-                modelUpdateProfileRequest.setShortCode(short_code.getText().toString());
-                modelUpdateProfileRequest.setRoutingNumber(routing_number.getText().toString());
-                modelUpdateProfileRequest.setBankName(bank_name.getText().toString());
-
-                Log.i("Payment DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
-
-                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-
-                if (restClientRetrofitService != null) {
-
-                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
-
-                    restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {
-
-                        @Override
-                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
-
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (response.body() != null) {
-                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                // get user profile again to save updated profile
-                                ((HomeActivity) getActivity()).getUserProfile();
-                            } else {
-                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
-                            ProgressDialogLoader.progressDialogDismiss();
-
-                            if (t != null && t.getMessage() != null) {
-                                t.printStackTrace();
-                            }
-                            Log.e("SAVE Payment DETAILS", "FAILURE SAVING PROFILE");
-                        }
-                    });
-                }
-            } else {
-                ProgressDialogLoader.progressDialogDismiss();
-                Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void handleSavePaymentDetails() {
+//
+////        editTxt.setVisibility(View.VISIBLE);
+////        saveTxt.setVisibility(View.GONE);
+////
+////        account_number.setText(account_number_edt.getText().toString());
+////        short_code.setText(short_code_edt.getText().toString());
+////        routing_number.setText(routing_number_edt.getText().toString());
+////        bank_name.setText(bank_name_edt.getText().toString());
+////
+////        account_number_edt.setVisibility(View.GONE);
+////        short_code_edt.setVisibility(View.GONE);
+////        routing_number_edt.setVisibility(View.GONE);
+////        bank_name_edt.setVisibility(View.GONE);
+////
+////        account_number.setVisibility(View.VISIBLE);
+////        short_code.setVisibility(View.VISIBLE);
+////        routing_number.setVisibility(View.VISIBLE);
+////        bank_name.setVisibility(View.VISIBLE);
+//
+////        savePaymentDetails();
+////        saveMerchantPaymentDetails();
+//    }
+//
+////    private void savePaymentDetails() {
+////
+////        try {
+////
+////            if (Utils.isNetworkAvailable(getActivity())) {
+////
+////                ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
+////                modelUpdateProfileRequest.setAccountNumber(account_number.getText().toString());
+////                modelUpdateProfileRequest.setShortCode(short_code.getText().toString());
+////                modelUpdateProfileRequest.setRoutingNumber(routing_number.getText().toString());
+////                modelUpdateProfileRequest.setBankName(bank_name.getText().toString());
+////
+////                Log.i("Payment DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
+////
+////                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+////
+////                if (restClientRetrofitService != null) {
+////
+////                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
+////
+////                    restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {
+////
+////                        @Override
+////                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+////
+////                            ProgressDialogLoader.progressDialogDismiss();
+////
+////                            if (response.body() != null) {
+////                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+////                                // get user profile again to save updated profile
+////                                ((HomeActivity) getActivity()).getUserProfile();
+////                            } else {
+////                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+////                            }
+////                        }
+////
+////                        @Override
+////                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+////                            ProgressDialogLoader.progressDialogDismiss();
+////
+////                            if (t != null && t.getMessage() != null) {
+////                                t.printStackTrace();
+////                            }
+////                            Log.e("SAVE Payment DETAILS", "FAILURE SAVING PROFILE");
+////                        }
+////                    });
+////                }
+////            } else {
+////                ProgressDialogLoader.progressDialogDismiss();
+////                Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
+////            }
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////        }
+////    }
 
     private void saveMerchantPaymentDetails() {
 
@@ -279,9 +327,18 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                             ProgressDialogLoader.progressDialogDismiss();
 
                             if (response.body() != null) {
+
                                 Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+
                                 // get user profile again to save updated profile
                                 ((HomeActivity) getActivity()).getUserProfile();
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        handleWePayRegistrationDetails();
+                                    }
+                                }, 3000);
 
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -315,27 +372,6 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
         }
     }
 
-    private void editPayemntDetails() {
-
-        saveTxt.setVisibility(View.VISIBLE);
-        editTxt.setVisibility(View.GONE);
-
-        account_number_edt.setText(account_number.getText().toString());
-        short_code_edt.setText(short_code.getText().toString());
-        routing_number_edt.setText(routing_number.getText().toString());
-        bank_name_edt.setText(bank_name.getText().toString());
-
-        account_number_edt.setVisibility(View.VISIBLE);
-        short_code_edt.setVisibility(View.VISIBLE);
-        routing_number_edt.setVisibility(View.VISIBLE);
-        bank_name_edt.setVisibility(View.VISIBLE);
-
-        account_number.setVisibility(View.GONE);
-        short_code.setVisibility(View.GONE);
-        routing_number.setVisibility(View.GONE);
-        bank_name.setVisibility(View.GONE);
-    }
-
     @Override
     public void onClick(View v) {
 
@@ -343,26 +379,97 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
 
         switch (id) {
 
-            case R.id.save_payment_dtls:
-                handleSavePaymentDetails();
-                break;
-
             case R.id.kyc:
                 handleKYC();
-                break;
-
-            case R.id.edit_payment_dtls:
-                editPayemntDetails();
                 break;
 
             case R.id.addCard:
                 addCreditCard();
                 break;
+
+            case R.id.register_on_wepay:
+                saveMerchantPaymentDetails();
+                break;
+
+            case R.id.verify_wepay:
+                resendConfirmattion();
+                break;
+        }
+    }
+
+    private void resendConfirmattion() {
+
+        try {
+
+            if (Utils.isNetworkAvailable(getActivity())) {
+
+                ModelRegisterMerchantWePayRequest modelRegisterMerchantWePayRequest = new ModelRegisterMerchantWePayRequest();
+                modelRegisterMerchantWePayRequest.setLast_name(DataManager.getModelUserProfileData().last_name);
+                modelRegisterMerchantWePayRequest.setOriginal_device(Utils.getDeviceImeiNumber(getActivity()));
+                modelRegisterMerchantWePayRequest.setOriginal_ip("182.75.120.10");
+
+                Log.i("Payment DETAILS", "PROFILE REQUEST: " + modelRegisterMerchantWePayRequest.toString());
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
+
+                    restClientRetrofitService.resendConfirmation(TagALongPreferenceManager.getToken(getActivity())).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                // get user profile again to save updated profile
+                                ((HomeActivity) getActivity()).getUserProfile();
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        handleWePayRegistrationDetails();
+
+                                    }
+                                }, 3000);
+
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getIframeURl();
+                                    }
+                                }, 1500);
+
+                            } else {
+                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("SAVE Payment DETAILS", "FAILURE SAVING PROFILE");
+                        }
+                    });
+                }
+            } else {
+                ProgressDialogLoader.progressDialogDismiss();
+                Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void handleKYC() {
-
         loadUrl();
     }
 
@@ -478,6 +585,7 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                             if (response.body() != null) {
                                 UIUtils.alertBox(getActivity(), response.body().getMessage());
                                 // get user profile again to save updated profile
+                                getUserProfile(getActivity());
                             } else {
                                 Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
                             }
@@ -523,6 +631,16 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                                 DataManager.modelUserProfileData = response.body().getData();
 
                                 creditCardsList = response.body().getData().getCard();
+
+                                if (creditCardsList != null) {
+
+                                    if (creditCardsList.size() < 1) {
+                                        DataManager.ridingstatus = false;
+                                    } else if (creditCardsList.size() >= 1) {
+                                        DataManager.ridingstatus = true;
+                                    }
+                                }
+
                                 updateUI();
 
                             } else {
@@ -629,7 +747,7 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
 
     private void loadUrl() {
 
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(browserIntent);
     }
 }

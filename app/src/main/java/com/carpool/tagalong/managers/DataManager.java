@@ -18,6 +18,8 @@ public class DataManager {
 
     public static ModelSearchRideRequest modelSearchRideRequest = null;
     public static int status = 0;
+    public static boolean bookingStatus = false;
+    public static boolean ridingstatus = false;
     private  static List<Integer> yearList = null;
     private  static List<String> colorList = null;
 

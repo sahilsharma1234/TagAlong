@@ -14,6 +14,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.activities.CurrentRideActivity;
+import com.carpool.tagalong.activities.FreeRoamActivity;
 import com.carpool.tagalong.activities.HomeActivity;
 import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.managers.DataManager;
@@ -45,21 +47,25 @@ public class NotificationService extends FirebaseMessagingService {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            String message = null;
+        try {
+            if (remoteMessage.getData().size() > 0) {
+                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+                String message = null;
 
-            message = remoteMessage.getData().get("body");
+                message = remoteMessage.getData().get("body");
 
-            try {
-                sendNotification(message,remoteMessage.getData().get("title"),"");
-                return;
-            } catch (Exception e) {
-                e.printStackTrace();
-                sendNotification(remoteMessage.getData().get("body"),remoteMessage.getData().get("title"),
-                        remoteMessage.getData().get("type"));
-                return;
+                try {
+                    sendNotification(remoteMessage,message,remoteMessage.getData().get("title"),remoteMessage.getData().get("type"));
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    sendNotification(remoteMessage,remoteMessage.getData().get("body"),remoteMessage.getData().get("title"),
+                            "");
+                    return;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     // [END receive_message]
@@ -76,23 +82,39 @@ public class NotificationService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody, String title, String type) {
+    private void sendNotification(RemoteMessage remoteMessage,String messageBody, String title, String type) {
 
         Intent intent = null;
 
-        intent = new Intent(this, HomeActivity.class);
-
         if(title.contains("Driver Cancelled a Ride")){
+            intent = new Intent(this, HomeActivity.class);
             intent.putExtra(Constants.START_RIDE,title);
             DataManager.setStatus(0);
             Intent intent1 = new Intent("launchCurrentRideFragment");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         }
-        else if(title.contains("Somebody is in Danger")){
+        else if(type.equals(Constants.TYPE_PANIC_BUTTON)){
+        }
+        else if(type.equals(Constants.TYPE_PICKUP)){
 
+            intent = new Intent(this, CurrentRideActivity.class);
+            Intent intent1 = new Intent("pickedup");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+        }
+        else if(type.equals(Constants.TYPE_DROP)){
+
+            intent = new Intent(this, CurrentRideActivity.class);
+            Intent intent1 = new Intent("dropped");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+        }else if(type.equals(Constants.TYPE_QUICKRIDE)){
+
+            intent = new Intent(this, FreeRoamActivity.class);
+            Intent intent1 = new Intent("riderListener");
+            intent1.putExtra("rideId", remoteMessage.getData().get("rideId"));
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         }
         else {
-            intent.putExtra(Constants.START_RIDE, "Current Ride");
+            intent = new Intent(this, HomeActivity.class);
             Intent intent1 = new Intent("launchCurrentRideFragment");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         }
@@ -103,6 +125,7 @@ public class NotificationService extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         String channelId = getString(R.string.app_name)+ System.currentTimeMillis();
+
         Uri defaultSoundUri = null;
 
         defaultSoundUri  = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

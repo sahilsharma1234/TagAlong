@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/_5_px">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20_px">
+
+
+        <LinearLayout
+            android:id="@+id/l1"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_below="@id/dd"
+            android:weightSum="3"
+            android:layout_marginTop="@dimen/_10_px"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/riderImage"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/avatar_avatar_12"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/driverDtls"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_10_px">
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/riderName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ABC"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/riderRating"
+                    android:layout_below="@id/riderName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ABC"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"/>
+
+                <ImageView
+                    android:id="@+id/star"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_star_on_review_pop_mdpi"
+                    android:layout_below="@id/riderName"
+                    android:layout_toRightOf="@id/riderRating"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/star"
+                    android:layout_below="@id/riderName"
+                    android:src="@drawable/ic_call"/>
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ABC"
+                    android:textColor="@color/colorGold"
+                    android:clickable="true"
+                    android:textSize="14sp"
+                    android:layout_below="@id/riderRating"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/estFareForRider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$ 50"
+                    android:textSize="24sp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/black"/>
+
+            </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

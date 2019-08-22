@@ -121,11 +121,40 @@ public class ModelGetRecentRidesResponse implements Serializable {
         public List<RidersList> ridersList;
         @SerializedName("timelineData")
         public List<TimelineData> timelineData;
-
         @SerializedName("startLocation")
         public String startLocation;
         @SerializedName("endLocation")
         public String endLocation;
+        @SerializedName("rating")
+        public Object rating;
+        @SerializedName("startedDateWithTime")
+        public String startedDateWithTime;
+        @SerializedName("completedDateWithTime")
+        public String completedDateWithTime;
+
+        public String getStartedDateWithTime() {
+            return startedDateWithTime;
+        }
+
+        public void setStartedDateWithTime(String startedDateWithTime) {
+            this.startedDateWithTime = startedDateWithTime;
+        }
+
+        public String getCompletedDateWithTime() {
+            return completedDateWithTime;
+        }
+
+        public void setCompletedDateWithTime(String completedDateWithTime) {
+            this.completedDateWithTime = completedDateWithTime;
+        }
+
+        public Object getRating() {
+            return rating;
+        }
+
+        public void setRating(Object rating) {
+            this.rating = rating;
+        }
 
         public String getStartLocation() {
             return startLocation;
@@ -247,6 +276,9 @@ public class ModelGetRecentRidesResponse implements Serializable {
                     ", timelineData=" + timelineData +
                     ", startLocation='" + startLocation + '\'' +
                     ", endLocation='" + endLocation + '\'' +
+                    ", rating='" + rating + '\'' +
+                    ", startedDateWithTime='" + startedDateWithTime + '\'' +
+                    ", completedDateWithTime='" + completedDateWithTime + '\'' +
                     '}';
         }
     }

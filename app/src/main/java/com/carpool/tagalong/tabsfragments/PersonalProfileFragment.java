@@ -28,9 +28,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.HomeActivity;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.glide.GlideApp;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelUpdateProfileRequest;
@@ -59,13 +61,13 @@ import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PersonalProfileFragment extends Fragment implements View.OnClickListener,DatePickerDialog.OnDateSetListener {
+public class PersonalProfileFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     private static final int GALLERY_PICTURE = 125;
     HashMap<String, String> genderMap = new HashMap<>();
     HashMap<String, String> poolgenderMap = new HashMap<>();
-    private com.carpool.tagalong.views.RegularTextView nameTxt, lastNameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips, zipCodeTxt, dobTxt,cityTxt,regionTxt;
-    private EditText nameEdt, emailEdt, mobileNumberEdt, addressEdt, zipCodeEdt, dobEdt, lastNameEdt,cityEdt,regionEdt;
+    private com.carpool.tagalong.views.RegularTextView nameTxt, lastNameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips, zipCodeTxt, dobTxt, cityTxt, regionTxt;
+    private EditText nameEdt, emailEdt, mobileNumberEdt, addressEdt, zipCodeEdt, dobEdt, lastNameEdt, cityEdt, regionEdt;
     private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
     private Spinner genderSpinner, poolPreferenceSpinner;
     private String[] genderArray = new String[]{"Select Gender", "Male", "Female", "Other"};
@@ -91,14 +93,14 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
     private void initializeViews(View view) {
 
-        nameTxt  = view.findViewById(R.id.name_user_profile);
+        nameTxt = view.findViewById(R.id.name_user_profile);
         emailTxt = view.findViewById(R.id.email_id_user);
         mobileNumberTxt = view.findViewById(R.id.mobile_nuber_user);
         addressTxt = view.findViewById(R.id.address_user);
-        gender     = view.findViewById(R.id.gender_user_txt);
+        gender = view.findViewById(R.id.gender_user_txt);
         poolGender = view.findViewById(R.id.pool_gender_txt);
-        nameEdt    = view.findViewById(R.id.name_user_profile_edt);
-        emailEdt   = view.findViewById(R.id.email_id_user_edt);
+        nameEdt = view.findViewById(R.id.name_user_profile_edt);
+        emailEdt = view.findViewById(R.id.email_id_user_edt);
         mobileNumberEdt = view.findViewById(R.id.mobile_nuber_user_edt);
         addressEdt = view.findViewById(R.id.address_user_edt);
         saveTxt = view.findViewById(R.id.save_personal_details);
@@ -107,14 +109,14 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         profilePic = view.findViewById(R.id.profile_pic);
         profileMainAddress = view.findViewById(R.id.profile_main_address);
         profileMianName = view.findViewById(R.id.profile_main_name);
-        genderSpinner   = view.findViewById(R.id.gender_spinner);
+        genderSpinner = view.findViewById(R.id.gender_spinner);
         zipCodeEdt = view.findViewById(R.id.zipCodeUserEdt);
         zipCodeTxt = view.findViewById(R.id.zipCodeUserTxt);
-        dobEdt     = view.findViewById(R.id.dobEdt);
-        cityEdt    = view.findViewById(R.id.city_edt);
-        cityTxt    = view.findViewById(R.id.city_txt);
-        regionTxt  = view.findViewById(R.id.region_txt);
-        regionEdt  = view.findViewById(R.id.region_edt);
+        dobEdt = view.findViewById(R.id.dobEdt);
+        cityEdt = view.findViewById(R.id.city_edt);
+        cityTxt = view.findViewById(R.id.city_txt);
+        regionTxt = view.findViewById(R.id.region_txt);
+        regionEdt = view.findViewById(R.id.region_edt);
         dobEdt.setOnClickListener(this);
 
         dobTxt = view.findViewById(R.id.dobTxt);
@@ -124,9 +126,9 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         lastNameTxt = view.findViewById(R.id.lastNameTxt);
 
         poolPreferenceSpinner = view.findViewById(R.id.pool_gender_spinner);
-        drove  = view.findViewById(R.id.drove_txt);
+        drove = view.findViewById(R.id.drove_txt);
         rating = view.findViewById(R.id.rating);
-        trips  = view.findViewById(R.id.trips);
+        trips = view.findViewById(R.id.trips);
 
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<String>
                 (getActivity(), android.R.layout.simple_spinner_item,
@@ -176,8 +178,13 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
 
-        ModelUserProfileData data = DataManager.modelUserProfileData;
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        final ModelUserProfileData data = DataManager.modelUserProfileData;
 
         if (data != null) {
 
@@ -194,51 +201,56 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             rating.setText(data.getRating() + "");
             trips.setText(data.getTrips() + "");
 
-            if (data.getGender() != null) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
 
-                Iterator it = genderMap.entrySet().iterator();
-
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
-
-                    if (pair.getValue().toString().equalsIgnoreCase(data.getGender())) {
-
-                        genderSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
-                        gender.setText(pair.getValue().toString());
-                    }
-
-                    System.out.println(pair.getKey() + " = " + pair.getValue());
-                    it.remove(); // avoids a ConcurrentModificationException
+                    handleGenderPreferences(data);
+                    GlideApp.with(getActivity())
+                            .load(data.getProfile_pic())
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profilePic);
                 }
-            }
-
-            if (data.getGenderPrefrance() != null) {
-
-                Iterator it = poolgenderMap.entrySet().iterator();
-
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
-
-                    if (pair.getValue().toString().equalsIgnoreCase(data.getGenderPrefrance())) {
-
-                        poolPreferenceSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
-                        poolGender.setText(pair.getValue().toString());
-                    }
-
-                    System.out.println(pair.getKey() + " = " + pair.getValue());
-                    it.remove(); // avoids a ConcurrentModificationException
-                }
-            }
-
-            Glide.with(getActivity())
-                    .load(data.getProfile_pic())
-                    .into(profilePic);
+            });
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    private void handleGenderPreferences(ModelUserProfileData data){
+
+        if (data.getGender() != null) {
+
+            Iterator it = genderMap.entrySet().iterator();
+
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                if (pair.getValue().toString().equalsIgnoreCase(data.getGender())) {
+
+                    genderSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
+                    gender.setText(pair.getValue().toString());
+                }
+
+//                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                it.remove(); // avoids a ConcurrentModificationException
+            }
+        }
+
+        if (data.getGenderPrefrance() != null) {
+
+            Iterator it = poolgenderMap.entrySet().iterator();
+
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                if (pair.getValue().toString().equalsIgnoreCase(data.getGenderPrefrance())) {
+
+                    poolPreferenceSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
+                    poolGender.setText(pair.getValue().toString());
+                }
+                it.remove(); // avoids a ConcurrentModificationException
+            }
+        }
+
     }
 
     @Override
@@ -420,7 +432,13 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     private void handleSavePersonalDetails() {
 
         if (genderSpinner.getSelectedItemPosition() == 0) {
-            Toast.makeText(getActivity(), "Please select a gender", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Please select a gender!!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        if (lastNameEdt.getText().toString().trim().equals("")) {
+            Toast.makeText(getActivity(), "Last name is mandatory!!", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -437,6 +455,8 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
         gender.setText(genderSpinner.getSelectedItem().toString().trim());
         poolGender.setText(poolPreferenceSpinner.getSelectedItem().toString().trim());
+        cityTxt.setText(cityEdt.getText().toString());
+        regionTxt.setText(regionEdt.getText().toString());
 
         nameEdt.setVisibility(View.GONE);
         lastNameEdt.setVisibility(View.GONE);
@@ -447,6 +467,8 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         addressEdt.setVisibility(View.GONE);
         genderSpinner.setVisibility(View.GONE);
         poolPreferenceSpinner.setVisibility(View.GONE);
+        cityEdt.setVisibility(View.GONE);
+        regionEdt.setVisibility(View.GONE);
 
         nameTxt.setVisibility(View.VISIBLE);
         emailTxt.setVisibility(View.VISIBLE);
@@ -457,6 +479,8 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         addressTxt.setVisibility(View.VISIBLE);
         gender.setVisibility(View.VISIBLE);
         poolGender.setVisibility(View.VISIBLE);
+        cityTxt.setVisibility(View.VISIBLE);
+        regionTxt.setVisibility(View.VISIBLE);
 
         savePersonalDetails();
     }
@@ -505,73 +529,78 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
         if (Utils.isNetworkAvailable(getActivity())) {
 
-            ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
-            modelUpdateProfileRequest.setUserName(nameTxt.getText().toString());
-            modelUpdateProfileRequest.setEmail(emailTxt.getText().toString());
-            modelUpdateProfileRequest.setAddress(addressTxt.getText().toString());
-            modelUpdateProfileRequest.setLast_name(lastNameTxt.getText().toString());
+            try {
+                ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
+                modelUpdateProfileRequest.setUserName(nameTxt.getText().toString());
+                modelUpdateProfileRequest.setEmail(emailTxt.getText().toString());
+                modelUpdateProfileRequest.setAddress(addressTxt.getText().toString());
+                modelUpdateProfileRequest.setLast_name(lastNameTxt.getText().toString());
+                modelUpdateProfileRequest.setDob(dobTxt.getText().toString());
 
-            if (genderSpinner.getSelectedItemPosition() != 0) {
-                modelUpdateProfileRequest.setGender(genderSpinner.getSelectedItem().toString());
-            } else {
-                Toast.makeText(getActivity(), "Please select gender!", Toast.LENGTH_LONG).show();
-                return;
-            }
-            if (mobileNumberTxt.getText().toString().length() < 10) {
-                Toast.makeText(getActivity(), "Please enter valid mobile number!", Toast.LENGTH_LONG).show();
-                return;
-            } else {
-                modelUpdateProfileRequest.setMobileNo(countryCodePickerProfile.getSelectedCountryCode()+""+mobileNumberTxt.getText().toString());
-            }
+                if (genderSpinner.getSelectedItemPosition() != 0) {
+                    modelUpdateProfileRequest.setGender(genderSpinner.getSelectedItem().toString());
+                } else {
+                    Toast.makeText(getActivity(), "Please select gender!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (mobileNumberTxt.getText().toString().length() < 10) {
+                    Toast.makeText(getActivity(), "Please enter valid mobile number!", Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    modelUpdateProfileRequest.setMobileNo(countryCodePickerProfile.getSelectedCountryCode() + "" + mobileNumberTxt.getText().toString());
+                }
 
-            if (zipCodeTxt.getText().toString().equalsIgnoreCase("")) {
-                Toast.makeText(getActivity(), "Please enter valid zipCode", Toast.LENGTH_LONG).show();
-                return;
-            } else {
-                modelUpdateProfileRequest.setZipcode(Integer.parseInt(zipCodeTxt.getText().toString()));
-            }
+                if (zipCodeTxt.getText().toString().equalsIgnoreCase("")) {
+                    Toast.makeText(getActivity(), "Please enter valid zipCode", Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    modelUpdateProfileRequest.setZipcode(Integer.parseInt(zipCodeTxt.getText().toString()));
+                }
 
-            if (!isValidEmaillId(emailTxt.getText().toString())) {
-                Toast.makeText(getActivity(), "Please enter valid email!", Toast.LENGTH_LONG).show();
-                return;
-            }
+                if (!isValidEmaillId(emailTxt.getText().toString())) {
+                    Toast.makeText(getActivity(), "Please enter valid email!", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-            if (poolPreferenceSpinner.getSelectedItemPosition() != 0) {
-                modelUpdateProfileRequest.setGenderPrefrance(poolPreferenceSpinner.getSelectedItem().toString());
-            } else {
-                Toast.makeText(getActivity(), "Please select pool gender!", Toast.LENGTH_LONG).show();
-                return;
-            }
+                if (poolPreferenceSpinner.getSelectedItemPosition() != 0) {
+                    modelUpdateProfileRequest.setGenderPrefrance(poolPreferenceSpinner.getSelectedItem().toString());
+                } else {
+                    Toast.makeText(getActivity(), "Please select pool gender!", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-            Log.i("PERSONAL DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
+                Log.i("PERSONAL DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
 
-            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-            if (restClientRetrofitService != null) {
+                if (restClientRetrofitService != null) {
 
-                restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {
+                    restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {
 
-                    @Override
-                    public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
-                        if (response.body() != null) {
-                            Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-                            // get user profile again to save updated profile
-                            ((HomeActivity) getActivity()).getUserProfile();
-                        } else {
-                            Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                            if (response.body() != null) {
+                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                // get user profile again to save updated profile
+                                ((HomeActivity) getActivity()).getUserProfile();
+                            } else {
+                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
 
-                        if (t != null && t.getMessage() != null) {
-                            t.printStackTrace();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("SAVE PERSONAL DETAILS", "FAILURE SAVING PROFILE");
                         }
-                        Log.e("SAVE PERSONAL DETAILS", "FAILURE SAVING PROFILE");
-                    }
-                });
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
@@ -607,9 +636,9 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        mYear  = c.get(Calendar.YEAR);
+        mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
-        mDay   = c.get(Calendar.DAY_OF_MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, -18);

@@ -10,6 +10,9 @@ public  class ModelWePayDetails {
     @SerializedName("wePayAccountId")
     public String wePayAccountId;
 
+    @SerializedName("wePayVerificationStatus")
+    public String wePayVerificationStatus;
+
 
     public String getWePayAccessToken() {
         return wePayAccessToken;
@@ -28,11 +31,20 @@ public  class ModelWePayDetails {
     }
 
 
+    public String getWePayVerificationStatus() {
+        return wePayVerificationStatus;
+    }
+
+    public void setWePayVerificationStatus(String wePayVerificationStatus) {
+        this.wePayVerificationStatus = wePayVerificationStatus;
+    }
+
     @Override
     public String toString() {
         return "ModelWePayDetails{" +
                 "wePayAccessToken='" + wePayAccessToken + '\'' +
                 ", wePayAccountId='" + wePayAccountId + '\'' +
+                ", wePayVerificationStatus='" + wePayVerificationStatus + '\'' +
                 '}';
     }
 }

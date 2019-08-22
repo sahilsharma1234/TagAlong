@@ -43,7 +43,6 @@ dependencies {
 
 //    implementation 'com.google.android.gms:play-services:16.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
     implementation 'com.jakewharton:butterknife:8.7.0'
     implementation 'com.github.bumptech.glide:glide:4.7.1'
@@ -65,6 +64,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:10.2.0'
     implementation 'com.google.firebase:firebase-database:10.2.0'
     implementation("com.squareup.okhttp3:logging-interceptor:4.0.1")
+
+    implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
 //    implementation 'com.github.fevziomurtekin:PayView:1.0.2'
 }
 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/name_parent_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="8dp"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="10dp"
+            android:background="@color/grey" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/quick_ride_riders_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:padding="20dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ic_navigate_quickRide"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="@dimen/_20_px"
+        android:src="@drawable/ic_navigation" />
+
+</RelativeLayout>

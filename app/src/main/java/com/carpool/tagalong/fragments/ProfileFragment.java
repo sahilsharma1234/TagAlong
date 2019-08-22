@@ -93,7 +93,6 @@ public class ProfileFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_profile, container, false);
         viewPager =  view.findViewById(R.id.viewPager);
         tabLayout =  view.findViewById(R.id.tabLayout);
-
         adapter   =  new TabAdapter(getActivity().getSupportFragmentManager());
         adapter.addFragment(new PersonalProfileFragment(), "Personal");
         adapter.addFragment(new DrivingProfileFragment(), "Driving");
@@ -144,8 +143,8 @@ public class ProfileFragment extends Fragment {
 
         int tabId=getArguments().getInt("tab_id");
         toggleTabBar(tabId);
+        viewPager.setOffscreenPageLimit(0);
 
-        // Inflate the layout for this fragment
         return view;
     }
 
@@ -173,6 +172,11 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override

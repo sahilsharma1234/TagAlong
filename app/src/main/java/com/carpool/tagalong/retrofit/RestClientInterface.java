@@ -12,16 +12,21 @@ import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetDriverProfileResponse;
+import com.carpool.tagalong.models.ModelGetEstimatedFareRequest;
+import com.carpool.tagalong.models.ModelGetEstimatedFareResponse;
 import com.carpool.tagalong.models.ModelGetNearbyDriversRequest;
 import com.carpool.tagalong.models.ModelGetNearbyDriversResponse;
 import com.carpool.tagalong.models.ModelGetRecentRidesResponse;
 import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
+import com.carpool.tagalong.models.ModelGetUserLocationResponse;
 import com.carpool.tagalong.models.ModelLogoutResponse;
 import com.carpool.tagalong.models.ModelPaymentRequest;
 import com.carpool.tagalong.models.ModelPickupRider;
+import com.carpool.tagalong.models.ModelQuickRideBookResponse;
 import com.carpool.tagalong.models.ModelRateRiderequest;
+import com.carpool.tagalong.models.ModelRequestQuickRideRider;
 import com.carpool.tagalong.models.ModelRequestRide;
 import com.carpool.tagalong.models.ModelRidePostRequest;
 import com.carpool.tagalong.models.ModelRidePostResponse;
@@ -221,5 +226,20 @@ public interface RestClientInterface {
     @retrofit2.http.POST("account/kyc")
     Call<ModelGetKycStatusResposne> isKycDone(@Header("Authorization") String value, @Body ModelGetWePayIframeRequest modelGetWePayIframeRequest);
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------/////
 
+    @retrofit2.http.GET("user/enable_quick_ride")
+    Call<ModelDocumentStatus> enableDisableQuickRide(@Header("x-auth") String value, @Query("isEnable") boolean isEnable);
+
+    @retrofit2.http.POST("ride/get_ride_fare")
+    Call<ModelGetEstimatedFareResponse> getEstimatedFare(@Header("x-auth") String value, @Body ModelGetEstimatedFareRequest modelGetNearbyDriversRequest);
+
+    @retrofit2.http.POST("ride/book_quick_ride")
+    Call<ModelQuickRideBookResponse> bookQuickRide(@Header("x-auth") String value, @Body ModelRequestQuickRideRider modelRequestQuickRideRider);
+
+    @retrofit2.http.GET(" user/resend_confirmation_wepay")
+    Call<ModelDocumentStatus> resendConfirmation(@Header("x-auth") String value);
+
+    @retrofit2.http.GET("user/get_user_location")
+    Call<ModelGetUserLocationResponse> getUserLocation(@Header("x-auth") String value, @Query("userId") String userId);
 }

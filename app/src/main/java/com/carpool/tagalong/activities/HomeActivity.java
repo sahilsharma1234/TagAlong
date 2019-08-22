@@ -98,7 +98,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver listener = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String data = intent.getStringExtra("data");
             handleDrawer();
 //            refresh();
 //            handleCurrentRideLayoutClick();
@@ -152,7 +151,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         homeLayout = headerView.findViewById(R.id.home_layout);
         recentRidesLayout = headerView.findViewById(R.id.recent_ride_layout);
         currentRideLayout = headerView.findViewById(R.id.current_ride_layout);
-        nameLayout        = headerView.findViewById(R.id.linear);
+        nameLayout = headerView.findViewById(R.id.linear);
 //        filterLayout     =  headerView.findViewById(R.id.filter);
         profileLayout = headerView.findViewById(R.id.profile_layout);
         userName = headerView.findViewById(R.id.user_name);
@@ -328,44 +327,92 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         int id = v.getId();
 
-        handleDrawer();
         drawer.closeDrawer(GravityCompat.START);
+
+        handleDrawer();
 
         switch (id) {
 
             case R.id.linear:
-                handleProfileLayoutClick(ProfileFragment.ID_PERSONAL);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleProfileLayoutClick(ProfileFragment.ID_PERSONAL);
+                    }
+                });
+
                 break;
 
             case R.id.home_layout:
-                handleHomeLayoutClick();
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleHomeLayoutClick();
+                    }
+                });
+
                 break;
 
             case R.id.recent_ride_layout:
-                handleRecentRideLAyoutClick();
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleRecentRideLAyoutClick();
+                    }
+                });
+
                 break;
 
             case R.id.current_ride_layout:
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleCurrentAndUpcomingRideLayoutClick();
+                    }
+                });
 //                handleCurrentRideLayoutClick();
-                handleCurrentAndUpcomingRideLayoutClick();
+
                 break;
 
             case R.id.profile_layout:
-                handleProfileLayoutClick(ProfileFragment.ID_PERSONAL);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleProfileLayoutClick(ProfileFragment.ID_PERSONAL);
+                    }
+                });
                 break;
 
             case R.id.emergency_rides_lyt:
-                handleEmergencyRides();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleEmergencyRides();
+                    }
+                });
                 break;
 
             case R.id.help_support_layout:
-                handleHelpAndSupportLyt();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleHelpAndSupportLyt();
+                    }
+                });
+
                 break;
 
             case R.id.about_us:
-                handleAboutUsLyt();
-                break;
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleAboutUsLyt();
+                    }
+                });
 
+                break;
         }
     }
 
@@ -585,17 +632,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         RegularTextView homeText = homeLayout.findViewById(R.id.homeTextView);
         RegularTextView currentRideTextView = currentRideLayout.findViewById(R.id.current_ride_textView);
-        RegularTextView recentRideTextView  = recentRidesLayout.findViewById(R.id.recent_rides_textView);
-        RegularTextView profileTextView     = profileLayout.findViewById(R.id.profile_textView);
+        RegularTextView recentRideTextView = recentRidesLayout.findViewById(R.id.recent_rides_textView);
+        RegularTextView profileTextView = profileLayout.findViewById(R.id.profile_textView);
         RegularTextView helpSupportTextView = hepSupportLyt.findViewById(R.id.help_and_supportTextView);
-        RegularTextView aboutUscomTextView  = aboutUsLyt.findViewById(R.id.about_us_textview);
-        RegularTextView emergencyTextView   = rides_emergency_lyt.findViewById(R.id.emergency_rides);
+        RegularTextView aboutUscomTextView = aboutUsLyt.findViewById(R.id.about_us_textview);
+        RegularTextView emergencyTextView = rides_emergency_lyt.findViewById(R.id.emergency_rides);
 
         Drawable img0 = getResources().getDrawable(R.drawable.ic_emergency_off_sidebar);
         emergencyTextView.setCompoundDrawablesWithIntrinsicBounds(img0, null, null, null);
         emergencyTextView.setTextColor(getResources().getColor(R.color.drawer_text_color));
 
-        Drawable img  = getResources().getDrawable(R.drawable.ic_home_on_sidebar_xxhdpi);
+        Drawable img = getResources().getDrawable(R.drawable.ic_home_on_sidebar_xxhdpi);
         homeText.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         homeText.setTextColor(getResources().getColor(R.color.drawer_text_color));
 
@@ -674,10 +721,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
             if (restClientRetrofitService != null) {
+
+                ProgressDialogLoader.progressDialogCreation(context, getString(R.string.please_wait));
+
                 restClientRetrofitService.getUserProfile(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelUserProfile>() {
+
 
                     @Override
                     public void onResponse(Call<ModelUserProfile> call, Response<ModelUserProfile> response) {
+
 
                         if (response.body() != null) {
 
@@ -685,6 +737,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                                 Log.i("PERSONAL DETAILS", "PROFILE RESPONSE: " + response.body().getData().toString());
                                 DataManager.modelUserProfileData = response.body().getData();
+
+                                if (response.body().getData().getWepayDetails().getWePayVerificationStatus().equals("registered")) {
+                                    DataManager.bookingStatus = true;
+                                }
+
+                                if (response.body().getData().getCard() != null) {
+
+                                    if (response.body().getData().getCard().size() < 1) {
+                                        DataManager.ridingstatus = false;
+                                    } else if (response.body().getData().getCard().size() >= 1) {
+                                        DataManager.ridingstatus = true;
+                                    }
+                                }
 
                                 RequestOptions options = new RequestOptions()
                                         .centerCrop()
@@ -700,11 +765,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                         }
+
+                        ProgressDialogLoader.progressDialogDismiss();
                     }
 
                     @Override
                     public void onFailure(Call<ModelUserProfile> call, Throwable t) {
-
+                        ProgressDialogLoader.progressDialogDismiss();
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }
@@ -715,6 +782,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(listener);
     }
 
     @Override
@@ -894,4 +967,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
 }

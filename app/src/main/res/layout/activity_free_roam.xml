@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include
         android:id="@+id/toolbarFreeRoaming"
         layout="@layout/toolbar_shadow" />
+
+    <Button
+        android:id="@+id/disableFreeRoam"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:text="Disable free roam"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="@dimen/_30_px"
+        android:background="@drawable/button_shape_signin"/>
+
+    <RelativeLayout
+        android:id="@+id/rider_dtls_lyt_roam"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true">
+
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,6 +66,5 @@
             android:textSize="16sp" />
 
     </RelativeLayout>
-
 
 </RelativeLayout>
