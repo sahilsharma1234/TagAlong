@@ -112,7 +112,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private ShareDialog shareDialog;
     private ArrayList<String> invitedGuestList;
     private RegularTextView rideDetailsText, cabDetails, expectedTimeOfArrival, otp;
-    private RelativeLayout trackRideLyt;
+    private RelativeLayout trackRideLyt, rel2;
 
     private BroadcastReceiver pickedUpListener = new BroadcastReceiver() {
 
@@ -134,7 +134,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         @Override
         public void onReceive(Context context, Intent intent) {
-           getRideDetails(rideID);
+            getRideDetails(rideID);
         }
     };
 
@@ -154,7 +154,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         toolbarLayout = findViewById(R.id.toolbar_current_ride);
         com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
-        toolbar   = toolbarLayout.findViewById(R.id.toolbar);
+        toolbar = toolbarLayout.findViewById(R.id.toolbar);
         shareIcon = toolbarLayout.findViewById(R.id.share);
         emergency_icon = toolbarLayout.findViewById(R.id.emergency);
         shareIcon.setVisibility(View.VISIBLE);
@@ -200,18 +200,19 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         startRideTime = findViewById(R.id.startRideTime);
         estimatedCostOfRide = findViewById(R.id.estimated_cost);
         profilePic = findViewById(R.id.user_image);
-        postPic    = findViewById(R.id.image_user_1);
+        postPic = findViewById(R.id.image_user_1);
         cancelButton = findViewById(R.id.cancel_ride_txt);
         requestedBtn = findViewById(R.id.button_ride);
 //        paynow       = findViewById(R.id.button_payNow);
         uploadPicLytBtn = findViewById(R.id.post_image_layout);
-        postImage       = findViewById(R.id.post_image_btn);
+        postImage = findViewById(R.id.post_image_btn);
         rideDetailsText = findViewById(R.id.ride_details_text);
-        cabDetails      = findViewById(R.id.car_details);
+        cabDetails = findViewById(R.id.car_details);
         expectedTimeOfArrival = findViewById(R.id.expected_time_of_arrival);
 
-        trackRideLyt  = findViewById(R.id.track_ride_lyt);
-        otp            = findViewById(R.id.otp);
+        trackRideLyt = findViewById(R.id.track_ride_lyt);
+        otp = findViewById(R.id.otp);
+        rel2 = findViewById(R.id.rel2);
 
 //        paynow.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
@@ -263,8 +264,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 Log.i(CurrentUpcomingFragment.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
 
-//                                handleCurrentRideForRider();
-
                                 modelGetRideDetailsResponse = response.body();
 
                                 finish();
@@ -303,42 +302,44 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         if (driverDetails != null) {
             String name = driverDetails.getUserName();
             userName.setText(name);
-            cabDetails.setText(driverDetails.getVehicle() +" "+driverDetails.getVehicleNumber());
+            cabDetails.setText(driverDetails.getVehicle() + " " + driverDetails.getVehicleNumber());
         }
 
         String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
         String endLocation = modelGetRideDetailsResponse.getRideData().getEndLocation();
         String rideTime = modelGetRideDetailsResponse.getRideData().getRideDateTime();
         String estimatedcost = String.valueOf(modelGetRideDetailsResponse.getRideData().getEstimatedFare());
-        otp.setText(modelGetRideDetailsResponse.getRideData().getPickupVerificationCode()+"");
+        otp.setText(modelGetRideDetailsResponse.getRideData().getPickupVerificationCode() + "");
 
         startLocationName.setText(startLocName);
         endLocationName.setText(endLocation);
         startRideTime.setText(rideTime);
         estimatedCostOfRide.setText("$" + estimatedcost);
-        expectedTimeOfArrival.setText("ETA:05 min");
+
+        if(modelGetRideDetailsResponse.getRideData().getDriverDetails().getStatus() == Constants.STARTED){
+
+            if (modelGetRideDetailsResponse.getRideData().getDriverETA() != null)
+                expectedTimeOfArrival.setText("ETA: " + modelGetRideDetailsResponse.getRideData().getDriverETA());
+            trackRideLyt.setVisibility(View.VISIBLE);
+        }
 
         if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.REQUESTED) {
             requestedBtn.setVisibility(View.VISIBLE);
             dropmessage1.setVisibility(View.GONE);
+            rel2.setVisibility(View.GONE);
+            trackRideLyt.setVisibility(View.GONE);
+
         } else if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.ACCEPTED) {
             requestedBtn.setVisibility(View.GONE);
             dropmessage1.setVisibility(View.VISIBLE);
+            rel2.setVisibility(View.VISIBLE);
             rideDetailsText.setText("Ride Details");
-//            if (modelGetRideDetailsResponse.getRideData().isPayStatus()) {
-//
-////                dropmessage.setVisibility(View.GONE);
-//                dropmessage1.setVisibility(View.VISIBLE);
-////                paynow.setVisibility(View.GONE);
-//
-//            } else {
-//                dropmessage1.setVisibility(View.GONE);
-////                dropmessage.setVisibility(View.VISIBLE);
-////                paynow.setVisibility(View.VISIBLE);
-//            }
+            trackRideLyt.setVisibility(View.VISIBLE);
         }
         if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.PICKUP) {
             emergency_icon.setVisibility(View.VISIBLE);
+            trackRideLyt.setVisibility(View.GONE);
+            rel2.setVisibility(View.VISIBLE);
         }
 
         timelineAdapter = new TimelineAdapter(context, timelineData);
@@ -402,7 +403,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 handleShareRide();
                 break;
 
-
             case R.id.emergency:
                 handleEmergencySituation();
                 break;
@@ -421,15 +421,13 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         Intent intent = new Intent(context, TrackDriverActivity.class);
         intent.putExtra("driverId", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
-        intent.putExtra("rideLat", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
-        intent.putExtra("rideLongt", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
+        intent.putExtra("rideLat", modelGetRideDetailsResponse.getRideData().getStartLat());
+        intent.putExtra("rideLongt", modelGetRideDetailsResponse.getRideData().getStartLong());
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     private void handleChat() {
-
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra("receiverId", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
         intent.putExtra("userName", modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserName());
@@ -560,7 +558,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             final AlertDialog alert = builder.create();
             alert.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
             ImageView facebook = dialogLayout.findViewById(R.id.facebookLogo);
-            ImageView contact  = dialogLayout.findViewById(R.id.contacts);
+            ImageView contact = dialogLayout.findViewById(R.id.contacts);
             facebook.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -609,7 +607,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setContentUrl(Uri.parse("https://www.tagalongride.com/"))
                 .setShareHashtag(new ShareHashtag.Builder()
-                        .setHashtag("Hey I am travelling from "+modelGetRideDetailsResponse.getRideData().getStartLocation()+" to "+modelGetRideDetailsResponse.getRideData().getEndLocation()+"!!!! Come and join me!!!! It will be fun!!")
+                        .setHashtag("Hey I am travelling from " + modelGetRideDetailsResponse.getRideData().getStartLocation() + " to " + modelGetRideDetailsResponse.getRideData().getEndLocation() + "!!!! Come and join me!!!! It will be fun!!")
                         .build()).build();
 
         if (shareDialog == null)
@@ -633,6 +631,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 e.printStackTrace();
             }
         }, FACEBOOK_SHARE_REQUEST_CODE);
+
         shareDialog.show(content, ShareDialog.Mode.NATIVE);
     }
 
@@ -664,21 +663,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private void handlePostImage() {
         addPost(postPath);
-    }
-
-    private void handlePayNow() {
-
-//        Intent intent = new Intent(context, StripePaymentActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//
-//        ModelPaymentRequest modelPaymentRequest = new ModelPaymentRequest();
-//        modelPaymentRequest.setAmount(modelGetCurrentRideResponse.getRideData().getEstimatedFare());
-//        modelPaymentRequest.setDriverId(modelGetCurrentRideResponse.getRideData().getDriverDetails().getUserId());
-//        modelPaymentRequest.setRideId(modelGetCurrentRideResponse.getRideData().getDriverDetails().get_id());
-//        modelPaymentRequest.setRequestId(modelGetCurrentRideResponse.getRideData().get_id());
-//        intent.putExtra(getString(R.string.order_key), modelPaymentRequest);
-//
-//        startActivity(intent);
     }
 
     private void showCancelAlert() {
@@ -759,7 +743,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                             if (response.body() != null) {
 
                                 if (response.body().getStatus() == 1) {
-//                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                     UIUtils.alertBox(context, response.body().getMessage());
                                 }
                             } else {
@@ -791,16 +774,13 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         super.onResume();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
-                new IntentFilter("dropped"));
-
-//        LocalBroadcastManager.getInstance(this).registerReceiver(listener,
-//                new IntentFilter("fetchRide"));
+                new IntentFilter(Constants.DROPPED));
 
         LocalBroadcastManager.getInstance(this).registerReceiver(cancelledListener,
                 new IntentFilter("launchCurrentRideFragment"));
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pickedUpListener,
-                new IntentFilter("pickedup"));
+                new IntentFilter(Constants.PICKED_UP));
 
     }
 
@@ -848,62 +828,68 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private void addPost(String mediaPath) {
 
-        File file = new File(getPath(Uri.parse(mediaPath)));
+        if(mediaPath != null) {
 
-        RequestBody type = RequestBody.create(MediaType.parse("text/plain"), Constants.TYPE_IMAGE);
+            File file = new File(getPath(Uri.parse(mediaPath)));
 
-        RequestBody rideId = RequestBody.create(MediaType.parse("text/plain"), modelGetRideDetailsResponse.getRideData().get_id());
+            RequestBody type = RequestBody.create(MediaType.parse("text/plain"), Constants.TYPE_IMAGE);
 
-        // Create a request body with file and image/video media type
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
-        // Create MultipartBody.Part using file request-body,file name and part name
-        MultipartBody.Part part = MultipartBody.Part.createFormData("media", file.getName(), fileReqBody);
+            RequestBody rideId = RequestBody.create(MediaType.parse("text/plain"), modelGetRideDetailsResponse.getRideData().get_id());
 
-        if (Utils.isNetworkAvailable(context)) {
+            // Create a request body with file and image/video media type
+            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
+            // Create MultipartBody.Part using file request-body,file name and part name
+            MultipartBody.Part part = MultipartBody.Part.createFormData("media", file.getName(), fileReqBody);
 
-            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+            if (Utils.isNetworkAvailable(context)) {
 
-            if (restClientRetrofitService != null) {
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-                ProgressDialogLoader.progressDialogCreation(this, context.getString(R.string.please_wait));
+                if (restClientRetrofitService != null) {
 
-                restClientRetrofitService.addPost(TagALongPreferenceManager.getToken(context), rideId, type, part).enqueue(new Callback<ModelDocumentStatus>() {
+                    ProgressDialogLoader.progressDialogCreation(this, context.getString(R.string.please_wait));
 
-                    @Override
-                    public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                    restClientRetrofitService.addPost(TagALongPreferenceManager.getToken(context), rideId, type, part).enqueue(new Callback<ModelDocumentStatus>() {
 
-                        ProgressDialogLoader.progressDialogDismiss();
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
-                        if (response.body() != null) {
+                            ProgressDialogLoader.progressDialogDismiss();
 
-                            if (response.body().getStatus() == 1) {
+                            if (response.body() != null) {
 
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                selectImageForPost.setVisibility(View.VISIBLE);
-                                selectedImageForPost.setVisibility(View.GONE);
-                                getPost();
+                                if (response.body().getStatus() == 1) {
 
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                    selectImageForPost.setVisibility(View.VISIBLE);
+                                    selectedImageForPost.setVisibility(View.GONE);
+                                    postPath = null;
+                                    getPost();
+
+                                } else {
+                                    Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                                }
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
 
-                        ProgressDialogLoader.progressDialogDismiss();
-                        if (t != null && t.getMessage() != null) {
-                            t.printStackTrace();
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Upload Document", "FAILURE verification");
                         }
-                        Log.e("Upload Document", "FAILURE verification");
-                    }
-                });
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(context, "Please select any media!!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -986,8 +972,8 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         } else if (requestCode == Constants.IMAGE_FILTER_CODE && resultCode == RESULT_OK && data != null) {
 
             if (data.getExtras() != null) {
-                String path = data.getStringExtra("result_image");
 
+                String path = data.getStringExtra("result_image");
                 selectImageForPost.setVisibility(View.GONE);
                 selectedImageForPost.setVisibility(View.VISIBLE);
                 postPath = path;
@@ -1086,16 +1072,16 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
             final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
             LayoutInflater inflater = this.getLayoutInflater();
-            final View dialogView   = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+            final View dialogView = inflater.inflate(R.layout.submit_review_dialog_layout, null);
             dialogBuilder.setCancelable(false);
             dialogBuilder.setView(dialogView);
 
             feedBackComments = dialogView.findViewById(R.id.feedback_comments);
-            submitFeedback   = dialogView.findViewById(R.id.submitReview);
-            user_image       = dialogView.findViewById(R.id.iv_user_profile_image);
-            iv_userName      = dialogView.findViewById(R.id.tv_driver_name);
-            ratingBar        = dialogView.findViewById(R.id.rating_bar);
-            rating           = ratingBar.getRating();
+            submitFeedback = dialogView.findViewById(R.id.submitReview);
+            user_image = dialogView.findViewById(R.id.iv_user_profile_image);
+            iv_userName = dialogView.findViewById(R.id.tv_driver_name);
+            ratingBar = dialogView.findViewById(R.id.rating_bar);
+            rating = ratingBar.getRating();
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -1126,7 +1112,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void rateRider( String comments, float rating) {
+    private void rateRider(String comments, float rating) {
 
         try {
 
@@ -1221,7 +1207,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private void showDroppedDialog(Activity context) {
 
         Button reviewButton;
-        AlertDialog alertDialog;
+        final AlertDialog alertDialog;
 
         try {
 
@@ -1231,17 +1217,16 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             dialogBuilder.setCancelable(false);
             dialogBuilder.setView(dialogView);
 
-            alertDialog  = dialogBuilder.create();
-            final AlertDialog finalAlertDialog = alertDialog;
+            alertDialog = dialogBuilder.create();
+//            final AlertDialog finalAlertDialog = alertDialog;
             reviewButton = dialogView.findViewById(R.id.review_ride);
-            alertDialog  = dialogBuilder.create();
 
             reviewButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
                     showSubmitReviewDialog();
-                    finalAlertDialog.cancel();
+                    alertDialog.cancel();
                 }
             });
 
@@ -1255,9 +1240,9 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     protected void onStop() {
         super.onStop();
         try {
-            unregisterReceiver(pickedUpListener);
-            unregisterReceiver(droppedListener);
-            unregisterReceiver(listener);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(pickedUpListener);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(droppedListener);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(listener);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1268,9 +1253,9 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         super.onDestroy();
 
         try {
-            unregisterReceiver(pickedUpListener);
-            unregisterReceiver(droppedListener);
-            unregisterReceiver(listener);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(pickedUpListener);
+            LocalBroadcastManager.getInstance(context). unregisterReceiver(droppedListener);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(listener);
         } catch (Exception e) {
             e.printStackTrace();
         }

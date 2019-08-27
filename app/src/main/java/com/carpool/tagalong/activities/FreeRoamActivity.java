@@ -1,89 +1,117 @@
 package com.carpool.tagalong.activities;
 
+import android.Manifest;
 import android.animation.ArgbEvaluator;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.QuickRidesRiderAdapter;
+import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
+import com.carpool.tagalong.models.ModelPickupRider;
+import com.carpool.tagalong.models.ModelRateRiderequest;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.carpool.tagalong.views.RegularEditText;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.ncorti.slidetoact.SlideToActView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FreeRoamActivity extends BaseActivity implements View.OnClickListener, QuickRidesRiderAdapter.ridersatusclicklistener
+public class FreeRoamActivity extends BaseActivity implements View.OnClickListener, QuickRidesRiderAdapter.ridersatusclicklistener {
 
-
-
-
-{
-
-    private final String TAG = FreeRoamActivity.this.getClass().getSimpleName();
     private static final String ANIM_REQUEST_COUNT_BUTTON = "anim_request_count", ANIM_DOWN_SETTINGS = "anim_request_selection", ANIM_SELFIE_TAKEN = "anim_selfie_taken", ANIM_SELFIE_ACTION = "anim_selfie_action";
+    private static final int CALL_PHONE_CODE = 265;
+    private static boolean isFreeRoamEnabled = false;
+    private final String TAG = FreeRoamActivity.this.getClass().getSimpleName();
     @BindView(R.id.rootll)
     LinearLayout rootll;
     ArgbEvaluator argbEvaluator;
+    TextView txt;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private Context context;
     private Button disableFreeRoam;
-    private static boolean isFreeRoamEnabled = false;
     private List<ModelGetCurrentRideResponse.OnBoard> currentRiderList = new ArrayList<>();
     private RecyclerView quickRideRidersList;
     private QuickRidesRiderAdapter quickRidesRiderAdapter;
-
+    private BroadcastReceiver listener = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+    private RelativeLayout riderDtlsLyt;
+    private static Handler handler;
+    private ModelGetCurrentRideResponse.RideData rideData = null;
+    private static  Runnable runnable;
     private BroadcastReceiver riderListener = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent != null){
+            if (intent != null) {
 
-                if(intent.getExtras() != null){
-                    if(getIntent().getExtras().containsKey("rideId")){
-                        String rideId = getIntent().getExtras().getString("rideId");
-                        if(!rideId.equals("")){
+                if (intent.getExtras() != null) {
+                    if (intent.getExtras().containsKey("rideId")) {
+                        String rideId = intent.getExtras().getString("rideId");
+                        if (!rideId.equals("")) {
+                            isFreeRoamEnabled = false;
+                            disableFreeRoam.setVisibility(View.GONE);
                             getRideDetails(rideId);
                         }
                     }
@@ -92,16 +120,6 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
         }
     };
-
-    private BroadcastReceiver listener = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            finish();
-        }
-    };
-    private RelativeLayout riderDtlsLyt;
-
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,13 +138,15 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        disableFreeRoam  = findViewById(R.id.disableFreeRoam);
+        disableFreeRoam = findViewById(R.id.disableFreeRoam);
         disableFreeRoam.setOnClickListener(this);
-        toolbarLayout    = findViewById(R.id.toolbarFreeRoaming);
+        toolbarLayout = findViewById(R.id.toolbarFreeRoaming);
         com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
+
         ImageView share = toolbarLayout.findViewById(R.id.share);
-        riderDtlsLyt    = findViewById(R.id.rider_dtls_lyt_roam);
+        riderDtlsLyt = findViewById(R.id.rider_dtls_lyt_roam);
+        txt = findViewById(R.id.waiting_txt);
         share.setImageResource(R.drawable.ic_support);
         share.setVisibility(View.VISIBLE);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
@@ -137,9 +157,9 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(isFreeRoamEnabled){
+        if (isFreeRoamEnabled) {
             disableFreeRoam.setVisibility(View.VISIBLE);
-        }else
+        } else
             disableFreeRoam.setVisibility(View.GONE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -152,9 +172,34 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
         LocalBroadcastManager.getInstance(this).registerReceiver(riderListener, new IntentFilter("riderListener"));
 
-        if (!isFreeRoamEnabled) {
-            enableFreeRoam();
-            blink();
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PHONE_CODE);
+        }
+
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("rideId")) {
+
+            isFreeRoamEnabled = false;
+            disableFreeRoam.setVisibility(View.GONE);
+            getRideDetails(getIntent().getExtras().getString("rideId"));
+        } else {
+            if (!isFreeRoamEnabled) {
+                enableFreeRoam();
+                blink();
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -194,6 +239,26 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        try {
+
+            switch (requestCode) {
+
+                case CALL_PHONE_CODE:
+
+                    if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    } else {
+                        Toast.makeText(context, "This app needs phone permission", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void disableFreeRoam() {
 
         try {
@@ -209,6 +274,9 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                         @Override
                         public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
                             isFreeRoamEnabled = false;
+                            disableFreeRoam.setVisibility(View.GONE);
+                            Toast.makeText(context, "Free roaming disabled", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
 
                         @Override
@@ -237,7 +305,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.disableFreeRoam:
                 disableFreeRoam();
                 break;
@@ -247,6 +315,18 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     private void blink() {
 
         handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                txt = findViewById(R.id.waiting_txt);
+                if (txt.getVisibility() == View.VISIBLE) {
+                    txt.setVisibility(View.INVISIBLE);
+                } else {
+                    txt.setVisibility(View.VISIBLE);
+                }
+                blink();
+            }
+        };
 
         new Thread(new Runnable() {
 
@@ -265,68 +345,88 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
                 if (count == 5) {
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView txt = findViewById(R.id.waiting_txt);
-                            if (txt.getVisibility() == View.VISIBLE) {
-                                txt.setVisibility(View.INVISIBLE);
-                            } else {
-                                txt.setVisibility(View.VISIBLE);
-                            }
-                            blink();
-                        }
-                    });
+                    handler.post(runnable);
+//
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            txt = findViewById(R.id.waiting_txt);
+//                            if (txt.getVisibility() == View.VISIBLE) {
+//                                txt.setVisibility(View.INVISIBLE);
+//                            } else {
+//                                txt.setVisibility(View.VISIBLE);
+//                            }
+//                            blink();
+//                        }
+//                    });
                 } else {
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView txt = findViewById(R.id.waiting_txt);
-                            if (txt.getVisibility() == View.VISIBLE) {
-                                txt.setVisibility(View.INVISIBLE);
-                            } else {
-                                txt.setVisibility(View.VISIBLE);
-                            }
-                            blink();
-                        }
-                    });
+                    handler.post(runnable);
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            txt = findViewById(R.id.waiting_txt);
+//                            if (txt.getVisibility() == View.VISIBLE) {
+//                                txt.setVisibility(View.INVISIBLE);
+//                            } else {
+//                                txt.setVisibility(View.VISIBLE);
+//                            }
+//                            blink();
+//                        }
+//                    });
                 }
             }
         }).start();
     }
 
-    private void addStartMarker() {
-
-        try {
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
-                    .zoom(17)
-                    .build();
-
-//        addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-            MarkerOptions options = new MarkerOptions();
-            options.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
-            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_start_ride_point_xhdpi);
-            options.icon(icon);
-            mMap.addMarker(options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void addStartMarker() {
+//
+//        try {
+//            CameraPosition cameraPosition = new CameraPosition.Builder()
+//                    .target(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
+//                    .zoom(17)
+//                    .build();
+//
+////        addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
+//            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//
+//            MarkerOptions options = new MarkerOptions();
+//            options.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
+//            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_start_ride_point_xhdpi);
+//            options.icon(icon);
+//            mMap.addMarker(options);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void handleRiderDetailsLayout(ModelGetCurrentRideResponse.RideData rideData) {
 
+        txt.setVisibility(View.GONE);
+        disableFreeRoam.setVisibility(View.GONE);
+
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+
         riderDtlsLyt.removeAllViews();
+        this.rideData = rideData;
 
         LayoutInflater inflater = (LayoutInflater) getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.quick_ride_driver_layout, null);
-        quickRideRidersList     = view.findViewById(R.id.quick_ride_riders_list);
-        ImageView navigateIcon               = view.findViewById(R.id.ic_navigate_quickRide);
+
+        quickRideRidersList = view.findViewById(R.id.quick_ride_riders_list);
+        ImageView navigateIcon = view.findViewById(R.id.ic_navigate_quickRide);
+        View       handleIcon  = view.findViewById(R.id.ic_navigate_quickRide);
+
+        handleIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         navigateIcon.setOnClickListener(new View.OnClickListener() {
 
@@ -336,18 +436,22 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
-        if(rideData != null){
+        if (rideData != null) {
 
-            if(rideData.getOnBoard()!= null && rideData.getOnBoard().size() > 0){
-                currentRiderList  = rideData.getOnBoard();
-                quickRidesRiderAdapter = new QuickRidesRiderAdapter(context,currentRiderList, this);
+            if (rideData.getOnBoard() != null && rideData.getOnBoard().size() > 0) {
+                currentRiderList = rideData.getOnBoard();
+                quickRidesRiderAdapter = new QuickRidesRiderAdapter(context, currentRiderList, this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                 quickRideRidersList.setLayoutManager(linearLayoutManager);
                 quickRideRidersList.setAdapter(quickRidesRiderAdapter);
-
             }
         }
-        riderDtlsLyt.addView(view);
+
+        try {
+            riderDtlsLyt.addView(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         animate(ANIM_DOWN_SETTINGS);
     }
 
@@ -417,5 +521,559 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onItemClick(ModelGetCurrentRideResponse.OnBoard onboard) {
 
+        if (onboard != null) {
+
+            showDialogAlert(onboard);
+
+        }
+    }
+
+    @Override
+    public void onCallUserClick(ModelGetCurrentRideResponse.OnBoard onboard) {
+
+        Intent call = new Intent(Intent.ACTION_CALL);
+        call.setData(Uri.parse("tel:" + onboard.getMobileNo()));
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startActivity(call);
+    }
+
+    private void showDialogAlert(final ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        final Dialog delayDialog = new Dialog(this);
+        delayDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        delayDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        delayDialog.setContentView(R.layout.accept_ride_dialog_layout_quick_ride);
+        delayDialog.setCancelable(true);
+        delayDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        HashMap<Integer, String> seatMap = new HashMap<>();
+        seatMap.put(1, "One");
+        seatMap.put(2, "Two");
+        seatMap.put(3, "Three");
+        seatMap.put(4, "Four");
+
+        com.carpool.tagalong.views.RegularTextView name = delayDialog.findViewById(R.id.tv_driver_name);
+        CircleImageView profilePic = delayDialog.findViewById(R.id.iv_driver_profile_image);
+
+        com.carpool.tagalong.views.RegularTextView source_loc = delayDialog.findViewById(R.id.tv_source_address);
+        com.carpool.tagalong.views.RegularTextView dest_loc = delayDialog.findViewById(R.id.tv_dest_address);
+        com.carpool.tagalong.views.RegularTextView time = delayDialog.findViewById(R.id.tv_date);
+        com.carpool.tagalong.views.RegularTextView fare_amount = delayDialog.findViewById(R.id.tv_payment_amount);
+
+//        com.carpool.tagalong.views.RegularTextView seats_selected = delayDialog.findViewById(R.id.tv_seat_selected);
+//        ImageView carrying_bags = delayDialog.findViewById(R.id.tv_bags);
+//        ImageView kids_allowed = delayDialog.findViewById(R.id.tv_traveling_with_children);
+
+        com.carpool.tagalong.views.RegularTextView tv_message = delayDialog.findViewById(R.id.tv_message);
+
+//        com.carpool.tagalong.views.RegularTextView accept = delayDialog.findViewById(R.id.tv_acept);
+//        com.carpool.tagalong.views.RegularTextView accepted = delayDialog.findViewById(R.id.tv_acepted);
+        com.carpool.tagalong.views.RegularTextView cancel = delayDialog.findViewById(R.id.tv_cancel);
+//        com.carpool.tagalong.views.RegularTextView reject = delayDialog.findViewById(R.id.tv_Reject);
+        com.carpool.tagalong.views.RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
+
+        final RegularEditText otpView = delayDialog.findViewById(R.id.otp_pickup);
+        final SlideToActView slideToActView = delayDialog.findViewById(R.id.tv_slider);
+
+        slideToActView.setVisibility(View.VISIBLE);
+        otpView.setVisibility(View.GONE);
+
+        tv_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChatActivity.class);
+
+                if (onBoard != null) {
+                    intent.putExtra("receiverId", onBoard.get_id());
+                    intent.putExtra("userName", onBoard.getUserName());
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+            }
+        });
+
+        otpView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (otpView.getText().toString().length() < 1) {
+                    slideToActView.setVisibility(View.GONE);
+                } else {
+                    slideToActView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+//        if (joinRequest != null) {
+//
+//            if (joinRequest.getBags() == 1) {
+//                carrying_bags.setVisibility(View.VISIBLE);
+//            } else {
+//                carrying_bags.setVisibility(View.GONE);
+//            }
+//
+//            if (joinRequest.isAllowKids()) {
+//
+//                kids_allowed.setVisibility(View.VISIBLE);
+//            } else {
+//                kids_allowed.setVisibility(View.GONE);
+//            }
+//
+//            seats_selected.setText(seatMap.get(joinRequest.getNoOfSeats()));
+//            driver_address.setText(joinRequest.getAddress());
+//
+//            Glide.with(context)
+//                    .load(joinRequest.getProfile_pic())
+//                    .into(profilePic);
+//
+//            name.setText(joinRequest.getUserName());
+//            source_loc.setText(joinRequest.getStartLocation());
+//            dest_loc.setText(joinRequest.getEndLocation());
+//            time.setText(joinRequest.getRideDateTime());
+//            fare_amount.setText(joinRequest.getEstimatedFare() + "");
+//
+//            if (!joinRequest.isPayStatus()) {
+//                payment_status_notpaid.setVisibility(View.VISIBLE);
+//                payment_status.setVisibility(View.GONE);
+//            } else {
+//                payment_status_notpaid.setVisibility(View.GONE);
+//                payment_status.setVisibility(View.VISIBLE);
+//            }
+//
+//            slideToActView.setVisibility(View.GONE);
+//
+//            if (joinRequest.getStatus() == Constants.ACCEPTED) {
+//
+//                accept.setVisibility(View.GONE);
+//                accepted.setVisibility(View.VISIBLE);
+//                reject.setVisibility(View.GONE);
+//                cancel.setVisibility(View.VISIBLE);
+//                otpView.setVisibility(View.VISIBLE);
+//                slideToActView.setVisibility(View.GONE);
+//                slideToActView.setText("SLIDE TO PICKUP");
+//
+//            } else if (joinRequest.getStatus() == Constants.REQUESTED) {
+//                accept.setVisibility(View.VISIBLE);
+//                accepted.setVisibility(View.GONE);
+//                reject.setVisibility(View.VISIBLE);
+//                cancel.setVisibility(View.GONE);
+//                otpView.setVisibility(View.GONE);
+//                slideToActView.setVisibility(View.GONE);
+//            }
+//
+//        } else {
+
+//            if (onBoard.getBags() == 1) {
+//                carrying_bags.setVisibility(View.VISIBLE);
+//            } else {
+//                carrying_bags.setVisibility(View.GONE);
+//            }
+//
+//            if (onBoard.isAllowKids()) {
+//
+//                kids_allowed.setVisibility(View.VISIBLE);
+//            } else {
+//                kids_allowed.setVisibility(View.GONE);
+//            }
+//
+//            seats_selected.setText(seatMap.get(onBoard.getNoOfSeats()));
+        driver_address.setText(onBoard.getAddress());
+
+        Glide.with(context)
+                .load(onBoard.getProfile_pic())
+                .into(profilePic);
+
+        name.setText(onBoard.getUserName());
+        source_loc.setText(onBoard.getStartLocation());
+        dest_loc.setText(onBoard.getEndLocation());
+        time.setText(onBoard.getRideDateTime());
+        fare_amount.setText("$ " + onBoard.getEstimatedFare());
+
+        cancel.setVisibility(View.VISIBLE);
+        slideToActView.setVisibility(View.VISIBLE);
+
+        if (onBoard.getStatus() == Constants.PICKUP) {
+            slideToActView.setText("SLIDE TO DROP");
+            otpView.setVisibility(View.GONE);
+        } else if (onBoard.getStatus() == Constants.ACCEPTED) {
+            slideToActView.setText("SLIDE TO PICKUP");
+            otpView.setVisibility(View.VISIBLE);
+            slideToActView.setVisibility(View.GONE);
+        }
+
+        delayDialog.show();
+
+        slideToActView.setOnSlideCompleteListener(new SlideToActView.OnSlideCompleteListener() {
+
+            @Override
+            public void onSlideComplete(@NotNull SlideToActView slideToActView) {
+
+                if (slideToActView.getText().toString().equalsIgnoreCase("Slide to pickup")) {
+
+                    pickupRider(onBoard, otpView.getText().toString());
+
+                } else {
+                    dropRider(onBoard);
+                }
+                delayDialog.dismiss();
+            }
+        });
+
+//        iv_drop_slider.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent event) {
+//                int action = event.getAction();
+//    /*            switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        rect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());*/
+//                final int x = (int) event.getRawX();
+//                final int y = (int) event.getRawY();
+//
+//                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+//
+//                    case MotionEvent.ACTION_DOWN:
+//                        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams)
+//                                view.getLayoutParams();
+//
+//                        xDelta = x - lParams.leftMargin;
+//                        yDelta = y - lParams.topMargin;
+//                        break;
+//
+//                    case MotionEvent.ACTION_UP:
+//                        int width = ll_slider_parent.getWidth() - view.getWidth();
+//                        if ((x - xDelta) >= 0 && (x - xDelta) <= width) {
+//                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
+//                                    .getLayoutParams();
+//
+//                            if (x - xDelta <= width / 2) {
+//                                layoutParams.leftMargin = 0;
+//                                layoutParams.topMargin = 0;
+//                                layoutParams.rightMargin = 0;
+//                                layoutParams.bottomMargin = 0;
+//                                view.setLayoutParams(layoutParams);
+//
+//                            } else if (x - xDelta > width / 2) {
+//
+//                                layoutParams.leftMargin = width;
+//                                layoutParams.topMargin = 0;
+//                                layoutParams.rightMargin = 0;
+//                                layoutParams.bottomMargin = 0;
+//                                view.setLayoutParams(layoutParams);
+//                                hitAPI();
+//                            }
+//                        }
+//                        break;
+//                    case MotionEvent.ACTION_HOVER_EXIT:
+//
+//                        Log.e("@@parent wi", "---- Exit");
+//
+//                        break;
+//                    case MotionEvent.ACTION_CANCEL:
+//
+//                        Log.e("@@parent wi", "---- Cancel");
+//
+//                        break;
+//
+//                    case MotionEvent.ACTION_MOVE:
+//
+//                        int width2 = ll_slider_parent.getWidth() - view.getWidth();
+///*                        Log.e("@@parent wi", "----" + width2);
+//                        Log.e("@@parent (x - xDelta)", "----" + (x - xDelta));*/
+//
+//                        if ((x - xDelta) >= 0 && (x - xDelta) <= width2) {
+//                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
+//                                    .getLayoutParams();
+//
+//                            Log.e("@@parent x", "---- " + x);
+//                            Log.e("@@parent xD", "---- " + xDelta);
+////
+////                            Log.e("@@parent x-xD", "---- "+(x - xDelta) );
+//
+//                            Log.e("@@parent x-xD", "---- " + x / 10);
+//                            String color = "#00008000";
+//                            if (x / 10 < 10) {
+//                                color = "#0" + x / 10 + "008000";
+//                            } else {
+//                                color = "#" + x / 10 + "008000";
+//                            }
+//
+//                            ll_slider_parent.getBackground().setColorFilter(Color.parseColor(color), PorterDuff.Mode.DARKEN);
+//
+//                            layoutParams.leftMargin = x - xDelta;
+//                            layoutParams.topMargin = 0;
+//                            layoutParams.rightMargin = 0;
+//                            layoutParams.bottomMargin = 0;
+//                            view.setLayoutParams(layoutParams);
+//                        }
+//                        break;
+//                }
+////                iv_drop_slider.invalidate();
+//                return true;
+//            }
+//        });
+    }
+
+    private void pickupRider(ModelGetCurrentRideResponse.OnBoard onBoard, String otp) {
+
+        try {
+
+            ModelPickupRider modelPickupRider = new ModelPickupRider();
+
+            if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
+                modelPickupRider.setPickupLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
+                modelPickupRider.setPickupLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
+                modelPickupRider.setPickupVerificationCode(Integer.valueOf(otp));
+            }
+
+            if (onBoard != null)
+                modelPickupRider.setRequestId(onBoard.get_id());
+            else
+                return;
+
+            modelPickupRider.setRideId(rideData.get_id());
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.pickupRider(TagALongPreferenceManager.getToken(context), modelPickupRider).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                getRideDetails(rideData.get_id());
+
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Accept/Reject Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
+    }
+
+    private void dropRider(final ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        try {
+
+            ModelPickupRider modelPickupRider = new ModelPickupRider();
+
+            if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
+                modelPickupRider.setDropLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
+                modelPickupRider.setDropLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
+            }
+
+            if (onBoard != null)
+                modelPickupRider.setRequestId(onBoard.get_id());
+            else
+                return;
+
+            modelPickupRider.setRideId(rideData.get_id());
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.dropRider(TagALongPreferenceManager.getToken(context), modelPickupRider).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                    showSubmitReviewDialog(onBoard);
+                                } else {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Accept/Reject Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
+    }
+
+    private void showSubmitReviewDialog(final ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        com.carpool.tagalong.views.RegularTextView iv_userName;
+        RatingBar ratingBar;
+        final EditText feedBackComments;
+        Button submitFeedback;
+        CircleImageView user_image;
+        final float rating;
+
+        AlertDialog alertDialog = null;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            feedBackComments = dialogView.findViewById(R.id.feedback_comments);
+            submitFeedback = dialogView.findViewById(R.id.submitReview);
+            user_image = dialogView.findViewById(R.id.iv_user_profile_image);
+            iv_userName = dialogView.findViewById(R.id.tv_driver_name);
+            ratingBar = dialogView.findViewById(R.id.rating_bar);
+
+            rating = ratingBar.getRating();
+
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.avatar_avatar_12)
+                    .error(R.drawable.avatar_avatar_12);
+
+            Glide.with(context).load(onBoard.getProfile_pic()).apply(options).into(user_image);
+
+            iv_userName.setText(onBoard.getUserName());
+
+            alertDialog = dialogBuilder.create();
+
+            final AlertDialog finalAlertDialog = alertDialog;
+
+            submitFeedback.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    rateRider(onBoard, feedBackComments.getText().toString(), rating);
+                    finalAlertDialog.cancel();
+                }
+            });
+
+            alertDialog.show();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void rateRider(final ModelGetCurrentRideResponse.OnBoard onBoard, String comments, float rating) {
+
+        try {
+
+            ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
+            modelRateRiderequest.setRateTo(onBoard.getUserId());
+            modelRateRiderequest.setRideId(rideData.get_id());
+            modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
+            modelRateRiderequest.setReview(comments);
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.rateRide(TagALongPreferenceManager.getToken(context), modelRateRiderequest).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+
+                                if (response.body().getStatus() == 1) {
+
+                                    if (rideData.onBoard.size() > 1) {
+                                        getRideDetails(rideData.get_id());
+                                    } else {
+                                        finish();
+                                    }
+                                } else {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+                            Toast.makeText(context, "Some error in rating rider!!", Toast.LENGTH_LONG).show();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Rate Rider", "FAILURE Rating rider");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
     }
 }

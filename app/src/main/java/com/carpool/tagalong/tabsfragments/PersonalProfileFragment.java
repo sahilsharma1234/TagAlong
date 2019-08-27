@@ -2,7 +2,6 @@ package com.carpool.tagalong.tabsfragments;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -66,8 +65,8 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     private static final int GALLERY_PICTURE = 125;
     HashMap<String, String> genderMap = new HashMap<>();
     HashMap<String, String> poolgenderMap = new HashMap<>();
-    private com.carpool.tagalong.views.RegularTextView nameTxt, lastNameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips, zipCodeTxt, dobTxt, cityTxt, regionTxt;
-    private EditText nameEdt, emailEdt, mobileNumberEdt, addressEdt, zipCodeEdt, dobEdt, lastNameEdt, cityEdt, regionEdt;
+    private com.carpool.tagalong.views.RegularTextView nameTxt, lastNameTxt, emailTxt, mobileNumberTxt, addressTxt, profileMianName, profileMainAddress, poolGender, gender, drove, rating, trips, zipCodeTxt, dobTxt;
+    private EditText nameEdt, emailEdt, mobileNumberEdt, addressEdt, zipCodeEdt, dobEdt, lastNameEdt;
     private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
     private Spinner genderSpinner, poolPreferenceSpinner;
     private String[] genderArray = new String[]{"Select Gender", "Male", "Female", "Other"};
@@ -113,10 +112,10 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         zipCodeEdt = view.findViewById(R.id.zipCodeUserEdt);
         zipCodeTxt = view.findViewById(R.id.zipCodeUserTxt);
         dobEdt = view.findViewById(R.id.dobEdt);
-        cityEdt = view.findViewById(R.id.city_edt);
-        cityTxt = view.findViewById(R.id.city_txt);
-        regionTxt = view.findViewById(R.id.region_txt);
-        regionEdt = view.findViewById(R.id.region_edt);
+//        cityEdt = view.findViewById(R.id.city_edt);
+//        cityTxt = view.findViewById(R.id.city_txt);
+//        regionTxt = view.findViewById(R.id.region_txt);
+//        regionEdt = view.findViewById(R.id.region_edt);
         dobEdt.setOnClickListener(this);
 
         dobTxt = view.findViewById(R.id.dobTxt);
@@ -184,73 +183,80 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     public void onResume() {
         super.onResume();
 
-        final ModelUserProfileData data = DataManager.modelUserProfileData;
+        try {
+            final ModelUserProfileData data = DataManager.modelUserProfileData;
 
-        if (data != null) {
+            if (data != null) {
 
-            nameTxt.setText(data.getUserName());
-            lastNameTxt.setText(data.getLast_name());
-            dobTxt.setText(data.getDob());
-            zipCodeTxt.setText(data.getZipcode() + "");
-            emailTxt.setText(data.getEmail());
-            mobileNumberTxt.setText(data.getMobileNo());
-            addressTxt.setText(data.getAddress());
-            profileMianName.setText(data.getUserName());
-            profileMainAddress.setText(data.getAddress());
-            drove.setText(data.getDrove());
-            rating.setText(data.getRating() + "");
-            trips.setText(data.getTrips() + "");
+                nameTxt.setText(data.getUserName());
+                lastNameTxt.setText(data.getLast_name());
+                dobTxt.setText(data.getDob());
+                zipCodeTxt.setText(data.getZipcode() + "");
+                emailTxt.setText(data.getEmail());
+                mobileNumberTxt.setText(data.getMobileNo());
+                addressTxt.setText(data.getAddress());
+                profileMianName.setText(data.getUserName());
+                profileMainAddress.setText(data.getAddress());
+                drove.setText(data.getDrove());
+                rating.setText(data.getRating() + "");
+                trips.setText(data.getTrips() + "");
 
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    handleGenderPreferences(data);
-                    GlideApp.with(getActivity())
-                            .load(data.getProfile_pic())
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(profilePic);
-                }
-            });
+                        handleGenderPreferences(data);
+                        GlideApp.with(getActivity())
+                                .load(data.getProfile_pic())
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(profilePic);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void handleGenderPreferences(ModelUserProfileData data){
 
-        if (data.getGender() != null) {
+        try {
+            if (data.getGender() != null) {
 
-            Iterator it = genderMap.entrySet().iterator();
+                Iterator it = genderMap.entrySet().iterator();
 
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
 
-                if (pair.getValue().toString().equalsIgnoreCase(data.getGender())) {
+                    if (pair.getValue().toString().equalsIgnoreCase(data.getGender())) {
 
-                    genderSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
-                    gender.setText(pair.getValue().toString());
+                        genderSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
+                        gender.setText(pair.getValue().toString());
+                    }
+
+    //                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                    it.remove(); // avoids a ConcurrentModificationException
                 }
-
-//                    System.out.println(pair.getKey() + " = " + pair.getValue());
-                it.remove(); // avoids a ConcurrentModificationException
             }
-        }
 
-        if (data.getGenderPrefrance() != null) {
+            if (data.getGenderPrefrance() != null) {
 
-            Iterator it = poolgenderMap.entrySet().iterator();
+                Iterator it = poolgenderMap.entrySet().iterator();
 
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
 
-                if (pair.getValue().toString().equalsIgnoreCase(data.getGenderPrefrance())) {
+                    if (pair.getValue().toString().equalsIgnoreCase(data.getGenderPrefrance())) {
 
-                    poolPreferenceSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
-                    poolGender.setText(pair.getValue().toString());
+                        poolPreferenceSpinner.setSelection(Integer.parseInt(pair.getKey().toString()));
+                        poolGender.setText(pair.getValue().toString());
+                    }
+                    it.remove(); // avoids a ConcurrentModificationException
                 }
-                it.remove(); // avoids a ConcurrentModificationException
             }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
-
     }
 
     @Override
@@ -362,52 +368,56 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
     private void uploadProfilePicToServer(Uri uri) {
 
-        File file = new File(getPath(uri));
+        try {
+            File file = new File(getPath(uri));
 
-        RequestBody type = RequestBody.create(MediaType.parse("text/plain"), Constants.PROFILE_PIC);
+            RequestBody type = RequestBody.create(MediaType.parse("text/plain"), Constants.PROFILE_PIC);
 
-        // Create a request body with file and image media type
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
-        // Create MultipartBody.Part using file request-body,file name and part name
-        MultipartBody.Part part = MultipartBody.Part.createFormData("documents", file.getName(), fileReqBody);
+            // Create a request body with file and image media type
+            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
+            // Create MultipartBody.Part using file request-body,file name and part name
+            MultipartBody.Part part = MultipartBody.Part.createFormData("documents", file.getName(), fileReqBody);
 
-        if (Utils.isNetworkAvailable(getActivity())) {
+            if (Utils.isNetworkAvailable(getActivity())) {
 
-            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-            if (restClientRetrofitService != null) {
-                restClientRetrofitService.uploadDocuments(TagALongPreferenceManager.getToken(getActivity()), part, type).enqueue(new Callback<ModelDocumentStatus>() {
+                if (restClientRetrofitService != null) {
+                    restClientRetrofitService.uploadDocuments(TagALongPreferenceManager.getToken(getActivity()), part, type).enqueue(new Callback<ModelDocumentStatus>() {
 
-                    @Override
-                    public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
-                        if (response.body() != null) {
+                            if (response.body() != null) {
 
-                            if (response.body().getStatus() == 1) {
+                                if (response.body().getStatus() == 1) {
 
-                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                ((HomeActivity) getActivity()).getUserProfile();
+                                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                    ((HomeActivity) getActivity()).getUserProfile();
 
+                                } else {
+                                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
                             } else {
-                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
 
-                        if (t != null && t.getMessage() != null) {
-                            t.printStackTrace();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Upload Profile PIC", "FAILURE Uploading profile pic");
                         }
-                        Log.e("Upload Profile PIC", "FAILURE Uploading profile pic");
-                    }
-                });
+                    });
+                }
+            } else {
+                Toast.makeText(getActivity(), "Please check your internet connection!!", Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(getActivity(), "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -431,179 +441,191 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
     private void handleSavePersonalDetails() {
 
-        if (genderSpinner.getSelectedItemPosition() == 0) {
-            Toast.makeText(getActivity(), "Please select a gender!!", Toast.LENGTH_LONG).show();
-            return;
+        try {
+            if (genderSpinner.getSelectedItemPosition() == 0) {
+                Toast.makeText(getActivity(), "Please select a gender!!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+            if (lastNameEdt.getText().toString().trim().equals("")) {
+                Toast.makeText(getActivity(), "Last name is mandatory!!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            editTxt.setVisibility(View.VISIBLE);
+            saveTxt.setVisibility(View.GONE);
+
+            nameTxt.setText(nameEdt.getText().toString().trim());
+            lastNameTxt.setText(lastNameEdt.getText().toString().trim());
+            emailTxt.setText(emailEdt.getText().toString().trim());
+            mobileNumberTxt.setText(mobileNumberEdt.getText().toString().trim());
+            addressTxt.setText(addressEdt.getText().toString().trim());
+            zipCodeTxt.setText(zipCodeEdt.getText().toString().trim());
+            dobTxt.setText(dobEdt.getText().toString().trim());
+
+            gender.setText(genderSpinner.getSelectedItem().toString().trim());
+            poolGender.setText(poolPreferenceSpinner.getSelectedItem().toString().trim());
+//        cityTxt.setText(cityEdt.getText().toString());
+//        regionTxt.setText(regionEdt.getText().toString());
+
+            nameEdt.setVisibility(View.GONE);
+            lastNameEdt.setVisibility(View.GONE);
+            zipCodeEdt.setVisibility(View.GONE);
+            dobEdt.setVisibility(View.GONE);
+            emailEdt.setVisibility(View.GONE);
+            mobileNumberEdt.setVisibility(View.GONE);
+            addressEdt.setVisibility(View.GONE);
+            genderSpinner.setVisibility(View.GONE);
+            poolPreferenceSpinner.setVisibility(View.GONE);
+//        cityEdt.setVisibility(View.GONE);
+//        regionEdt.setVisibility(View.GONE);
+
+            nameTxt.setVisibility(View.VISIBLE);
+            emailTxt.setVisibility(View.VISIBLE);
+            lastNameTxt.setVisibility(View.VISIBLE);
+            dobTxt.setVisibility(View.VISIBLE);
+            zipCodeTxt.setVisibility(View.VISIBLE);
+            mobileNumberTxt.setVisibility(View.VISIBLE);
+            addressTxt.setVisibility(View.VISIBLE);
+            gender.setVisibility(View.VISIBLE);
+            poolGender.setVisibility(View.VISIBLE);
+//        cityTxt.setVisibility(View.VISIBLE);
+//        regionTxt.setVisibility(View.VISIBLE);
+
+            savePersonalDetails();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-        if (lastNameEdt.getText().toString().trim().equals("")) {
-            Toast.makeText(getActivity(), "Last name is mandatory!!", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        editTxt.setVisibility(View.VISIBLE);
-        saveTxt.setVisibility(View.GONE);
-
-        nameTxt.setText(nameEdt.getText().toString().trim());
-        lastNameTxt.setText(lastNameEdt.getText().toString().trim());
-        emailTxt.setText(emailEdt.getText().toString().trim());
-        mobileNumberTxt.setText(mobileNumberEdt.getText().toString().trim());
-        addressTxt.setText(addressEdt.getText().toString().trim());
-        zipCodeTxt.setText(zipCodeEdt.getText().toString().trim());
-        dobTxt.setText(dobEdt.getText().toString().trim());
-
-        gender.setText(genderSpinner.getSelectedItem().toString().trim());
-        poolGender.setText(poolPreferenceSpinner.getSelectedItem().toString().trim());
-        cityTxt.setText(cityEdt.getText().toString());
-        regionTxt.setText(regionEdt.getText().toString());
-
-        nameEdt.setVisibility(View.GONE);
-        lastNameEdt.setVisibility(View.GONE);
-        zipCodeEdt.setVisibility(View.GONE);
-        dobEdt.setVisibility(View.GONE);
-        emailEdt.setVisibility(View.GONE);
-        mobileNumberEdt.setVisibility(View.GONE);
-        addressEdt.setVisibility(View.GONE);
-        genderSpinner.setVisibility(View.GONE);
-        poolPreferenceSpinner.setVisibility(View.GONE);
-        cityEdt.setVisibility(View.GONE);
-        regionEdt.setVisibility(View.GONE);
-
-        nameTxt.setVisibility(View.VISIBLE);
-        emailTxt.setVisibility(View.VISIBLE);
-        lastNameTxt.setVisibility(View.VISIBLE);
-        dobTxt.setVisibility(View.VISIBLE);
-        zipCodeTxt.setVisibility(View.VISIBLE);
-        mobileNumberTxt.setVisibility(View.VISIBLE);
-        addressTxt.setVisibility(View.VISIBLE);
-        gender.setVisibility(View.VISIBLE);
-        poolGender.setVisibility(View.VISIBLE);
-        cityTxt.setVisibility(View.VISIBLE);
-        regionTxt.setVisibility(View.VISIBLE);
-
-        savePersonalDetails();
     }
 
     private void editPersonalDetails() {
 
-        saveTxt.setVisibility(View.VISIBLE);
-        editTxt.setVisibility(View.GONE);
+        try {
+            saveTxt.setVisibility(View.VISIBLE);
+            editTxt.setVisibility(View.GONE);
 
-        nameEdt.setText(nameTxt.getText().toString());
-        lastNameEdt.setText(lastNameTxt.getText().toString());
-        dobEdt.setText(dobTxt.getText().toString());
-        emailEdt.setText(emailTxt.getText().toString());
-        mobileNumberEdt.setText(mobileNumberTxt.getText().toString());
-        addressEdt.setText(addressTxt.getText().toString());
-        zipCodeEdt.setText(zipCodeTxt.getText().toString());
-        cityEdt.setText(cityTxt.getText().toString());
-        regionEdt.setText(regionTxt.getText().toString());
+            nameEdt.setText(nameTxt.getText().toString());
+            lastNameEdt.setText(lastNameTxt.getText().toString());
+            dobEdt.setText(dobTxt.getText().toString());
+            emailEdt.setText(emailTxt.getText().toString());
+            mobileNumberEdt.setText(mobileNumberTxt.getText().toString());
+            addressEdt.setText(addressTxt.getText().toString());
+            zipCodeEdt.setText(zipCodeTxt.getText().toString());
+//        cityEdt.setText(cityTxt.getText().toString());
+//        regionEdt.setText(regionTxt.getText().toString());
 
-        nameEdt.setVisibility(View.VISIBLE);
-        lastNameEdt.setVisibility(View.VISIBLE);
-        dobEdt.setVisibility(View.VISIBLE);
-        zipCodeEdt.setVisibility(View.VISIBLE);
-        cityEdt.setVisibility(View.VISIBLE);
-        emailEdt.setVisibility(View.VISIBLE);
-        mobileNumberEdt.setVisibility(View.VISIBLE);
-        addressEdt.setVisibility(View.VISIBLE);
-        regionEdt.setVisibility(View.VISIBLE);
-        genderSpinner.setVisibility(View.VISIBLE);
-        poolPreferenceSpinner.setVisibility(View.VISIBLE);
+            nameEdt.setVisibility(View.VISIBLE);
+            lastNameEdt.setVisibility(View.VISIBLE);
+            dobEdt.setVisibility(View.VISIBLE);
+            zipCodeEdt.setVisibility(View.VISIBLE);
+//        cityEdt.setVisibility(View.VISIBLE);
+            emailEdt.setVisibility(View.VISIBLE);
+            mobileNumberEdt.setVisibility(View.VISIBLE);
+            addressEdt.setVisibility(View.VISIBLE);
+//        regionEdt.setVisibility(View.VISIBLE);
+            genderSpinner.setVisibility(View.VISIBLE);
+            poolPreferenceSpinner.setVisibility(View.VISIBLE);
 
-        nameTxt.setVisibility(View.GONE);
-        lastNameTxt.setVisibility(View.GONE);
-        cityTxt.setVisibility(View.GONE);
-        regionTxt.setVisibility(View.GONE);
-        dobTxt.setVisibility(View.GONE);
-        zipCodeTxt.setVisibility(View.GONE);
-        emailTxt.setVisibility(View.GONE);
-        mobileNumberTxt.setVisibility(View.GONE);
-        addressTxt.setVisibility(View.GONE);
-        gender.setVisibility(View.GONE);
-        poolGender.setVisibility(View.GONE);
+            nameTxt.setVisibility(View.GONE);
+            lastNameTxt.setVisibility(View.GONE);
+//        cityTxt.setVisibility(View.GONE);
+//        regionTxt.setVisibility(View.GONE);
+            dobTxt.setVisibility(View.GONE);
+            zipCodeTxt.setVisibility(View.GONE);
+            emailTxt.setVisibility(View.GONE);
+            mobileNumberTxt.setVisibility(View.GONE);
+            addressTxt.setVisibility(View.GONE);
+            gender.setVisibility(View.GONE);
+            poolGender.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void savePersonalDetails() {
 
-        if (Utils.isNetworkAvailable(getActivity())) {
+        try {
+            if (Utils.isNetworkAvailable(getActivity())) {
 
-            try {
-                ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
-                modelUpdateProfileRequest.setUserName(nameTxt.getText().toString());
-                modelUpdateProfileRequest.setEmail(emailTxt.getText().toString());
-                modelUpdateProfileRequest.setAddress(addressTxt.getText().toString());
-                modelUpdateProfileRequest.setLast_name(lastNameTxt.getText().toString());
-                modelUpdateProfileRequest.setDob(dobTxt.getText().toString());
+                try {
+                    ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
+                    modelUpdateProfileRequest.setUserName(nameTxt.getText().toString());
+                    modelUpdateProfileRequest.setEmail(emailTxt.getText().toString());
+                    modelUpdateProfileRequest.setAddress(addressTxt.getText().toString());
+                    modelUpdateProfileRequest.setLast_name(lastNameTxt.getText().toString());
+                    modelUpdateProfileRequest.setDob(dobTxt.getText().toString());
 
-                if (genderSpinner.getSelectedItemPosition() != 0) {
-                    modelUpdateProfileRequest.setGender(genderSpinner.getSelectedItem().toString());
-                } else {
-                    Toast.makeText(getActivity(), "Please select gender!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (mobileNumberTxt.getText().toString().length() < 10) {
-                    Toast.makeText(getActivity(), "Please enter valid mobile number!", Toast.LENGTH_LONG).show();
-                    return;
-                } else {
-                    modelUpdateProfileRequest.setMobileNo(countryCodePickerProfile.getSelectedCountryCode() + "" + mobileNumberTxt.getText().toString());
-                }
+                    if (genderSpinner.getSelectedItemPosition() != 0) {
+                        modelUpdateProfileRequest.setGender(genderSpinner.getSelectedItem().toString());
+                    } else {
+                        Toast.makeText(getActivity(), "Please select gender!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (mobileNumberTxt.getText().toString().length() < 10) {
+                        Toast.makeText(getActivity(), "Please enter valid mobile number!", Toast.LENGTH_LONG).show();
+                        return;
+                    } else {
+                        modelUpdateProfileRequest.setMobileNo(countryCodePickerProfile.getSelectedCountryCode() + "" + mobileNumberTxt.getText().toString());
+                    }
 
-                if (zipCodeTxt.getText().toString().equalsIgnoreCase("")) {
-                    Toast.makeText(getActivity(), "Please enter valid zipCode", Toast.LENGTH_LONG).show();
-                    return;
-                } else {
-                    modelUpdateProfileRequest.setZipcode(Integer.parseInt(zipCodeTxt.getText().toString()));
-                }
+                    if (zipCodeTxt.getText().toString().equalsIgnoreCase("")) {
+                        Toast.makeText(getActivity(), "Please enter valid zipCode", Toast.LENGTH_LONG).show();
+                        return;
+                    } else {
+                        modelUpdateProfileRequest.setZipcode(Integer.parseInt(zipCodeTxt.getText().toString()));
+                    }
 
-                if (!isValidEmaillId(emailTxt.getText().toString())) {
-                    Toast.makeText(getActivity(), "Please enter valid email!", Toast.LENGTH_LONG).show();
-                    return;
-                }
+                    if (!isValidEmaillId(emailTxt.getText().toString())) {
+                        Toast.makeText(getActivity(), "Please enter valid email!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
 
-                if (poolPreferenceSpinner.getSelectedItemPosition() != 0) {
-                    modelUpdateProfileRequest.setGenderPrefrance(poolPreferenceSpinner.getSelectedItem().toString());
-                } else {
-                    Toast.makeText(getActivity(), "Please select pool gender!", Toast.LENGTH_LONG).show();
-                    return;
-                }
+                    if (poolPreferenceSpinner.getSelectedItemPosition() != 0) {
+                        modelUpdateProfileRequest.setGenderPrefrance(poolPreferenceSpinner.getSelectedItem().toString());
+                    } else {
+                        Toast.makeText(getActivity(), "Please select pool gender!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
 
-                Log.i("PERSONAL DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
+                    Log.i("PERSONAL DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
 
-                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+                    RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-                if (restClientRetrofitService != null) {
+                    if (restClientRetrofitService != null) {
 
-                    restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {
+                        restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {
 
-                        @Override
-                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                            @Override
+                            public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
-                            if (response.body() != null) {
-                                Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                // get user profile again to save updated profile
-                                ((HomeActivity) getActivity()).getUserProfile();
-                            } else {
-                                Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                                if (response.body() != null) {
+                                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                    // get user profile again to save updated profile
+                                    ((HomeActivity) getActivity()).getUserProfile();
+                                } else {
+                                    Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                            @Override
+                            public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
 
-                            if (t != null && t.getMessage() != null) {
-                                t.printStackTrace();
+                                if (t != null && t.getMessage() != null) {
+                                    t.printStackTrace();
+                                }
+                                Log.e("SAVE PERSONAL DETAILS", "FAILURE SAVING PROFILE");
                             }
-                            Log.e("SAVE PERSONAL DETAILS", "FAILURE SAVING PROFILE");
-                        }
-                    });
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else {
+                Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(getActivity(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

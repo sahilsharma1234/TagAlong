@@ -1,7 +1,12 @@
 package com.carpool.tagalong.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,8 +46,27 @@ public class ChatActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private String userName, receiverId;
     private RecyclerView chatRecyclerView;
-    private  List<ChatModel> chatList = new ArrayList<>();
-    private  ChatAdapter chatAppMsgAdapter;
+    private List<ChatModel> chatList = new ArrayList<>();
+    private ChatAdapter chatAppMsgAdapter;
+
+    private BroadcastReceiver chatListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent != null){
+
+                if(intent.getExtras()!= null){
+                    if(intent.getExtras().containsKey("receiverId")){
+                        receiverId  =  intent.getExtras().getString("receiverId");
+                        if(receiverId!= null){
+                            getChatConversation();
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,21 +76,21 @@ public class ChatActivity extends AppCompatActivity {
         chatRecyclerView = findViewById(R.id.list_chat_messages);
 
         // Get RecyclerView object.
-        final RecyclerView msgRecyclerView = (RecyclerView)findViewById(R.id.list_chat_messages);
+        final RecyclerView msgRecyclerView = findViewById(R.id.list_chat_messages);
 
         // Set RecyclerView layout manager.
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
 
-        if(getIntent().getExtras()!=null){
+        if (getIntent().getExtras() != null) {
 
             userName = getIntent().getStringExtra("userName");
             receiverId = getIntent().getStringExtra("receiverId");
         }
+
         setToolBar();
 
-
-       final EditText msgInputText = findViewById(R.id.edit_chat_message);
+        final EditText msgInputText = findViewById(R.id.edit_chat_message);
 
         ImageButton msgSendButton = findViewById(R.id.button_chat_send);
 
@@ -74,8 +98,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String msgContent = msgInputText.getText().toString();
-                if(!TextUtils.isEmpty(msgContent))
-                {
+                if (!TextUtils.isEmpty(msgContent)) {
 
                     sendMessage(msgContent);
 
@@ -95,10 +118,11 @@ public class ChatActivity extends AppCompatActivity {
 
                     // Empty the input edit text box.
                     msgInputText.setText("");
-
                 }
             }
         });
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(chatListener, new IntentFilter("chatMessage"));
     }
 
     private void setToolBar() {
@@ -124,7 +148,7 @@ public class ChatActivity extends AppCompatActivity {
         getChatConversation();
     }
 
-    private void getChatConversation(){
+    private void getChatConversation() {
 
         try {
 
@@ -137,7 +161,7 @@ public class ChatActivity extends AppCompatActivity {
                     ModelGetChatRequest modelGetChatRequest = new ModelGetChatRequest();
                     modelGetChatRequest.setReceiver(receiverId);
 
-                    ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
 
                     restClientRetrofitService.getConversationMessages(TagALongPreferenceManager.getToken(this), modelGetChatRequest).enqueue(new Callback<ModelGetChatConversationResponse>() {
 
@@ -145,10 +169,13 @@ public class ChatActivity extends AppCompatActivity {
                         public void onResponse(Call<ModelGetChatConversationResponse> call, Response<ModelGetChatConversationResponse> response) {
 
                             ProgressDialogLoader.progressDialogDismiss();
+
                             if (response.body() != null) {
 
                                 if (response.body().getStatus() == 1) {
                                     handleChatListResponse(response.body());
+                                }else{
+                                    Toast.makeText(ChatActivity.this, response.message(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(ChatActivity.this, response.message(), Toast.LENGTH_LONG).show();
@@ -174,7 +201,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void sendMessage(String message){
+    private void sendMessage(String message) {
 
         try {
 
@@ -224,26 +251,38 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void handleChatListResponse(ModelGetChatConversationResponse response){
+    private void handleChatListResponse(ModelGetChatConversationResponse response) {
 
-        if(response.getData()!= null){
+        if (response.getData() != null) {
 
-            if(response.getData().size() > 0){
+            if (response.getData().size() > 0) {
 
                 // Create the initial data list.
                 chatList = response.getData();
 
                 // Create the data adapter with above data list.
-                chatAppMsgAdapter = new ChatAdapter(chatList,this);
+                chatAppMsgAdapter = new ChatAdapter(chatList, this);
 
                 // Set data adapter to RecyclerView.
                 chatRecyclerView.setAdapter(chatAppMsgAdapter);
-            }else{
+            } else {
 
-                chatAppMsgAdapter = new ChatAdapter(chatList,this);
+                chatAppMsgAdapter = new ChatAdapter(chatList, this);
                 // Set data adapter to RecyclerView.
                 chatRecyclerView.setAdapter(chatAppMsgAdapter);
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(chatListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(chatListener);
     }
 }

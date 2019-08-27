@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
     android:orientation="vertical"
 
@@ -104,10 +104,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:gravity="center"
-                        android:text="Noida"
                         android:ellipsize="end"
+                        android:gravity="center"
                         android:maxLines="1"
+                        android:text="Noida"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
@@ -127,23 +127,23 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="15dp"
-                        android:text="Gurdaspur"
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:text="Gurdaspur"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
-
-                    <!--<com.carpool.tagalong.views.RegularTextView-->
-                        <!--android:id="@+id/tv_navogate_address"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentRight="true"-->
-                        <!--android:layout_below="@+id/tv_source_address"-->
-                        <!--android:gravity="center"-->
-                        <!--android:text="NAVIGATE"-->
-                        <!--android:layout_marginTop="5dp"-->
-                        <!--android:textColor="@color/green"-->
-                        <!--android:textSize="14sp" />-->
+<!--
+                    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/tv_navogate_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_source_address"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="NAVIGATE"
+                        android:textColor="@color/green"
+                        android:textSize="14sp" />-->
 
                 </RelativeLayout>
 
@@ -173,109 +173,109 @@
                         android:id="@+id/tv_payment_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="50dp"
                         android:layout_centerHorizontal="true"
+                        android:layout_alignParentRight="true"
                         android:layout_toLeftOf="@+id/tv_payment_status"
                         android:text="$32.00"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
-                    <!--<com.carpool.tagalong.views.RegularTextView-->
-                        <!--android:id="@+id/tv_payment_status"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentRight="true"-->
-                        <!--android:gravity="center"-->
-                        <!--android:text="Paid"-->
-                        <!--android:textColor="@color/green"-->
-                        <!--android:textSize="16sp" />-->
+                <!--    <com.carpool.tagalong.views.RegularTextView
+                        android:id="@+id/tv_payment_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:text="Paid"
+                        android:textColor="@color/green"
+                        android:textSize="16sp" />-->
 
-                    <com.carpool.tagalong.views.RegularTextView
+              <!--      <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_payment_status1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:gravity="center"
                         android:text="Not paid"
-                        android:visibility="gone"
                         android:textColor="@color/color_g_plus"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />-->
 
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp">
+                <!--     <RelativeLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_marginTop="15dp">
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/tv_sea"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Seat Selected"
-                        android:textSize="14sp" />
+                         <com.carpool.tagalong.views.RegularTextView
+                             android:id="@+id/tv_sea"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:gravity="center"
+                             android:text="Seat Selected"
+                             android:textSize="14sp" />
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/tv_seat_selected"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:gravity="center"
-                        android:text="One"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                         <com.carpool.tagalong.views.RegularTextView
+                             android:id="@+id/tv_seat_selected"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_alignParentRight="true"
+                             android:gravity="center"
+                             android:text="One"
+                             android:textColor="@color/black"
+                             android:textSize="14sp" />
 
-                </RelativeLayout>
+                     </RelativeLayout>-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                <!--                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp">
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/tv_b"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Bag/bags"
-                        android:textSize="14sp" />
+                                    <com.carpool.tagalong.views.RegularTextView
+                                        android:id="@+id/tv_b"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:text="Bag/bags"
+                                        android:textSize="14sp" />
 
-                    <ImageView
-                        android:id="@+id/tv_bags"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_tick_driving_prefrence_create_ride_xhdpi"
-                        android:textSize="12sp" />
+                                    <ImageView
+                                        android:id="@+id/tv_bags"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:gravity="center"
+                                        android:visibility="gone"
+                                        android:src="@drawable/ic_tick_driving_prefrence_create_ride_xhdpi"
+                                        android:textSize="12sp" />
 
-                </RelativeLayout>
+                                </RelativeLayout>-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                <!--              <RelativeLayout
+                                  android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:layout_marginTop="5dp">
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/tv_t"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Traveling with children?"
-                        android:textSize="14sp" />
+                                  <com.carpool.tagalong.views.RegularTextView
+                                      android:id="@+id/tv_t"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                      android:gravity="center"
+                                      android:text="Traveling with children?"
+                                      android:textSize="14sp" />
 
-                    <ImageView
-                        android:id="@+id/tv_traveling_with_children"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_tick_driving_prefrence_create_ride_xhdpi" />
+                                  <ImageView
+                                      android:id="@+id/tv_traveling_with_children"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                      android:layout_alignParentRight="true"
+                                      android:gravity="center"
+                                      android:visibility="gone"
+                                      android:src="@drawable/ic_tick_driving_prefrence_create_ride_xhdpi" />
 
-                </RelativeLayout>
+                              </RelativeLayout>-->
 
                 <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/tv_message"
@@ -288,18 +288,17 @@
                     android:gravity="center"
                     android:text="Message"
                     android:textColor="@color/colorGold"
-                    android:textSize="16sp"
-                    />
+                    android:textSize="16sp" />
 
                 <com.carpool.tagalong.views.RegularEditText
                     android:id="@+id/otp_pickup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Please enter otp shared by rider"
-                    android:maxLines="1"
-                    android:inputType="number"
                     android:layout_marginTop="10dp"
-                    />
+                    android:maxLength="4"
+                    android:hint="Please enter otp shared by rider"
+                    android:inputType="number"
+                    android:maxLines="1" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -310,8 +309,8 @@
 
                     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_cancel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="150dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
@@ -319,46 +318,42 @@
                         android:gravity="center"
                         android:padding="10dp"
                         android:text="CANCEL"
-                        android:visibility="gone"
                         android:textColor="@color/orange_color"
-                        android:textSize="15sp"
-                        />
+                        android:textSize="15sp"/>
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/tv_Reject"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@color/light_grey_color"
-                        android:gravity="center"
-                        android:padding="10dp"
-                        android:text="REJECT"
-                        android:textColor="@color/orange_color"
-                        android:textSize="15sp"
-                        />
+                    <!--<com.carpool.tagalong.views.RegularTextView-->
+                        <!--android:id="@+id/tv_Reject"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center_horizontal"-->
+                        <!--android:layout_marginRight="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@color/light_grey_color"-->
+                        <!--android:gravity="center"-->
+                        <!--android:padding="10dp"-->
+                        <!--android:text="REJECT"-->
+                        <!--android:textColor="@color/orange_color"-->
+                        <!--android:textSize="15sp" />-->
 
-                    <com.carpool.tagalong.views.RegularTextView
-                        android:id="@+id/tv_acepted"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:background="@color/light_green"
-                        android:gravity="center"
-                        android:padding="10dp"
-                        android:visibility="gone"
-                        android:text="ACCEPTED"
-                        android:textColor="@color/green"
-                        android:textSize="15sp"
-                        />
+                    <!--<com.carpool.tagalong.views.RegularTextView-->
+                        <!--android:id="@+id/tv_acepted"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center_horizontal"-->
+                        <!--android:layout_marginLeft="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@color/light_green"-->
+                        <!--android:gravity="center"-->
+                        <!--android:padding="10dp"-->
+                        <!--android:text="ACCEPTED"-->
+                        <!--android:textColor="@color/green"-->
+                        <!--android:textSize="15sp"-->
+                        <!--android:visibility="gone" />-->
 
-                    <com.carpool.tagalong.views.RegularTextView
+               <!--     <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/tv_acept"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="150dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
@@ -367,8 +362,7 @@
                         android:padding="10dp"
                         android:text="ACCEPT"
                         android:textColor="@android:color/white"
-                        android:textSize="15sp"
-                        />
+                        android:textSize="15sp" />-->
 
                 </LinearLayout>
 
@@ -380,11 +374,11 @@
                     android:layout_marginBottom="20dp"
                     android:elevation="6dp"
                     app:area_margin="4dp"
-                    app:text="SLIDE TO PICKUP"
                     app:border_radius="2dp"
-                    app:text_size="16sp"
                     app:slider_height="64dp"
-                    app:slider_locked="false"/>
+                    app:slider_locked="false"
+                    app:text="SLIDE TO PICKUP"
+                    app:text_size="16sp" />
 
                 <!--   <LinearLayout
                        android:id="@+id/sliderlayout"
@@ -427,6 +421,9 @@
 
                    </LinearLayout>-->
             </LinearLayout>
+
         </LinearLayout>
+
     </RelativeLayout>
+
 </LinearLayout>

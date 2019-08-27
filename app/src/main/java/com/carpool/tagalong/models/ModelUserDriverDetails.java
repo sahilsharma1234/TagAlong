@@ -12,8 +12,8 @@ public class ModelUserDriverDetails {
     public boolean allowKids;
     @SerializedName("vehicleBrand")
     public String vehicleBrand;
-    @SerializedName("vehicleModel")
-    public String vehicleModel;
+    @SerializedName("vehicle")
+    public String vehicle;
     @SerializedName("vehicleNumber")
     public String vehicleNumber;
     @SerializedName("vehicleYear")
@@ -53,12 +53,12 @@ public class ModelUserDriverDetails {
         this.vehicleBrand = vehicleBrand;
     }
 
-    public String getVehicleModel() {
-        return vehicleModel;
+    public String getVehicle() {
+        return vehicle;
     }
 
-    public void setVehicleModel(String vehicleModel) {
-        this.vehicleModel = vehicleModel;
+    public void setVehicle(String vehicle) {
+        this.vehicle = vehicle;
     }
 
     public String getVehicleNumber() {
@@ -92,7 +92,7 @@ public class ModelUserDriverDetails {
                 ", bags=" + bags +
                 ", allowKids=" + allowKids +
                 ", vehicleBrand='" + vehicleBrand + '\'' +
-                ", vehicleModel='" + vehicleModel + '\'' +
+                ", vehicle='" + vehicle + '\'' +
                 ", vehicleNumber='" + vehicleNumber + '\'' +
                 ", vehicleYear=" + vehicleYear +
                 ", vehicleColor='" + vehicleColor + '\'' +

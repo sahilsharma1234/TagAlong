@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="20dp"
-    android:padding="@dimen/_10_px">
+    android:padding="@dimen/_10_px"
+    android:paddingBottom="20dp">
 
     <View
         android:layout_width="30dp"
         android:layout_height="5dp"
-        android:background="@color/grey"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:background="@color/grey" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20_px">
 
         <com.carpool.tagalong.views.RegularTextView
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="Driver details"
             android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/l1"
@@ -43,7 +43,7 @@
                     android:id="@+id/driverImage"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/avatar_avatar_12"/>
+                    android:src="@drawable/avatar_avatar_12" />
 
             </RelativeLayout>
 
@@ -59,60 +59,91 @@
                     android:layout_height="wrap_content"
                     android:text="ABC"
                     android:textColor="@color/black"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/driverRating"
-                    android:layout_below="@id/drivernameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/drivernameText"
                     android:text="ABC"
                     android:textColor="@color/black"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
                 <ImageView
                     android:layout_width="10dp"
                     android:layout_height="10dp"
-                    android:src="@drawable/ic_star_on_review_pop_mdpi"
                     android:layout_below="@id/drivernameText"
-                    android:layout_toRightOf="@id/driverRating"/>
+                    android:layout_toRightOf="@id/driverRating"
+                    android:src="@drawable/ic_star_on_review_pop_mdpi" />
 
                 <com.carpool.tagalong.views.RegularTextView
                     android:id="@+id/countPickup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/driverRating"
                     android:text="ABC"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:layout_below="@id/driverRating"/>
+                    android:textSize="12sp" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                >
+                android:layout_height="match_parent">
+
                 <ImageView
+                    android:id="@+id/callDriver"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/_5_px"
                     android:layout_marginLeft="@dimen/_20_px"
-                    android:src="@drawable/ic_call"/>
+                    android:layout_marginTop="@dimen/_5_px"
+                    android:src="@drawable/ic_call" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
+        <RelativeLayout
+            android:id="@+id/cabDtlsLyt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/l1"
+            android:layout_marginTop="20dp">
+
+            <com.carpool.tagalong.views.RegularTextView
+                android:id="@+id/cab_dtls_quick_ride_passenger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="cab details"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <com.carpool.tagalong.views.RegularTextView
+                android:id="@+id/otp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="OTP"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
         <Button
             android:id="@+id/cancelRide"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:textAllCaps="true"
-            android:text="Cancel Ride"
-            android:layout_below="@id/l1"
+            android:layout_below="@id/cabDtlsLyt"
             android:layout_marginTop="@dimen/_20_px"
-            />
+            android:text="Cancel Ride"
+            android:textAllCaps="true" />
 
     </RelativeLayout>
 

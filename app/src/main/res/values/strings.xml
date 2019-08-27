@@ -74,7 +74,7 @@
     <string name="currentupcoming"><![CDATA[Current & Upcoming rides]]></string>
     <string name="current_nd_upcoming"><![CDATA[Current & upcoming rides]]></string>
     <string name="i_am">I am a</string>
-    <string name="emergency_send">SOS sent!! Please hold on fr sometime!!</string>
+    <string name="emergency_send">SOS sent!! Please hold on for sometime!!</string>
     <string name="emergency_rides">Rides in Emergency</string>
     <string name="sos_received">SOS received</string>
     <string name="no_emergencies">No Emergencies</string>
@@ -95,7 +95,7 @@
     <string name="intercity_long_distance_rides">(Intercity long distance rides)</string>
     <string name="intercity_long_distance_ride">(Intercity long distance rides)</string>
     <string name="ride_completed">Ride has been completed</string>
-    <string name="total_amount_paid">Toatal amount paid</string>
+    <string name="total_amount_paid">Total amount paid</string>
     <string name="payandbooknow">BOOK NOW</string>
     <string name="reached_string">Looks like you have reached/ndon\'t forget to review.</string>
     <string name="register_wepay_merchant">Do you want to register as driver to receive payments when you drive?</string>

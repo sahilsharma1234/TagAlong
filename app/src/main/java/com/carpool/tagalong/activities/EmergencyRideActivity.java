@@ -48,6 +48,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class EmergencyRideActivity extends AppCompatActivity implements OnMapReadyCallback, RidersAdapterInEmergencyRide.RiderInEmergencyInterface {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 858;
+    private static final int CALL_PHONE_CODE = 266;
     ArgbEvaluator argbEvaluator;
     private ModelGetEmergencyRidesResponse.EmergencyRides emergencyRide;
     private RecyclerView ridersListInEmergencyRide;
@@ -80,6 +81,11 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
 
         if (emergencyRide == null) {
             alertBox(this, "Some error getting this ride's location");
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PHONE_CODE);
         }
     }
 
@@ -230,6 +236,12 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
     @Override
     public void callUser(ModelGetEmergencyRidesResponse.RiderList ride, ModelGetEmergencyRidesResponse.Location location) {
 
+        Intent call = new Intent(Intent.ACTION_CALL);
+        call.setData(Uri.parse("tel:" + ride.getMobileNo()));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        startActivity(call);
     }
 
     @Override
@@ -246,6 +258,7 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
         mMap.setMaxZoomPreference(20);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -278,14 +291,31 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (checkPermission()) {
-                addMarkerAndFillDetails();
-            } else {
-                Toast.makeText(this, "Location permission denied.", Toast.LENGTH_SHORT).show();
+
+        try {
+
+            switch (requestCode) {
+
+                case LOCATION_PERMISSION_REQUEST_CODE:
+
+                    if (checkPermission()) {
+                        addMarkerAndFillDetails();
+                    } else {
+                        Toast.makeText(this, "Location permission denied.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+
+                case CALL_PHONE_CODE:
+
+                    if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    } else {
+                        Toast.makeText(this, "This app needs phone permission", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
             }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

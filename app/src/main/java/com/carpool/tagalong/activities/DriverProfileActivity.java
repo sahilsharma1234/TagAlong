@@ -84,6 +84,7 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
         rating  =        findViewById(R.id.driver_rating);
         trips   =        findViewById(R.id.driver_trips);
         viewAll =        findViewById(R.id.viewAllRidesDriver);
+        viewAll.setVisibility(View.GONE);
         viewAll.setOnClickListener(this);
         recycler_view_recent_rides_driver_profile = findViewById(R.id.recycler_view_recent_rides_driver_profile);
 
@@ -176,6 +177,7 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
             ridesList = data.getRides();
 
             if (ridesList != null && ridesList.size() > 0) {
+                viewAll.setVisibility(View.VISIBLE);
 
                 RecentRideDriverProfileAdapter mAdapter = new RecentRideDriverProfileAdapter(this, ridesList);
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

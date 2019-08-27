@@ -49,4 +49,6 @@ public class Constants {
     public static final String TYPE_QUICKRIDE = "8";
     public static final String TYPE_RIDE_CANCELLED_BY_PASSENGER = "4";
 
+    public static final String PICKED_UP = "pickedup";
+    public static final String DROPPED = "dropped";
 }

@@ -19,7 +19,9 @@ import android.widget.Toast;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.CurrentRideActivity;
 import com.carpool.tagalong.activities.CurrentRideActivityDriver;
+import com.carpool.tagalong.activities.FreeRoamActivity;
 import com.carpool.tagalong.activities.HomeActivity;
+import com.carpool.tagalong.activities.QuickSearchRideActivity;
 import com.carpool.tagalong.adapter.CurrentAndUpcomingRideAdapter;
 import com.carpool.tagalong.models.ModelGetAllRidesResponse;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
@@ -187,7 +189,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
                         ongongRidesLIst.add(ride);
                     }
                 }
-                if(ongongRidesLIst.size() > 0){
+                if (ongongRidesLIst.size() > 0) {
 
                     mAdapter = new CurrentAndUpcomingRideAdapter(context, ongongRidesLIst, this, ongoingRidesCount);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -195,7 +197,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
                     currentNdUpcomingrecyclerView.setItemAnimator(new DefaultItemAnimator());
                     currentNdUpcomingrecyclerView.setAdapter(mAdapter);
 
-                }else{
+                } else {
                     lyt_currnt_upcoming.setVisibility(View.GONE);
                     add_ride_lyt.setVisibility(View.VISIBLE);
                 }
@@ -272,14 +274,50 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
         if (data != null) {
 
-            if (data.getRideData().isDrive()) {
 
-                handleCurrentRideForDriver(data, rideId);
+            if (data.getRideData().isRideShort()) {
+
+                if (data.getRideData().isDrive()) {
+
+                    handleCurrentQuickRideForDriver(data, rideId);
+
+                } else {
+                    handleCurrentQuickRideForRider(data, rideId);
+                }
+
 
             } else {
-                handleCurrentRideForRider(data, rideId);
+                if (data.getRideData().isDrive()) {
+
+                    handleCurrentRideForDriver(data, rideId);
+
+                } else {
+                    handleCurrentRideForRider(data, rideId);
+                }
             }
         }
+    }
+
+    private void handleCurrentQuickRideForRider(ModelGetCurrentRideResponse data, String rideId) {
+
+        Intent intent = new Intent(getActivity(), QuickSearchRideActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("data", data);
+        intent.putExtra("rideId", rideId);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    private void handleCurrentQuickRideForDriver(ModelGetCurrentRideResponse data, String rideId) {
+
+
+        Intent intent = new Intent(getActivity(), FreeRoamActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("data", data);
+        intent.putExtra("rideId", rideId);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
     }
 
     private void handleCurrentRideForRider(ModelGetCurrentRideResponse data, String rideId) {

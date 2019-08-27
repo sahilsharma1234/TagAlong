@@ -14,16 +14,17 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.activities.ChatActivity;
 import com.carpool.tagalong.activities.CurrentRideActivity;
 import com.carpool.tagalong.activities.FreeRoamActivity;
 import com.carpool.tagalong.activities.HomeActivity;
 import com.carpool.tagalong.constants.Constants;
-import com.carpool.tagalong.managers.DataManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class NotificationService extends FirebaseMessagingService {
     private static final String TAG = NotificationService.class.getName();
+
     /**
      * Called when message is received.
      *
@@ -55,11 +56,11 @@ public class NotificationService extends FirebaseMessagingService {
                 message = remoteMessage.getData().get("body");
 
                 try {
-                    sendNotification(remoteMessage,message,remoteMessage.getData().get("title"),remoteMessage.getData().get("type"));
+                    sendNotification(remoteMessage, message, remoteMessage.getData().get("title"), remoteMessage.getData().get("type"));
                     return;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    sendNotification(remoteMessage,remoteMessage.getData().get("body"),remoteMessage.getData().get("title"),
+                    sendNotification(remoteMessage, remoteMessage.getData().get("body"), remoteMessage.getData().get("title"),
                             "");
                     return;
                 }
@@ -82,39 +83,51 @@ public class NotificationService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(RemoteMessage remoteMessage,String messageBody, String title, String type) {
+    private void sendNotification(RemoteMessage remoteMessage, String messageBody, String title, String type) {
 
         Intent intent = null;
+//
+//        if(title.contains("Driver Cancelled a Ride")){
+//            intent = new Intent(this, HomeActivity.class);
+//            intent.putExtra(Constants.START_RIDE,title);
+//            DataManager.setStatus(0);
+//            Intent intent1 = new Intent("launchCurrentRideFragment");
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+//        }
+//        else
+//
+        if (type.equals(Constants.TYPE_PANIC_BUTTON)) {
 
-        if(title.contains("Driver Cancelled a Ride")){
-            intent = new Intent(this, HomeActivity.class);
-            intent.putExtra(Constants.START_RIDE,title);
-            DataManager.setStatus(0);
-            Intent intent1 = new Intent("launchCurrentRideFragment");
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-        }
-        else if(type.equals(Constants.TYPE_PANIC_BUTTON)){
-        }
-        else if(type.equals(Constants.TYPE_PICKUP)){
+        } else if (type.equals(Constants.TYPE_PICKUP)) {
 
             intent = new Intent(this, CurrentRideActivity.class);
             Intent intent1 = new Intent("pickedup");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-        }
-        else if(type.equals(Constants.TYPE_DROP)){
+        } else if (type.equals(Constants.TYPE_DROP)) {
 
             intent = new Intent(this, CurrentRideActivity.class);
             Intent intent1 = new Intent("dropped");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-        }else if(type.equals(Constants.TYPE_QUICKRIDE)){
+        } else if (type.equals(Constants.TYPE_QUICKRIDE)) {
 
             intent = new Intent(this, FreeRoamActivity.class);
             Intent intent1 = new Intent("riderListener");
             intent1.putExtra("rideId", remoteMessage.getData().get("rideId"));
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+        } else if (type.equals(Constants.TYPE_CHAT)) {
+
+            String senderId = remoteMessage.getData().get("sender");
+            intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("receiverId", senderId);
+            Intent intent1 = new Intent("chatMessage");
+            intent1.putExtra("receiverId", senderId);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+        }else if(title.contains("payment")) {
+// nothing to do in payment notification because
         }
         else {
             intent = new Intent(this, HomeActivity.class);
+            intent.putExtra(Constants.START_RIDE, title);
             Intent intent1 = new Intent("launchCurrentRideFragment");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         }
@@ -124,11 +137,11 @@ public class NotificationService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        String channelId = getString(R.string.app_name)+ System.currentTimeMillis();
+        String channelId = getString(R.string.app_name) + System.currentTimeMillis();
 
         Uri defaultSoundUri = null;
 
-        defaultSoundUri  = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
@@ -154,7 +167,7 @@ public class NotificationService extends FirebaseMessagingService {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Channel human readable title",
                     NotificationManager.IMPORTANCE_HIGH);
-            channel.setSound(defaultSoundUri,audioAttributes);
+            channel.setSound(defaultSoundUri, audioAttributes);
             notificationManager.createNotificationChannel(channel);
         }
         notificationManager.notify((int) System.currentTimeMillis(), notificationBuilder.build());

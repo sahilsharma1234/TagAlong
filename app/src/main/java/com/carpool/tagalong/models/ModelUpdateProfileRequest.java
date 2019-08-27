@@ -20,8 +20,8 @@ public class ModelUpdateProfileRequest {
     public boolean allowKids;
     @SerializedName("vehicleBrand")
     public String vehicleBrand;
-    @SerializedName("vehicleModel")
-    public String vehicleModel;
+    @SerializedName("vehicle")
+    public String vehicle;
     @SerializedName("vehicleNumber")
     public String vehicleNumber;
     @SerializedName("vehicleYear")
@@ -269,12 +269,12 @@ public class ModelUpdateProfileRequest {
         this.vehicleBrand = vehicleBrand;
     }
 
-    public String getVehicleModel() {
-        return vehicleModel;
+    public String getVehicle() {
+        return vehicle;
     }
 
-    public void setVehicleModel(String vehicleModel) {
-        this.vehicleModel = vehicleModel;
+    public void setVehicle(String vehicle) {
+        this.vehicle = vehicle;
     }
 
     @Override
@@ -288,7 +288,7 @@ public class ModelUpdateProfileRequest {
                 ", bags=" + bags +
                 ", allowKids=" + allowKids +
                 ", vehicleBrand='" + vehicleBrand + '\'' +
-                ", vehicleModel='" + vehicleModel + '\'' +
+                ", vehicle='" + vehicle + '\'' +
                 ", vehicleNumber='" + vehicleNumber + '\'' +
                 ", vehicleYear=" + vehicleYear +
                 ", vehicleColor='" + vehicleColor + '\'' +

@@ -1,6 +1,7 @@
 package com.carpool.tagalong.activities;
 
 import android.animation.ArgbEvaluator;
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -45,7 +48,7 @@ import retrofit2.Response;
 
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
-public class TrackDriverActivity extends BaseActivity {
+public class TrackDriverActivity extends BaseActivity  {
 
     MarkerOptions options = null;
     ArgbEvaluator argbEvaluator;
@@ -77,18 +80,17 @@ public class TrackDriverActivity extends BaseActivity {
 
             }
 
-            if (getIntent().getExtras().containsKey("lat")) {
+            if (getIntent().getExtras().containsKey("rideLat")) {
 
-                lat = Double.valueOf(getIntent().getExtras().getString("lat"));
+                lat = (Double)getIntent().getExtras().get("rideLat");
             }
 
-            if (getIntent().getExtras().containsKey("longt")) {
+            if (getIntent().getExtras().containsKey("rideLongt")) {
 
-                longt = Double.valueOf(getIntent().getExtras().getString("longt"));
+                longt = (Double)(getIntent().getExtras().get("rideLongt"));
             }
 
             addCurrentLocationMarker(lat,longt);
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +103,7 @@ public class TrackDriverActivity extends BaseActivity {
             }
         };
 
-        getDriverTimer.schedule(timerTask,15*1000);
+        getDriverTimer.schedule(timerTask,1*1000, 15*1000);
 
     }
 
@@ -111,7 +113,7 @@ public class TrackDriverActivity extends BaseActivity {
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(lat, longt))
-                    .zoom(12)
+                    .zoom(15)
                     .build();
 
 //            addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
@@ -187,9 +189,14 @@ public class TrackDriverActivity extends BaseActivity {
 
         try {
 
+             if(mMap != null){
+                 mMap.clear();
+                 addCurrentLocationMarker(this.lat, this.longt);
+             }
+
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(lat, lont))
-                    .zoom(12)
+                    .zoom(15)
                     .build();
 
 //            addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
@@ -341,7 +348,7 @@ public class TrackDriverActivity extends BaseActivity {
                 lineOptions.addAll(points);
                 lineOptions.width(6);
                 lineOptions.color(Color.BLACK);
-                lineOptions.geodesic(true);
+                lineOptions.geodesic(false);
                 lineOptions.jointType(ROUND);
             }
 

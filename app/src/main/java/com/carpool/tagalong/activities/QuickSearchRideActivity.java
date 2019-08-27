@@ -2,6 +2,7 @@ package com.carpool.tagalong.activities;
 
 import android.Manifest;
 import android.animation.ArgbEvaluator;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -32,10 +35,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,12 +49,17 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
+import com.carpool.tagalong.models.ModelDocumentStatus;
+import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetEstimatedFareRequest;
 import com.carpool.tagalong.models.ModelGetEstimatedFareResponse;
 import com.carpool.tagalong.models.ModelGetNearbyDriversRequest;
 import com.carpool.tagalong.models.ModelGetNearbyDriversResponse;
+import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
 import com.carpool.tagalong.models.ModelGetUserLocationResponse;
 import com.carpool.tagalong.models.ModelQuickRideBookResponse;
+import com.carpool.tagalong.models.ModelRateRiderequest;
 import com.carpool.tagalong.models.ModelRequestQuickRideRider;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
@@ -107,16 +117,20 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private static final String TYPE_DETAILS = "/details";
     private static final String OUT_JSON = "/json";
     private static final String API_KEY = "AIzaSyChV_kPPwQkFZ_beep4K4y6DEHz9dUKYg4";
-    private static final String ANIM_REQUEST_COUNT_BUTTON = "anim_request_count", ANIM_DOWN_SETTINGS = "anim_request_selection", ANIM_SELFIE_TAKEN = "anim_selfie_taken", ANIM_SELFIE_ACTION = "anim_selfie_action";
+    private static final String ANIM_DOWN_SETTINGS = "anim_request_selection";
+    private static final int CALL_PHONE_CODE = 235;
     private static String lastHit = "";
     private static Double startLat, startlongt, endLat, endLng = 0.0;
     private static int carry_bag_count = 1;
     private static int mAX_bag_count = 4;
+    private static ModelQuickRideBookResponse modelQuickRideBookResponse;
+    private static ModelGetCurrentRideResponse modelGetRideDetailsResponse;
     private final String TAG = QuickSearchRideActivity.this.getClass().getSimpleName();
     @BindView(R.id.rootll)
     LinearLayout rootll;
     ArgbEvaluator argbEvaluator;
     ArrayList<LatLng> points;
+    MarkerOptions options = null;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private ArrayList<String> placeIdList = null;
@@ -133,19 +147,29 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private CheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
     private Button searchRide, payAndBookNow, payAndBookNowDisable;
     private RelativeLayout estimatedFareDetailsLayout, bookedCabDetailsLayout, stratTripLyt, endtripLyt;
-    MarkerOptions options = null;
     private BroadcastReceiver listener = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             finish();
         }
     };
+    private BroadcastReceiver pickedUpListener = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showPickedUpDialog(QuickSearchRideActivity.this);
+        }
+    };
+    private BroadcastReceiver droppedListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showDroppedDialog(QuickSearchRideActivity.this);
+        }
+    };
     private ShimmerTextView estimatedCost, estimatedTime;
     private RegularTextView sourceLocname, destLocName;
-
     private Timer getDriverLocationtimer = new Timer();
-
     private Handler locationHandler = new Handler(new Handler.Callback() {
 
         @Override
@@ -164,7 +188,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             return true;
         }
     });
-
     private Shimmer shimmer, shimmerEst;
 
     @Override
@@ -210,7 +233,17 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi));
         }
 //        getCurrentDateTimeAndSet();
-        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PHONE_CODE);
+        }
+
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("rideId")) {
+
+            getRideDetails(getIntent().getExtras().getString("rideId"));
+
+        }
     }
 
     private void initializeViews() {
@@ -230,10 +263,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         payAndBookNow.setOnClickListener(this);
         estimatedFareDetailsLayout = findViewById(R.id.rideSearchResultLyt);
         bookedCabDetailsLayout = findViewById(R.id.bookedCabDriverDetails);
-        stratTripLyt  = findViewById(R.id.startLayout);
-        endtripLyt  = findViewById(R.id.endTrip);
-
-
+        stratTripLyt = findViewById(R.id.startLayout);
+        endtripLyt = findViewById(R.id.endTrip);
 //
 //        payAndBookNow.setBackgroundColor(R.color.grey);
 //        payAndBookNow.setEnabled(false);
@@ -563,7 +594,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
     }
 
-    private void addAvailableDriversCarMarker(Double lat, Double lont){
+    private void addAvailableDriversCarMarker(Double lat, Double lont) {
 
         try {
             CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -582,7 +613,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -617,7 +647,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private void addStartMarker() {
 
         try {
-
             mMap.clear();
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -842,6 +871,14 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                         showAlertDialog("This app needs location permission", "Need Location Permission", false, 1);
                     }
                     break;
+
+                case CALL_PHONE_CODE:
+
+                    if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    } else {
+                        showAlertDialog("This app needs phone permission", "Need phone call permission", false, 1);
+                    }
+                    break;
             }
 
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -851,6 +888,16 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                     Utils.scheduleApplicationPackageJob(this);
                 }
                 locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
+            }
+
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+
+                Intent call = new Intent(Intent.ACTION_CALL);
+                call.setData(Uri.parse("tel:" + modelQuickRideBookResponse.getDriverDetails().getMobileNo()));
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(call);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -971,7 +1018,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
                 if (restClientRetrofitService != null) {
 
-                    ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
 
                     restClientRetrofitService.bookQuickRide(TagALongPreferenceManager.getToken(context), modelRequestQuickRideRider).enqueue(new Callback<ModelQuickRideBookResponse>() {
 
@@ -981,6 +1028,9 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                             ProgressDialogLoader.progressDialogDismiss();
                             if (response.body() != null && response.body().getStatus() == 1) {
                                 //                                shimmer.cancel();
+
+                                modelQuickRideBookResponse = response.body();
+
                                 handleCabBookData(response.body());
                             } else if (response.body() != null && response.body().getStatus() == 0) {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
@@ -1023,15 +1073,39 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         CircleImageView imageView = view.findViewById(R.id.driverImage);
         TextView driverRating = view.findViewById(R.id.driverRating);
         TextView driverName = view.findViewById(R.id.drivernameText);
+        TextView cabDtls = view.findViewById(R.id.cab_dtls_quick_ride_passenger);
+        ImageView callDriver = view.findViewById(R.id.callDriver);
+
+        callDriver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent call = new Intent(Intent.ACTION_CALL);
+                call.setData(Uri.parse("tel:" + modelQuickRideBookResponse.getDriverDetails().getMobileNo()));
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(call);
+            }
+        });
 
         TextView countPickup = view.findViewById(R.id.countPickup);
+        cabDtls.setText(modelQuickRideBookResponse.getDriverDetails().getVehicle() + " " + modelQuickRideBookResponse.getDriverDetails().getVehicleNumber());
 
-        if(modelQuickRideBookResponse.getPassengersPickupComingUp() != null){
+        if (modelQuickRideBookResponse.getPassengersPickupComingUp() != null) {
 
-            countPickup.setText(modelQuickRideBookResponse.getPassengersPickupComingUp().size() +" pickup coming up");
+            countPickup.setText(modelQuickRideBookResponse.getPassengersPickupComingUp().size() + " pickup coming up");
         }
 
         Button cancelRide = view.findViewById(R.id.cancelRide);
+
+        cancelRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showCancelAlert(modelQuickRideBookResponse.getRequestId());
+            }
+        });
 
         RequestOptions options = new RequestOptions()
                 .centerCrop()
@@ -1044,7 +1118,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                 .into(imageView);
 
         driverRating.setText(modelQuickRideBookResponse.getDriverDetails().getRating() + "");
-        driverName.setText(modelQuickRideBookResponse.getDriverDetails().getName() + "");
+        driverName.setText(modelQuickRideBookResponse.getDriverDetails().getUserName() + "");
         bookedCabDetailsLayout.addView(view);
         animate(ANIM_DOWN_SETTINGS);
 
@@ -1057,7 +1131,103 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             }
         };
 
-        getDriverLocationtimer.schedule(getDriverLocationTimerTask,20*1000);
+        getDriverLocationtimer.schedule(getDriverLocationTimerTask, 20 * 1000);
+    }
+
+    private void showCancelAlert(String requestId) {
+        showCustomCancelRideDialog(this, requestId);
+    }
+
+    private void showCustomCancelRideDialog(Activity context, final String requestId) {
+
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
+        AlertDialog alertDialog;
+        final EditText reasonText;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.cancel_ride_alert_doalog_lyt, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            reasonText = dialogView.findViewById(R.id.cancel_reason_edt);
+            buttonNegative = dialogView.findViewById(R.id.no_cancel_ride);
+            buttonPositive = dialogView.findViewById(R.id.cancel_ride);
+            alertDialog = dialogBuilder.create();
+
+            final AlertDialog finalAlertDialog = alertDialog;
+            buttonPositive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleCancelRide(reasonText.getText().toString(), requestId);
+                    finalAlertDialog.cancel();
+                }
+            });
+
+            buttonNegative.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalAlertDialog.cancel();
+                }
+            });
+
+            alertDialog.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void handleCancelRide(String reason, String requestId) {
+
+        try {
+
+            ModelCancelOwnRideRequest modelCancelOwnRideRequest = new ModelCancelOwnRideRequest();
+            modelCancelOwnRideRequest.setRequestId(requestId);
+            modelCancelOwnRideRequest.setCancelReason(reason);
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    restClientRetrofitService.cancelRide(TagALongPreferenceManager.getToken(context), modelCancelOwnRideRequest).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                    DataManager.setStatus(0);
+                                    finish();
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Cancel Rider Own quick Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void animate(String condition) {
@@ -1073,7 +1243,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                 bookedCabDetailsLayout.setVisibility(View.VISIBLE);
                 bookedCabDetailsLayout.startAnimation(slideFromBottom);
                 break;
-
         }
     }
 
@@ -1177,16 +1346,16 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                         public void onResponse(Call<ModelGetNearbyDriversResponse> call, Response<ModelGetNearbyDriversResponse> response) {
 
                             if (response.body() != null && response.body().getStatus() == 1) {
-                                if(response.body().getData()!= null){
+                                if (response.body().getData() != null) {
 
                                     List<ModelGetNearbyDriversResponse.Data> datalist = response.body().getData();
 
-                                    if(datalist.size() > 1){
+                                    if (datalist.size() > 1) {
 
                                         handleAddCarMarker(datalist);
 
-                                    }else{
-                                        addAvailableDriversCarMarker(datalist.get(0).getLocation().getCoordinates().get(1),datalist.get(0).getLocation().getCoordinates().get(0));
+                                    } else {
+                                        addAvailableDriversCarMarker(datalist.get(0).getLocation().getCoordinates().get(1), datalist.get(0).getLocation().getCoordinates().get(0));
                                     }
                                 }
                             } else if (response.body() != null && response.body().getStatus() == 0) {
@@ -1216,8 +1385,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
     private void handleAddCarMarker(List<ModelGetNearbyDriversResponse.Data> datalist) {
 
-        for(int i = 0; i < datalist.size(); i++ ){
-            addAvailableDriversCarMarker(datalist.get(i).getLocation().getCoordinates().get(1),datalist.get(i).getLocation().getCoordinates().get(0));
+        for (int i = 0; i < datalist.size(); i++) {
+            addAvailableDriversCarMarker(datalist.get(i).getLocation().getCoordinates().get(1), datalist.get(i).getLocation().getCoordinates().get(0));
         }
     }
 
@@ -1239,7 +1408,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
                 if (restClientRetrofitService != null) {
 
-                    ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
 
                     restClientRetrofitService.getEstimatedFare(TagALongPreferenceManager.getToken(context), modelGetEstimatedFareRequest).enqueue(new Callback<ModelGetEstimatedFareResponse>() {
 
@@ -1296,6 +1465,401 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             estimatedTime.setText("ETA: " + data.getEstimatedTimeToReachDestination());
             payAndBookNow.setVisibility(View.VISIBLE);
             payAndBookNowDisable.setVisibility(View.GONE);
+        }
+    }
+
+    private void getDriverLocationAndDraw(String driverId) {
+
+        try {
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                Log.i(TAG, "Driver ID is: " + driverId);
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.getUserLocation(TagALongPreferenceManager.getToken(context), driverId).enqueue(new Callback<ModelGetUserLocationResponse>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetUserLocationResponse> call, Response<ModelGetUserLocationResponse> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (response.body() != null && response.body().getStatus() == 1) {
+
+                                showDriver(response.body().getCoordinates().get(1), response.body().getCoordinates().get(0));
+
+                            } else if (response.body() != null && response.body().getStatus() == 0) {
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetUserLocationResponse> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Toast.makeText(context, "Some error occurred!! Please try again!", Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "FAILURE ");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            Toast.makeText(context, "Some error occurs.Please try again!!", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void showDriver(Double lat, Double longt) {
+        addAvailableDriversCarMarker(lat, longt);
+    }
+
+    private void getRideDetails(final String rideId) {
+
+        try {
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ModelGetRideDetailsRequest modelGetRideDetailsRequest = new ModelGetRideDetailsRequest();
+                    modelGetRideDetailsRequest.setRideId(rideId);
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.getRideDetails(TagALongPreferenceManager.getToken(this), modelGetRideDetailsRequest).enqueue(new Callback<ModelGetCurrentRideResponse>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetCurrentRideResponse> call, Response<ModelGetCurrentRideResponse> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+                                Log.i(FreeRoamActivity.class.getSimpleName(), "Get rides RESPONSE " + response.body().toString());
+                                handleCabBookDataNew(response.body().getRideData());
+                                modelGetRideDetailsResponse = response.body();
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetCurrentRideResponse> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Get All rides", "FAILURE GETTING ALL RIDES");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ProgressDialogLoader.progressDialogDismiss();
+        }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void handleCabBookDataNew(final ModelGetCurrentRideResponse.RideData rideData) {
+
+        stratTripLyt.setVisibility(View.GONE);
+        endtripLyt.setVisibility(View.GONE);
+        searchRide.setVisibility(View.GONE);
+
+        bookedCabDetailsLayout.removeAllViews();
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+
+        View view = inflater.inflate(R.layout.quick_ride_cab_details, null);
+        CircleImageView imageView = view.findViewById(R.id.driverImage);
+        RegularTextView driverRating = view.findViewById(R.id.driverRating);
+        RegularTextView driverName = view.findViewById(R.id.drivernameText);
+        RegularTextView cabDtls = view.findViewById(R.id.cab_dtls_quick_ride_passenger);
+        ImageView callDriver = view.findViewById(R.id.callDriver);
+
+        RegularTextView otp = view.findViewById(R.id.otp_text);
+
+        otp.setText("OTP: " + rideData.getPickupVerificationCode());
+
+        callDriver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent call = new Intent(Intent.ACTION_CALL);
+                call.setData(Uri.parse("tel:" + rideData.getDriverDetails().getMobileNo()));
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(call);
+            }
+        });
+
+        TextView countPickup = view.findViewById(R.id.countPickup);
+        cabDtls.setText(rideData.getDriverDetails().getVehicle() + "  Plate no:  " + rideData.getDriverDetails().getVehicleNumber());
+        int count = 0;
+
+        if (rideData.getOnBoard() != null) {
+
+            for (int i = 0; i < rideData.getOnBoard().size(); i++) {
+
+                if (rideData.getOnBoard().get(i).getStatus() == Constants.ACCEPTED) {
+                    count++;
+                }
+            }
+
+            countPickup.setText(count + " pickup coming up");
+        }
+
+        Button cancelRide = view.findViewById(R.id.cancelRide);
+
+        cancelRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showCancelAlert(rideData.get_id());
+            }
+        });
+
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.drawable.avatar_avatar_12)
+                .error(R.drawable.avatar_avatar_12);
+
+        Glide.with(context)
+                .load(rideData.getDriverDetails().getProfile_pic())
+                .apply(options)
+                .into(imageView);
+
+        driverRating.setText(rideData.getDriverDetails().getRating() + "");
+        driverName.setText(rideData.getDriverDetails().getUserName() + "");
+        bookedCabDetailsLayout.addView(view);
+        animate(ANIM_DOWN_SETTINGS);
+
+        TimerTask getDriverLocationTimerTask = new TimerTask() {
+
+            @Override
+            public void run() {
+
+                getDriverLocationAndDraw(rideData.getDriverDetails().get_id());
+            }
+        };
+        getDriverLocationtimer.schedule(getDriverLocationTimerTask, 20 * 1000);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
+                new IntentFilter(Constants.DROPPED));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(pickedUpListener,
+                new IntentFilter(Constants.PICKED_UP));
+    }
+
+    private void showPickedUpDialog(Activity context) {
+
+        Button okButton;
+        final AlertDialog alertDialog;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.welcome_onboard, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            alertDialog = dialogBuilder.create();
+
+            okButton = dialogView.findViewById(R.id.ok);
+
+            okButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    alertDialog.cancel();
+                    finish();
+                }
+            });
+
+            alertDialog.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void showDroppedDialog(Activity context) {
+
+        Button reviewButton;
+        final AlertDialog alertDialog;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.ok_review_dialog_layout, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            alertDialog = dialogBuilder.create();
+//            final AlertDialog finalAlertDialog = alertDialog;
+            reviewButton = dialogView.findViewById(R.id.review_ride);
+
+            reviewButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    showSubmitReviewDialog();
+                    alertDialog.cancel();
+                }
+            });
+
+            alertDialog.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void showSubmitReviewDialog() {
+
+        com.carpool.tagalong.views.RegularTextView iv_userName;
+        RatingBar ratingBar;
+        final EditText feedBackComments;
+        Button submitFeedback;
+        CircleImageView user_image;
+        final float rating;
+
+        AlertDialog alertDialog = null;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            feedBackComments = dialogView.findViewById(R.id.feedback_comments);
+            submitFeedback = dialogView.findViewById(R.id.submitReview);
+            user_image = dialogView.findViewById(R.id.iv_user_profile_image);
+            iv_userName = dialogView.findViewById(R.id.tv_driver_name);
+            ratingBar = dialogView.findViewById(R.id.rating_bar);
+            rating = ratingBar.getRating();
+
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.avatar_avatar_12)
+                    .error(R.drawable.avatar_avatar_12);
+
+            Glide.with(context).load(modelGetRideDetailsResponse.getRideData().getDriverDetails().getProfile_pic()).apply(options).into(user_image);
+
+            iv_userName.setText(modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserName());
+
+            alertDialog = dialogBuilder.create();
+
+            final AlertDialog finalAlertDialog = alertDialog;
+
+            submitFeedback.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    rateRider(feedBackComments.getText().toString(), rating);
+                    finalAlertDialog.cancel();
+                }
+            });
+
+            alertDialog.show();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void rateRider(String comments, float rating) {
+
+        try {
+
+            ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
+            modelRateRiderequest.setRateTo(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
+            modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
+            modelRateRiderequest.setReview(comments);
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.rateRide(TagALongPreferenceManager.getToken(context), modelRateRiderequest).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+
+                                if (response.body().getStatus() == 1) {
+                                    finish();
+                                } else {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+                            Toast.makeText(context, "Some error in rating rider!!", Toast.LENGTH_LONG).show();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Rate Driver", "FAILURE Rating driver");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
         }
     }
 
@@ -1552,61 +2116,5 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             // Drawing polyline in the Google Map for the i-th route
             mMap.addPolyline(lineOptions);
         }
-    }
-
-    private void getDriverLocationAndDraw(String driverId){
-
-        try {
-
-            if (Utils.isNetworkAvailable(context)) {
-
-                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-
-                Log.i(TAG, "Driver ID is: " + driverId);
-
-                if (restClientRetrofitService != null) {
-
-                    ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
-
-                    restClientRetrofitService.getUserLocation(TagALongPreferenceManager.getToken(context), driverId).enqueue(new Callback<ModelGetUserLocationResponse>() {
-
-                        @Override
-                        public void onResponse(Call<ModelGetUserLocationResponse> call, Response<ModelGetUserLocationResponse> response) {
-
-                            ProgressDialogLoader.progressDialogDismiss();
-                            if (response.body() != null && response.body().getStatus() == 1) {
-
-                                showDriver(response.body().getCoordinates().get(1),response.body().getCoordinates().get(0));
-
-                            } else if (response.body() != null && response.body().getStatus() == 0) {
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ModelGetUserLocationResponse> call, Throwable t) {
-                            ProgressDialogLoader.progressDialogDismiss();
-                            if (t != null && t.getMessage() != null) {
-                                t.printStackTrace();
-                            }
-                            Toast.makeText(context, "Some error occurred!! Please try again!", Toast.LENGTH_LONG).show();
-                            Log.e(TAG, "FAILURE ");
-                        }
-                    });
-                }
-            } else {
-                Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            ProgressDialogLoader.progressDialogDismiss();
-            Toast.makeText(context, "Some error occurs.Please try again!!", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-    }
-
-    private void showDriver(Double lat , Double longt) {
-
-        addAvailableDriversCarMarker(lat,longt);
-
     }
 }

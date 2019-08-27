@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -64,6 +65,13 @@ public class QuickRidesRiderAdapter extends RecyclerView.Adapter<QuickRidesRider
                 ridersatusclicklistener1.onItemClick(onBoards.get(position));
             }
         });
+
+        holder.callriderQuickRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ridersatusclicklistener1.onCallUserClick(onBoards.get(position));
+            }
+        });
     }
 
     @Override
@@ -74,12 +82,15 @@ public class QuickRidesRiderAdapter extends RecyclerView.Adapter<QuickRidesRider
     public interface ridersatusclicklistener {
 
         void onItemClick(ModelGetCurrentRideResponse.OnBoard onboard);
+
+        void onCallUserClick(ModelGetCurrentRideResponse.OnBoard onboard);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         com.carpool.tagalong.views.RegularTextView riderName, riderRating, riderFare, riderStatus;
         CircleImageView riderImage;
+        ImageView callriderQuickRide;
 
         public MyViewHolder(View view) {
             super(view);
@@ -89,6 +100,7 @@ public class QuickRidesRiderAdapter extends RecyclerView.Adapter<QuickRidesRider
             riderFare = view.findViewById(R.id.estFareForRider);
             riderImage = view.findViewById(R.id.riderImage);
             riderStatus = view.findViewById(R.id.status);
+            callriderQuickRide = view.findViewById(R.id.callRiderQuickRide);
 //
 //            view.setOnClickListener(new View.OnClickListener() {
 //

@@ -3,6 +3,8 @@ package com.carpool.tagalong.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,9 +41,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.fragments.AboutUsFragment;
 import com.carpool.tagalong.fragments.CurrentRideFragment;
 import com.carpool.tagalong.fragments.CurrentUpcomingFragment;
 import com.carpool.tagalong.fragments.EmergencyRidesFragment;
+import com.carpool.tagalong.fragments.HelpAndSupportFragment;
 import com.carpool.tagalong.fragments.HomeFragment;
 import com.carpool.tagalong.fragments.ProfileFragment;
 import com.carpool.tagalong.fragments.RecentRidesFragment;
@@ -56,6 +60,7 @@ import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
+
 import com.carpool.tagalong.views.RegularTextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -89,7 +94,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ActionBarDrawerToggle mDrawerToggle;
     private LinearLayout homeLayout, recentRidesLayout, currentRideLayout, profileLayout, hepSupportLyt, aboutUsLyt, rides_emergency_lyt, nameLayout;
     private Fragment fragment;
-    private com.carpool.tagalong.views.RegularTextView userName, address;
+    private RegularTextView userName, address;
     private Button logoutButton;
     private Activity context;
     private CircleImageView userImage;
@@ -99,8 +104,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             handleDrawer();
-//            refresh();
-//            handleCurrentRideLayoutClick();
             handleCurrentAndUpcomingRideLayoutClick();
         }
     };
@@ -214,7 +217,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         hepSupportLyt.setOnClickListener(this);
         aboutUsLyt.setOnClickListener(this);
         rides_emergency_lyt.setOnClickListener(this);
-//        filterLayout.setOnClickListener(this);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,13 +237,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     Toast.makeText(context, getIntent().getExtras().getString(Constants.START_RIDE), Toast.LENGTH_SHORT).show();
                 }
-//                handleCurrentRideLayoutClick();
                 handleCurrentAndUpcomingRideLayoutClick();
                 return;
             }
         } else {
             fragment = HomeFragment.newInstance();
-            com.carpool.tagalong.views.RegularTextView homeText = homeLayout.findViewById(R.id.homeTextView);
+            RegularTextView homeText = homeLayout.findViewById(R.id.homeTextView);
             Drawable img = getResources().getDrawable(R.drawable.ic_home_off_sidebar_xxhdpi);
             homeText.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
             homeText.setTextColor(getResources().getColor(R.color.black));
@@ -425,7 +426,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         profileTextView.setCompoundDrawablesWithIntrinsicBounds(img3, null, null, null);
         profileTextView.setTextColor(getResources().getColor(R.color.black));
 
-        com.carpool.tagalong.views.RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
+        RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
         ImageView share = toolbar.findViewById(R.id.share);
         share.setVisibility(View.INVISIBLE);
         title.setVisibility(View.VISIBLE);
@@ -468,6 +469,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             DataManager.setModelUserProfileData(null);
                             DataManager.setModelSearchRideRequest(null);
                             TagALongPreferenceManager.setDocumentUploadedStatus(context, false);
+                            if(Utils.isJobServiceOn(context)){
+
+                                JobScheduler jobScheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE );
+                                jobScheduler.cancel(3);
+
+                            }
                         }
                     }
 
@@ -494,7 +501,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         profileTextView.setCompoundDrawablesWithIntrinsicBounds(img3, null, null, null);
         profileTextView.setTextColor(getResources().getColor(R.color.black));
 
-        com.carpool.tagalong.views.RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
+        RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
         ImageView share = toolbar.findViewById(R.id.share);
         share.setVisibility(View.INVISIBLE);
         title.setVisibility(View.VISIBLE);
@@ -507,12 +514,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void handleCurrentRideLayoutClick() {
 
         fragment = new CurrentRideFragment();
-        com.carpool.tagalong.views.RegularTextView currentRidetext = currentRideLayout.findViewById(R.id.current_ride_textView);
+        RegularTextView currentRidetext = currentRideLayout.findViewById(R.id.current_ride_textView);
         Drawable img1 = getResources().getDrawable(R.drawable.ic_current_ride_on_sidebar_xxhdpi);
         currentRidetext.setCompoundDrawablesWithIntrinsicBounds(img1, null, null, null);
         currentRidetext.setTextColor(getResources().getColor(R.color.black));
 
-        com.carpool.tagalong.views.RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
+        RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
         ImageView share = toolbar.findViewById(R.id.share);
         share.setVisibility(View.VISIBLE);
 
@@ -534,12 +541,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void handleCurrentAndUpcomingRideLayoutClick() {
 
         fragment = new CurrentUpcomingFragment();
-        com.carpool.tagalong.views.RegularTextView currentRideTextView = currentRideLayout.findViewById(R.id.current_ride_textView);
+        RegularTextView currentRideTextView = currentRideLayout.findViewById(R.id.current_ride_textView);
         Drawable img1 = getResources().getDrawable(R.drawable.ic_current_ride_on_sidebar_xxhdpi);
         currentRideTextView.setCompoundDrawablesWithIntrinsicBounds(img1, null, null, null);
         currentRideTextView.setTextColor(getResources().getColor(R.color.black));
 
-        com.carpool.tagalong.views.RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
+        RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
         ImageView share = toolbar.findViewById(R.id.share);
         share.setVisibility(View.INVISIBLE);
 
@@ -553,7 +560,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 //    public void handleCurrentRideDriver(ModelGetCurrentRideResponse modelGetCurrentRideResponse) {
 //
 //        fragment = CurrentRideFragmentDriver.newInstance(modelGetCurrentRideResponse);
-//        com.carpool.tagalong.views.RegularTextView currentRidecom.carpool.tagalong.views.RegularTextView = currentRideLayout.findViewById(R.id.current_ride_com.carpool.tagalong.views.RegularTextView);
+//        RegularTextView currentRidecom.carpool.tagalong.views.RegularTextView = currentRideLayout.findViewById(R.id.current_ride_com.carpool.tagalong.views.RegularTextView);
 //        Drawable img1 = getResources().getDrawable(R.drawable.ic_current_ride_on_sidebar_xxhdpi);
 //        currentRidecom.carpool.tagalong.views.RegularTextView.setCompoundDrawablesWithIntrinsicBounds(img1, null, null, null);
 //        currentRidecom.carpool.tagalong.views.RegularTextView.setTextColor(getResources().getColor(R.color.black));
@@ -604,21 +611,39 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void handleAboutUsLyt() {
+
+        fragment = new AboutUsFragment();
         com.carpool.tagalong.views.RegularTextView aboutUSText = aboutUsLyt.findViewById(R.id.about_us_textview);
         Drawable img = getResources().getDrawable(R.drawable.ic_about_us_on_sidebar_xxhdpi);
         aboutUSText.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         ImageView share = toolbar.findViewById(R.id.share);
         share.setVisibility(View.INVISIBLE);
         aboutUSText.setTextColor(getResources().getColor(R.color.black));
+
+        com.carpool.tagalong.views.RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
+        title.setVisibility(View.VISIBLE);
+        title.setText("About Us");
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
+
+        loadFragment("About");
     }
 
     private void handleHelpAndSupportLyt() {
+
+        fragment = new HelpAndSupportFragment();
         com.carpool.tagalong.views.RegularTextView aboutUSText = hepSupportLyt.findViewById(R.id.help_and_supportTextView);
         Drawable img = getResources().getDrawable(R.drawable.ic_help_support_on_sidebar_xxhdpi);
         aboutUSText.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         ImageView share = toolbar.findViewById(R.id.share);
         share.setVisibility(View.INVISIBLE);
         aboutUSText.setTextColor(getResources().getColor(R.color.black));
+
+        com.carpool.tagalong.views.RegularTextView title = toolbar.findViewById(R.id.toolbar_title);
+        title.setVisibility(View.VISIBLE);
+        title.setText("Help & Support");
+        toolbar.findViewById(R.id.title).setVisibility(View.GONE);
+
+        loadFragment("Help");
     }
 
     private void loadFragment(String tag) {

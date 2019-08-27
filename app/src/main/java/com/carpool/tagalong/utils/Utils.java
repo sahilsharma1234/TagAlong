@@ -259,7 +259,7 @@ public class Utils {
         ComponentName serviceComponent = new ComponentName(context, JobSchedulerService.class);
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         JobInfo.Builder builder = new JobInfo.Builder(3, serviceComponent);
-        builder.setMinimumLatency(2 * 1000); // wait at least
+        builder.setMinimumLatency(10 * 1000); // wait at least
         builder.setOverrideDeadline(1 * 60 * 1000);
         builder.setPersisted(true);
         jobScheduler.schedule(builder.build());

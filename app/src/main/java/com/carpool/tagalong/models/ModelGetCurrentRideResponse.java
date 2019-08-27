@@ -38,7 +38,7 @@ public class ModelGetCurrentRideResponse implements Serializable {
         this.rideData = rideData;
     }
 
-    public class JoinRequest implements Serializable{
+    public class JoinRequest implements Serializable {
 
         @SerializedName("_id")
         public String _id;
@@ -237,6 +237,17 @@ public class ModelGetCurrentRideResponse implements Serializable {
         @SerializedName("payStatus")
         public boolean payStatus;
 
+        @SerializedName("mobileNo")
+        public String mobileNo;
+
+        public String getMobileNo() {
+            return mobileNo;
+        }
+
+        public void setMobileNo(String mobileNo) {
+            this.mobileNo = mobileNo;
+        }
+
         public boolean isPayStatus() {
             return payStatus;
         }
@@ -364,6 +375,7 @@ public class ModelGetCurrentRideResponse implements Serializable {
         public void setRating(double rating) {
             this.rating = rating;
         }
+
     }
 
     public class Timeline implements Serializable {
@@ -475,8 +487,52 @@ public class ModelGetCurrentRideResponse implements Serializable {
         @SerializedName("payStatus")
         public boolean payStatus;
 
+        @SerializedName("isRideShort")
+        public boolean isRideShort;
+
         @SerializedName("pickupVerificationCode")
         public int pickupVerificationCode;
+
+        @SerializedName("driverETA")
+        public String driverETA;
+
+        @SerializedName("startLat")
+        public double startLat;
+
+        @SerializedName("startLong")
+        public double startLong;
+
+        public double getStartLat() {
+            return startLat;
+        }
+
+        public void setStartLat(double startLat) {
+            this.startLat = startLat;
+        }
+
+        public double getStartLong() {
+            return startLong;
+        }
+
+        public void setStartLong(double startLong) {
+            this.startLong = startLong;
+        }
+
+        public String getDriverETA() {
+            return driverETA;
+        }
+
+        public void setDriverETA(String driverETA) {
+            this.driverETA = driverETA;
+        }
+
+        public boolean isRideShort() {
+            return isRideShort;
+        }
+
+        public void setRideShort(boolean rideShort) {
+            isRideShort = rideShort;
+        }
 
         public boolean isPayStatus() {
             return payStatus;
@@ -594,16 +650,16 @@ public class ModelGetCurrentRideResponse implements Serializable {
             return driverDetails;
         }
 
+        public void setDriverDetails(DriverDetails driverDetails) {
+            this.driverDetails = driverDetails;
+        }
+
         public double getEstimatedFare() {
             return estimatedFare;
         }
 
         public void setEstimatedFare(double estimatedFare) {
             this.estimatedFare = estimatedFare;
-        }
-
-        public void setDriverDetails(DriverDetails driverDetails) {
-            this.driverDetails = driverDetails;
         }
 
         public int getPickupVerificationCode() {
@@ -615,7 +671,7 @@ public class ModelGetCurrentRideResponse implements Serializable {
         }
     }
 
-    public class DriverDetails implements Serializable{
+    public class DriverDetails implements Serializable {
 
         @SerializedName("_id")
         public String _id;
@@ -635,6 +691,16 @@ public class ModelGetCurrentRideResponse implements Serializable {
         public String rideDateTime;
         @SerializedName("profile_pic")
         public String profile_pic;
+
+        @SerializedName("status")
+        public int status;
+
+        @SerializedName("location")
+        public LocationDriver location;
+        @SerializedName("rating")
+        public double rating;
+        @SerializedName("mobileNo")
+        public String mobileNo;
 
         public String get_id() {
             return _id;
@@ -706,6 +772,62 @@ public class ModelGetCurrentRideResponse implements Serializable {
 
         public void setProfile_pic(String profile_pic) {
             this.profile_pic = profile_pic;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public LocationDriver getLocation() {
+            return location;
+        }
+
+        public void setLocation(LocationDriver location) {
+            this.location = location;
+        }
+
+        public double getRating() {
+            return rating;
+        }
+
+        public void setRating(double rating) {
+            this.rating = rating;
+        }
+
+        public String getMobileNo() {
+            return mobileNo;
+        }
+
+        public void setMobileNo(String mobileNo) {
+            this.mobileNo = mobileNo;
+        }
+
+        class LocationDriver implements Serializable {
+
+            @SerializedName("type")
+            public String type;
+            @SerializedName("coordinates")
+            public List<Double> coordinates;
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            public List<Double> getCoordinates() {
+                return coordinates;
+            }
+
+            public void setCoordinates(List<Double> coordinates) {
+                this.coordinates = coordinates;
+            }
         }
     }
 }

@@ -94,9 +94,34 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
 
     private void handleWePayRegistrationDetails() {
 
-        if (Build.VERSION.SDK_INT >= 26) {
+        try {
+            if (Build.VERSION.SDK_INT >= 26) {
 
-            if (checkPhonePermission()) {
+                if (checkPhonePermission()) {
+
+                    if (DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("")) {
+
+                        register.setVisibility(View.VISIBLE);
+                        verifyTxt.setVisibility(View.GONE);
+                        verify.setVisibility(View.GONE);
+                        registerOnwePay.setVisibility(View.VISIBLE);
+    //                    saveMerchantPaymentDetails();
+                    } else if (!DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("") && !DataManager.getModelUserProfileData().getWepayDetails().getWePayVerificationStatus().equals("registered")) {
+                        register.setVisibility(View.GONE);
+                        verifyTxt.setVisibility(View.VISIBLE);
+                        verify.setVisibility(View.VISIBLE);
+                        registerOnwePay.setVisibility(View.GONE);
+                    } else {
+
+                        register.setVisibility(View.GONE);
+                        verifyTxt.setVisibility(View.GONE);
+                        verify.setVisibility(View.GONE);
+                        registerOnwePay.setVisibility(View.GONE);
+
+                        isKycDone();
+                    }
+                }
+            } else {
 
                 if (DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("")) {
 
@@ -104,7 +129,7 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                     verifyTxt.setVisibility(View.GONE);
                     verify.setVisibility(View.GONE);
                     registerOnwePay.setVisibility(View.VISIBLE);
-//                    saveMerchantPaymentDetails();
+    //                    saveMerchantPaymentDetails();
                 } else if (!DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("") && !DataManager.getModelUserProfileData().getWepayDetails().getWePayVerificationStatus().equals("registered")) {
                     register.setVisibility(View.GONE);
                     verifyTxt.setVisibility(View.VISIBLE);
@@ -116,32 +141,11 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                     verifyTxt.setVisibility(View.GONE);
                     verify.setVisibility(View.GONE);
                     registerOnwePay.setVisibility(View.GONE);
-
                     isKycDone();
                 }
             }
-        } else {
-
-            if (DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("")) {
-
-                register.setVisibility(View.VISIBLE);
-                verifyTxt.setVisibility(View.GONE);
-                verify.setVisibility(View.GONE);
-                registerOnwePay.setVisibility(View.VISIBLE);
-//                    saveMerchantPaymentDetails();
-            } else if (!DataManager.getModelUserProfileData().getWepayDetails().getWePayAccessToken().equals("") && !DataManager.getModelUserProfileData().getWepayDetails().getWePayVerificationStatus().equals("registered")) {
-                register.setVisibility(View.GONE);
-                verifyTxt.setVisibility(View.VISIBLE);
-                verify.setVisibility(View.VISIBLE);
-                registerOnwePay.setVisibility(View.GONE);
-            } else {
-
-                register.setVisibility(View.GONE);
-                verifyTxt.setVisibility(View.GONE);
-                verify.setVisibility(View.GONE);
-                registerOnwePay.setVisibility(View.GONE);
-                isKycDone();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -167,7 +171,6 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                                 if (response.code() == 200) {
 
                                     if (response.body().getState().equals("unsubmitted")) {
-//                                        doKycBtn.setVisibility(View.VISIBLE);
                                         DataManager.bookingStatus = false;
                                         getIframeURl();
                                     } else if (response.body().getState().equals("verified")) {
@@ -613,56 +616,60 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
 
     private void getUserProfile(final Context context) {
 
-        if (Utils.isNetworkAvailable(context)) {
+        try {
+            if (Utils.isNetworkAvailable(context)) {
 
-            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-            if (restClientRetrofitService != null) {
-                restClientRetrofitService.getUserProfile(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelUserProfile>() {
+                if (restClientRetrofitService != null) {
+                    restClientRetrofitService.getUserProfile(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelUserProfile>() {
 
-                    @Override
-                    public void onResponse(Call<ModelUserProfile> call, Response<ModelUserProfile> response) {
+                        @Override
+                        public void onResponse(Call<ModelUserProfile> call, Response<ModelUserProfile> response) {
 
-                        if (response.body() != null) {
+                            if (response.body() != null) {
 
-                            if (response.body().getStatus() == 1) {
+                                if (response.body().getStatus() == 1) {
 
-                                Log.i("PERSONAL DETAILS", "PROFILE RESPONSE: " + response.body().getData().toString());
-                                DataManager.modelUserProfileData = response.body().getData();
+                                    Log.i("PERSONAL DETAILS", "PROFILE RESPONSE: " + response.body().getData().toString());
+                                    DataManager.modelUserProfileData = response.body().getData();
 
-                                creditCardsList = response.body().getData().getCard();
+                                    creditCardsList = response.body().getData().getCard();
 
-                                if (creditCardsList != null) {
+                                    if (creditCardsList != null) {
 
-                                    if (creditCardsList.size() < 1) {
-                                        DataManager.ridingstatus = false;
-                                    } else if (creditCardsList.size() >= 1) {
-                                        DataManager.ridingstatus = true;
+                                        if (creditCardsList.size() < 1) {
+                                            DataManager.ridingstatus = false;
+                                        } else if (creditCardsList.size() >= 1) {
+                                            DataManager.ridingstatus = true;
+                                        }
                                     }
+
+                                    updateUI();
+
+                                } else {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 }
-
-                                updateUI();
-
                             } else {
-                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ModelUserProfile> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<ModelUserProfile> call, Throwable t) {
 
-                        if (t != null && t.getMessage() != null) {
-                            t.printStackTrace();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("SIGN UP", "FAILURE verification");
                         }
-                        Log.e("SIGN UP", "FAILURE verification");
-                    }
-                });
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

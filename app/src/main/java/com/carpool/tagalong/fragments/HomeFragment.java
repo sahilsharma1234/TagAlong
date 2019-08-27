@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //            startActivity(intent);
 //            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            if(DataManager.bookingStatus) {
+            if(DataManager.bookingStatus || (!DataManager.getModelUserProfileData().getDriverDetails().getVehicleNumber().equals("") && !DataManager.getModelUserProfileData().getDriverDetails().getVehicle().equals(""))) {
                 showRoamingAlert();
             }else {
                 UIUtils.alertBox(getActivity(),"Please register as a driver in profile section first!!");

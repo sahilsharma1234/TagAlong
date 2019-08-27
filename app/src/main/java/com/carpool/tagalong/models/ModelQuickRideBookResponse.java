@@ -14,6 +14,9 @@ public class ModelQuickRideBookResponse {
     @SerializedName("driverDetails")
     public DriverDetails driverDetails;
 
+    @SerializedName("requestId")
+    public String requestId;
+
     @SerializedName("passengersPickupComingUp")
     public List<PassengersPickupComingUp> passengersPickupComingUp;
 
@@ -25,12 +28,21 @@ public class ModelQuickRideBookResponse {
         this.passengersPickupComingUp = passengersPickupComingUp;
     }
 
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
     @Override
     public String toString() {
         return "ModelQuickRideBookResponse{" +
                 "message='" + message + '\'' +
                 ", status=" + status +
                 ", driverDetails=" + driverDetails +
+                ", requestId='" + requestId + '\'' +
                 ", passengersPickupComingUp=" + passengersPickupComingUp +
                 '}';
     }
@@ -38,14 +50,34 @@ public class ModelQuickRideBookResponse {
     public static class DriverDetails {
         @SerializedName("_id")
         public String _id;
-        @SerializedName("name")
-        public String name;
+        @SerializedName("userName")
+        public String userName;
         @SerializedName("mobileNo")
         public String mobileNo;
         @SerializedName("rating")
         public int rating;
         @SerializedName("profile_pic")
         public String profile_pic;
+        @SerializedName("vehicle")
+        public String vehicle;
+        @SerializedName("vehicleNumber")
+        public String vehicleNumber;
+
+        public String getVehicle() {
+            return vehicle;
+        }
+
+        public void setVehicle(String vehicle) {
+            this.vehicle = vehicle;
+        }
+
+        public String getVehicleNumber() {
+            return vehicleNumber;
+        }
+
+        public void setVehicleNumber(String vehicleNumber) {
+            this.vehicleNumber = vehicleNumber;
+        }
 
         public String get_id() {
             return _id;
@@ -55,12 +87,12 @@ public class ModelQuickRideBookResponse {
             this._id = _id;
         }
 
-        public String getName() {
-            return name;
+        public String getUserName() {
+            return userName;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setUserName(String userName) {
+            this.userName = userName;
         }
 
         public String getMobileNo() {

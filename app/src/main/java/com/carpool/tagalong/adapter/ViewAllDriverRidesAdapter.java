@@ -60,7 +60,6 @@ public class ViewAllDriverRidesAdapter extends RecyclerView.Adapter<ViewAllDrive
             headerAddress = view.findViewById(R.id.dateTime);
             recyclerView = view.findViewById(R.id.ridesDriverListChild);
 
-
 //            view.setOnClickListener(new View.OnClickListener() {
 //
 //                @Override

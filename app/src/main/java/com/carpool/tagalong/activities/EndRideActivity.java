@@ -104,7 +104,6 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
 
     private void initializeViews() {
 
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 

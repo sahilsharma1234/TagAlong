@@ -254,7 +254,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURi);
-//                        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivityForResult(takePictureIntent, CAMERA_PICTURE);
                     }
                 }
@@ -417,9 +417,9 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             // model set
             for (int i = 0; i < vehicleModelArrayList.size(); i++) {
 
-                if(data.getDriverDetails().getVehicleModel() != null) {
+                if(data.getDriverDetails().getVehicle() != null) {
 
-                    if (data.getDriverDetails().getVehicleModel().equalsIgnoreCase(vehicleModelArrayList.get(i))) {
+                    if (data.getDriverDetails().getVehicle().equalsIgnoreCase(vehicleModelArrayList.get(i))) {
 
                         vehicleModelSpinner.setSelection(i);
                         break;
@@ -445,7 +445,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     break;
                 }
             }
-
             vehicleRegNumEdt.setText(vehicleRegistrationTxt.getText().toString());
         }
 
@@ -489,7 +488,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK) {
 
             if (requestCode == GALLERY_PICTURE) {
                 Image_Selecting_Task(data, 0);
@@ -528,7 +527,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             vehicleColorTxt.setText(data.getDriverDetails().getVehicleColor());
             vehicleTxt.setText(data.getDriverDetails().getVehicleBrand());
-            vehicleModelTxt.setText(data.getDriverDetails().getVehicleModel());
+            vehicleModelTxt.setText(data.getDriverDetails().getVehicle());
             vehicleRegistrationTxt.setText(data.getDriverDetails().getVehicleNumber());
             vehicleYearTxt.setText(data.getDriverDetails().getVehicleYear() + "");
 
@@ -556,15 +555,16 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             if (code == 0) {
 
-                Uri uri = data.getData();
+                if(data != null) {
+                    Uri uri = data.getData();
 
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
 
-                if (bitmap != null) {
+                    if (bitmap != null) {
 
-                    uploadDocToServer(uri);
+                        uploadDocToServer(uri);
+                    }
                 }
-
             } else {
                 bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", new File(mCurrentPhotoPath)));
                 if (bitmap != null) {
@@ -746,7 +746,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             modelUpdateProfileRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
             modelUpdateProfileRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
             modelUpdateProfileRequest.setVehicleBrand(vehicleTxt.getText().toString());
-            modelUpdateProfileRequest.setVehicleModel(vehicleModelTxt.getText().toString());
+            modelUpdateProfileRequest.setVehicle(vehicleModelTxt.getText().toString());
             modelUpdateProfileRequest.setVehicleNumber(vehicleRegistrationTxt.getText().toString());
             modelUpdateProfileRequest.setVehicleYear(Integer.parseInt(vehicleYearTxt.getText().toString()));
             modelUpdateProfileRequest.setVehicleColor(vehicleColorTxt.getText().toString());

@@ -41,7 +41,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private Button onlinePaymentBtn, requestRide;
-    private com.carpool.tagalong.views.RegularTextView profileDriver, name, startLocation, endLocation, startTime, estimatedCost, seats, bags, kids, ratings;
+    private com.carpool.tagalong.views.RegularTextView profileDriver, name, startLocation, endLocation, startTime, estimatedCost, seats, bags, kids, ratings, smokesStatus;
     private CircleImageView profile_pic;
     private Context context;
     private RelativeLayout progressBarLayout;
@@ -71,10 +71,11 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         profile_pic = findViewById(R.id.image_profile_user);
         estimatedCost = findViewById(R.id.estimated_cost);
         seats = findViewById(R.id.noOfSeats);
-        bags  = findViewById(R.id.noOfBags);
-        kids  = findViewById(R.id.noOfKids);
+        bags = findViewById(R.id.noOfBags);
+        kids = findViewById(R.id.noOfKids);
         ratings = findViewById(R.id.ratings);
         progressBarLayout = findViewById(R.id.requestRideProgressBar);
+        smokesStatus = findViewById(R.id.smoke_status);
 
         profileDriver.setOnClickListener(this);
         onlinePaymentBtn.setOnClickListener(this);
@@ -112,8 +113,19 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
             if (modelSearchRideRequest != null) {
 
                 seats.setText(modelSearchRideRequest.getNoOfSeats() + "");
-                bags.setText(modelSearchRideRequest.getBags() + "");
+                if (modelSearchRideRequest.getBags() == 0) {
+                    bags.setText("No");
+                } else {
+                    bags.setText("Yes");
+                }
+//                bags.setText(modelSearchRideRequest.getBags() + "");
                 kids.setText(modelSearchRideRequest.isAllowKids() ? "Yes" : "No");
+
+                if (modelSearchRideResponseData.isSmoke()) {
+                    smokesStatus.setText("Smokes");
+                } else {
+                    smokesStatus.setText("Doesn't Smokes");
+                }
             }
         }
     }
@@ -128,9 +140,8 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
             if (DataManager.getModelUserProfileData().getCard().size() > 0) {
 
                 requestRide();
-            }
-            else {
-                UIUtils.alertBox(context,"Firstly please add your credit card details in profile!!");
+            } else {
+                UIUtils.alertBox(context, "Firstly please add your credit card details in profile!!");
             }
 
         } else if (id == R.id.profile_driver_txt) {

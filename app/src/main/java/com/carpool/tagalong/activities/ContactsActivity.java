@@ -121,6 +121,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
         if (requestCode == 123) {
             if (checkContactsPermission()) {
                 loadContacts();

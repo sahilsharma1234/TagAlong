@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".activities.HelpAndSupport">
 
-    <include android:id="@+id/toolbar_aboutUs" layout="@layout/toolbar_shadow"/>
 
     <WebView
         android:id="@+id/aboutUsWebView"

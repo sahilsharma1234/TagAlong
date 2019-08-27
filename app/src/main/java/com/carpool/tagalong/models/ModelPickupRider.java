@@ -19,6 +19,10 @@ public class ModelPickupRider {
     @SerializedName("dropLong")
     public double dropLong;
 
+    @SerializedName("pickupVerificationCode")
+    public int pickupVerificationCode;
+
+
     public String getRequestId() {
         return requestId;
     }
@@ -67,6 +71,14 @@ public class ModelPickupRider {
         this.dropLong = dropLong;
     }
 
+    public int getPickupVerificationCode() {
+        return pickupVerificationCode;
+    }
+
+    public void setPickupVerificationCode(int pickupVerificationCode) {
+        this.pickupVerificationCode = pickupVerificationCode;
+    }
+
     @Override
     public String toString() {
         return "ModelPickupRider{" +
@@ -76,6 +88,7 @@ public class ModelPickupRider {
                 ", pickupLong=" + pickupLong +
                 ", dropLat=" + dropLat +
                 ", dropLong=" + dropLong +
+                ", pickupVerificationCode=" + pickupVerificationCode +
                 '}';
     }
 }
