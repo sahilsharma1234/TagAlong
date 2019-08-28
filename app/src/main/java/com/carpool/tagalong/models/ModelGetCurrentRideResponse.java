@@ -491,7 +491,7 @@ public class ModelGetCurrentRideResponse implements Serializable {
         public boolean isRideShort;
 
         @SerializedName("pickupVerificationCode")
-        public int pickupVerificationCode;
+        public String pickupVerificationCode;
 
         @SerializedName("driverETA")
         public String driverETA;
@@ -662,11 +662,11 @@ public class ModelGetCurrentRideResponse implements Serializable {
             this.estimatedFare = estimatedFare;
         }
 
-        public int getPickupVerificationCode() {
+        public String getPickupVerificationCode() {
             return pickupVerificationCode;
         }
 
-        public void setPickupVerificationCode(int pickupVerificationCode) {
+        public void setPickupVerificationCode(String pickupVerificationCode) {
             this.pickupVerificationCode = pickupVerificationCode;
         }
     }

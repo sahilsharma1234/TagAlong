@@ -302,7 +302,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         if (driverDetails != null) {
             String name = driverDetails.getUserName();
             userName.setText(name);
-            cabDetails.setText(driverDetails.getVehicle() + " " + driverDetails.getVehicleNumber());
+            cabDetails.setText(driverDetails.getVehicle() + "   plate No: " + driverDetails.getVehicleNumber());
         }
 
         String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
@@ -339,7 +339,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.PICKUP) {
             emergency_icon.setVisibility(View.VISIBLE);
             trackRideLyt.setVisibility(View.GONE);
-            rel2.setVisibility(View.VISIBLE);
+            rel2.setVisibility(View.GONE);
         }
 
         timelineAdapter = new TimelineAdapter(context, timelineData);

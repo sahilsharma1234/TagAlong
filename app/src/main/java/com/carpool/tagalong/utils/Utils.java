@@ -299,7 +299,7 @@ public class Utils {
                                 Log.i(TAG, "PROFILE RESPONSE: " + response.body().getData().toString());
                                 DataManager.modelUserProfileData = response.body().getData();
 
-                               List<CreditCards> creditCardsList = response.body().getData().getCard();
+                                List<CreditCards> creditCardsList = response.body().getData().getCard();
 
                                 if (creditCardsList != null) {
 
@@ -310,6 +310,11 @@ public class Utils {
                                     }
                                 }
 
+                                if (response.body().getData().getDocuments() != null && response.body().getData().getDocuments().size() > 0) {
+                                    TagALongPreferenceManager.setDocumentUploadedStatus(context, true);
+                                } else {
+                                    TagALongPreferenceManager.setDocumentUploadedStatus(context, false);
+                                }
                             } else {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -338,7 +343,7 @@ public class Utils {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Please provide permission from settings to this app",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Please provide permission from settings to this app", Toast.LENGTH_SHORT).show();
             return "";
         }
         String device_id = tm.getDeviceId();

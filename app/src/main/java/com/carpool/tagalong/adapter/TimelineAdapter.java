@@ -68,4 +68,5 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.MyView
 
         }
     }
+
 }

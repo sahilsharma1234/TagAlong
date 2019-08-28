@@ -122,7 +122,7 @@ public class NotificationService extends FirebaseMessagingService {
             Intent intent1 = new Intent("chatMessage");
             intent1.putExtra("receiverId", senderId);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-        }else if(title.contains("payment")) {
+        }else if(title.contains("Payment")) {
 // nothing to do in payment notification because
         }
         else {

@@ -29,7 +29,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -323,7 +322,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             }
 
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ) {
+                    ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 Image_Picker_Dialog();
             }
 
@@ -417,7 +416,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             // model set
             for (int i = 0; i < vehicleModelArrayList.size(); i++) {
 
-                if(data.getDriverDetails().getVehicle() != null) {
+                if (data.getDriverDetails().getVehicle() != null) {
 
                     if (data.getDriverDetails().getVehicle().equalsIgnoreCase(vehicleModelArrayList.get(i))) {
 
@@ -555,7 +554,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             if (code == 0) {
 
-                if(data != null) {
+                if (data != null) {
                     Uri uri = data.getData();
 
                     bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
@@ -572,92 +571,9 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     uploadDocToServer(null);
                 }
             }
-//            reduceImageAndSet(bitmap);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-//    private void reduceImageAndSet(Bitmap bitmap) {
-//        // we'll start with the original picture already open to a file
-//
-//        try {
-//
-//            int origWidth = bitmap.getWidth();
-//            int origHeight = bitmap.getHeight();
-//
-//            final int desHeight = 250;//or the width you need
-//
-//            if (origHeight > desHeight) {
-//                // picture is wider than we want it, we calculate its target height
-//                int destWidth = origWidth / (origHeight / desHeight);
-//                // we create an scaled bitmap so it reduces the image, not just trim it
-//                Bitmap b2 = Bitmap.createScaledBitmap(bitmap, destWidth, desHeight, false);
-//                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-//                // compress to the format you want, JPEG, PNG...
-//                // 70 is the 0-100 quality percentage
-//                b2.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-//                addImageLayout(b2);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    private void addImageLayout(Bitmap bitmap) {
-
-//        mainDocuLyt.removeAllViews();
-
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View inflatedLayout = inflater.inflate(R.layout.uploaded_document_review, null, false);
-
-        ImageView document_image = inflatedLayout.findViewById(R.id.document);
-        ImageView delete_document = inflatedLayout.findViewById(R.id.delete);
-        ImageView refresh_document = inflatedLayout.findViewById(R.id.reload);
-
-        delete_document.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDeleteAlertDialog("Delete Document", true, 0);
-            }
-        });
-
-        refresh_document.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        if (bitmap != null)
-            document_image.setImageBitmap(bitmap);
-        mainDocuLyt.addView(inflatedLayout);
-    }
-
-    private void showDeleteAlertDialog(String title, boolean cancelable, int code) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(title);
-        builder.setMessage("Are you sure you want to delete this document?");
-        builder.setCancelable(cancelable);
-
-        if (code == 0) {
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                    mainDocuLyt.removeAllViews();
-                }
-            });
-
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-        }
-        builder.show();
     }
 
     private void uploadDocToServer(Uri uri) {
@@ -697,7 +613,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                                 DataManager.isDocumentUploaded = true;
 
                                 TagALongPreferenceManager.setDocumentUploadedStatus(getActivity(), true);
-                                ((HomeActivity) getActivity()).getUserProfile();
+                                Utils.getUserProfile(getActivity());
                                 // here we again creates the list of documents
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -881,6 +797,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
                         if (response.body() != null) {
                             Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                            Utils.getUserProfile(getActivity());
                         } else {
                             Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
                         }

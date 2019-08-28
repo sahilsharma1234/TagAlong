@@ -147,6 +147,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private CheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
     private Button searchRide, payAndBookNow, payAndBookNowDisable;
     private RelativeLayout estimatedFareDetailsLayout, bookedCabDetailsLayout, stratTripLyt, endtripLyt;
+    private Shimmer shimmer, shimmerEst;
     private BroadcastReceiver listener = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -170,7 +171,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private ShimmerTextView estimatedCost, estimatedTime;
     private RegularTextView sourceLocname, destLocName;
     private Timer getDriverLocationtimer = new Timer();
-    private Handler locationHandler = new Handler(new Handler.Callback() {
+    private Handler locationHandler      = new Handler(new Handler.Callback() {
 
         @Override
         public boolean handleMessage(Message msg) {
@@ -188,7 +189,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             return true;
         }
     });
-    private Shimmer shimmer, shimmerEst;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -689,35 +689,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             Toast.makeText(context, "Location can't be empty!!", Toast.LENGTH_LONG).show();
             return;
         }
-
         getEstimatedFare();
-//        showPreferencesAlert();
-//        searchRides();
     }
-
-//    @Override
-//    public void onClick(View v) {
-//
-//        int id = v.getId();
-//
-//        switch (id) {
-//
-//            case R.id.changeDateTime:
-//                break;
-//
-//            case R.id.startPin:
-//                handleStartPinClick();
-//                break;
-//
-//            case R.id.endPin:
-//                handleEndPinClick();
-//                break;
-//
-//            case R.id.search_rides:
-//                handleSearchRidesClick();
-//                break;
-//        }
-//    }
 
     private void handleEndPinClick() {
 
@@ -750,85 +723,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         } else {
             locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
         }
-    }
-
-    private void searchRides() {
-
-//        try {
-//
-//            ModelSearchRideRequest modelSearchRideRequest = new ModelSearchRideRequest();
-//            modelSearchRideRequest.setStartLat(startLat);
-//            modelSearchRideRequest.setStartLong(startlongt);
-//            modelSearchRideRequest.setEndLat(endLat);
-//            modelSearchRideRequest.setEndLong(endLng);
-//            modelSearchRideRequest.setStartLocation(startTrip.getText().toString());
-//            modelSearchRideRequest.setEndLocation(endTrip.getText().toString());
-//            modelSearchRideRequest.setRideDateTime(Utils.getRidePostDateFromDateString(date.getText().toString()) + " " + Utils.getRideTimeFromDateString(time.getText().toString()));
-//            modelSearchRideRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
-//            modelSearchRideRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
-//            int seats = Integer.parseInt(seatsCountArray[seatsSpinner.getSelectedItemPosition()]);
-//            modelSearchRideRequest.setNoOfSeats(seats);
-//
-//            DataManager.modelSearchRideRequest = modelSearchRideRequest;
-//
-//            if (Utils.isNetworkAvailable(context)) {
-//
-//                progressBarLayout.setVisibility(View.VISIBLE);
-//
-//                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-//
-//                Log.i(TAG, "Search Ride request is: " + modelSearchRideRequest.toString());
-//
-//                if (restClientRetrofitService != null) {
-//
-//                    restClientRetrofitService.searchRide(TagALongPreferenceManager.getToken(context), modelSearchRideRequest).enqueue(new Callback<ModelSearchRideResponse>() {
-//
-//                        @Override
-//                        public void onResponse(Call<ModelSearchRideResponse> call, Response<ModelSearchRideResponse> response) {
-//
-//                            progressBarLayout.setVisibility(View.GONE);
-//
-//                            if (response.body() != null && response.body().getStatus() == 1) {
-//
-//                                Log.i(TAG, "Search Ride Response is: " + response.body().toString());
-//
-//                                List<ModelSearchRideResponseData> data = response.body().getData();
-//
-//                                DataManager.modelSearchRideResponseDataLIst = data;
-//
-//                                Intent intent = new Intent(context, SearchResultActivity.class);
-//                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                intent.putExtra(Constants.DATETIME, txtDate);
-//                                startActivity(intent);
-//
-//                            } else if (response.body() != null && response.body().getStatus() == 0) {
-//
-//                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-//                            } else {
-//                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<ModelSearchRideResponse> call, Throwable t) {
-//                            progressBarLayout.setVisibility(View.GONE);
-//
-//                            if (t != null && t.getMessage() != null) {
-//                                t.printStackTrace();
-//                            }
-//
-//                            Toast.makeText(context, "Some error occurred!! Please try again!", Toast.LENGTH_LONG).show();
-//                            Log.e(TAG, "FAILURE ");
-//                        }
-//                    });
-//                }
-//            } else {
-//                Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
-//            }
-//        } catch (Exception e) {
-//            Toast.makeText(context, "Some error occurs.Please try again!!", Toast.LENGTH_LONG).show();
-//            e.printStackTrace();
-//        }
     }
 
     private boolean checkAndRequestPermissions() {
@@ -1075,6 +969,9 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         TextView driverName = view.findViewById(R.id.drivernameText);
         TextView cabDtls = view.findViewById(R.id.cab_dtls_quick_ride_passenger);
         ImageView callDriver = view.findViewById(R.id.callDriver);
+        RegularTextView otp = view.findViewById(R.id.otp_text);
+
+        otp.setText("OTP: " + modelQuickRideBookResponse.getPickupVerificationCode());
 
         callDriver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1090,7 +987,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         });
 
         TextView countPickup = view.findViewById(R.id.countPickup);
-        cabDtls.setText(modelQuickRideBookResponse.getDriverDetails().getVehicle() + " " + modelQuickRideBookResponse.getDriverDetails().getVehicleNumber());
+        cabDtls.setText(modelQuickRideBookResponse.getDriverDetails().getVehicle() + " Plate no: " + modelQuickRideBookResponse.getDriverDetails().getVehicleNumber());
 
         if (modelQuickRideBookResponse.getPassengersPickupComingUp() != null) {
 
@@ -1571,7 +1468,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -1621,7 +1517,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         });
 
         TextView countPickup = view.findViewById(R.id.countPickup);
-        cabDtls.setText(rideData.getDriverDetails().getVehicle() + "  Plate no:  " + rideData.getDriverDetails().getVehicleNumber());
+        cabDtls.setText(rideData.getDriverDetails().getVehicle() + " Plate no: " + rideData.getDriverDetails().getVehicleNumber());
         int count = 0;
 
         if (rideData.getOnBoard() != null) {
@@ -1890,18 +1786,14 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                     FilterResults filterResults = new FilterResults();
 
                     if (constraint != null) {
-
                         // Retrieve the autocomplete results.
 //                        if (!lastHit.equals(constraint.toString())) {
                         resultList = autocomplete(constraint.toString());
-//                            lastHit = constraint.toString();
 
                         // Assign the data to the FilterResults
                         filterResults.values = resultList;
-
                         filterResults.count = resultList.size();
                     }
-//                    }
                     return filterResults;
                 }
 

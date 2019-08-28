@@ -37,6 +37,7 @@
         android:roundIcon="@drawable/ic_launcher_tg"
         android:supportsRtl="true"
         android:theme="@style/MyTheme"
+        android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity android:name=".activities.QuickRideDriverActivity"></activity>

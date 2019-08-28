@@ -29,7 +29,6 @@
         style="@style/MatchWidth"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/_8_px"
-        android:background="?attr/colorPrimary"
         android:orientation="horizontal">
 
        <!-- <ImageButton

@@ -17,6 +17,9 @@ public class ModelQuickRideBookResponse {
     @SerializedName("requestId")
     public String requestId;
 
+    @SerializedName("pickupVerificationCode")
+    public String pickupVerificationCode;
+
     @SerializedName("passengersPickupComingUp")
     public List<PassengersPickupComingUp> passengersPickupComingUp;
 
@@ -26,6 +29,14 @@ public class ModelQuickRideBookResponse {
 
     public void setPassengersPickupComingUp(List<PassengersPickupComingUp> passengersPickupComingUp) {
         this.passengersPickupComingUp = passengersPickupComingUp;
+    }
+
+    public String getPickupVerificationCode() {
+        return pickupVerificationCode;
+    }
+
+    public void setPickupVerificationCode(String pickupVerificationCode) {
+        this.pickupVerificationCode = pickupVerificationCode;
     }
 
     public String getRequestId() {
@@ -43,6 +54,7 @@ public class ModelQuickRideBookResponse {
                 ", status=" + status +
                 ", driverDetails=" + driverDetails +
                 ", requestId='" + requestId + '\'' +
+                ", pickupVerificationCode='" + pickupVerificationCode + '\'' +
                 ", passengersPickupComingUp=" + passengersPickupComingUp +
                 '}';
     }

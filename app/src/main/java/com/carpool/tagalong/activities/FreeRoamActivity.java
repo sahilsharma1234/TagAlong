@@ -45,6 +45,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.QuickRidesRiderAdapter;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
@@ -99,6 +100,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     private static Handler handler;
     private ModelGetCurrentRideResponse.RideData rideData = null;
     private static  Runnable runnable;
+    private static String rideId;
     private BroadcastReceiver riderListener = new BroadcastReceiver() {
 
         @Override
@@ -181,11 +183,14 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
             isFreeRoamEnabled = false;
             disableFreeRoam.setVisibility(View.GONE);
-            getRideDetails(getIntent().getExtras().getString("rideId"));
+            rideId = getIntent().getExtras().getString("rideId");
+            getRideDetails(rideId);
         } else {
             if (!isFreeRoamEnabled) {
                 enableFreeRoam();
-                blink();
+
+                if(handler != null && runnable != null)
+                    blink();
             }
         }
     }
@@ -617,79 +622,13 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
-//        if (joinRequest != null) {
-//
-//            if (joinRequest.getBags() == 1) {
-//                carrying_bags.setVisibility(View.VISIBLE);
-//            } else {
-//                carrying_bags.setVisibility(View.GONE);
-//            }
-//
-//            if (joinRequest.isAllowKids()) {
-//
-//                kids_allowed.setVisibility(View.VISIBLE);
-//            } else {
-//                kids_allowed.setVisibility(View.GONE);
-//            }
-//
-//            seats_selected.setText(seatMap.get(joinRequest.getNoOfSeats()));
-//            driver_address.setText(joinRequest.getAddress());
-//
-//            Glide.with(context)
-//                    .load(joinRequest.getProfile_pic())
-//                    .into(profilePic);
-//
-//            name.setText(joinRequest.getUserName());
-//            source_loc.setText(joinRequest.getStartLocation());
-//            dest_loc.setText(joinRequest.getEndLocation());
-//            time.setText(joinRequest.getRideDateTime());
-//            fare_amount.setText(joinRequest.getEstimatedFare() + "");
-//
-//            if (!joinRequest.isPayStatus()) {
-//                payment_status_notpaid.setVisibility(View.VISIBLE);
-//                payment_status.setVisibility(View.GONE);
-//            } else {
-//                payment_status_notpaid.setVisibility(View.GONE);
-//                payment_status.setVisibility(View.VISIBLE);
-//            }
-//
-//            slideToActView.setVisibility(View.GONE);
-//
-//            if (joinRequest.getStatus() == Constants.ACCEPTED) {
-//
-//                accept.setVisibility(View.GONE);
-//                accepted.setVisibility(View.VISIBLE);
-//                reject.setVisibility(View.GONE);
-//                cancel.setVisibility(View.VISIBLE);
-//                otpView.setVisibility(View.VISIBLE);
-//                slideToActView.setVisibility(View.GONE);
-//                slideToActView.setText("SLIDE TO PICKUP");
-//
-//            } else if (joinRequest.getStatus() == Constants.REQUESTED) {
-//                accept.setVisibility(View.VISIBLE);
-//                accepted.setVisibility(View.GONE);
-//                reject.setVisibility(View.VISIBLE);
-//                cancel.setVisibility(View.GONE);
-//                otpView.setVisibility(View.GONE);
-//                slideToActView.setVisibility(View.GONE);
-//            }
-//
-//        } else {
-
-//            if (onBoard.getBags() == 1) {
-//                carrying_bags.setVisibility(View.VISIBLE);
-//            } else {
-//                carrying_bags.setVisibility(View.GONE);
-//            }
-//
-//            if (onBoard.isAllowKids()) {
-//
-//                kids_allowed.setVisibility(View.VISIBLE);
-//            } else {
-//                kids_allowed.setVisibility(View.GONE);
-//            }
-//
-//            seats_selected.setText(seatMap.get(onBoard.getNoOfSeats()));
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delayDialog.dismiss();
+                showPickupCancelAlert( onBoard);
+            }
+        });
         driver_address.setText(onBoard.getAddress());
 
         Glide.with(context)
@@ -731,99 +670,110 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                 delayDialog.dismiss();
             }
         });
+    }
 
-//        iv_drop_slider.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-//                int action = event.getAction();
-//    /*            switch (action) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        rect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());*/
-//                final int x = (int) event.getRawX();
-//                final int y = (int) event.getRawY();
-//
-//                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-//
-//                    case MotionEvent.ACTION_DOWN:
-//                        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams)
-//                                view.getLayoutParams();
-//
-//                        xDelta = x - lParams.leftMargin;
-//                        yDelta = y - lParams.topMargin;
-//                        break;
-//
-//                    case MotionEvent.ACTION_UP:
-//                        int width = ll_slider_parent.getWidth() - view.getWidth();
-//                        if ((x - xDelta) >= 0 && (x - xDelta) <= width) {
-//                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
-//                                    .getLayoutParams();
-//
-//                            if (x - xDelta <= width / 2) {
-//                                layoutParams.leftMargin = 0;
-//                                layoutParams.topMargin = 0;
-//                                layoutParams.rightMargin = 0;
-//                                layoutParams.bottomMargin = 0;
-//                                view.setLayoutParams(layoutParams);
-//
-//                            } else if (x - xDelta > width / 2) {
-//
-//                                layoutParams.leftMargin = width;
-//                                layoutParams.topMargin = 0;
-//                                layoutParams.rightMargin = 0;
-//                                layoutParams.bottomMargin = 0;
-//                                view.setLayoutParams(layoutParams);
-//                                hitAPI();
-//                            }
-//                        }
-//                        break;
-//                    case MotionEvent.ACTION_HOVER_EXIT:
-//
-//                        Log.e("@@parent wi", "---- Exit");
-//
-//                        break;
-//                    case MotionEvent.ACTION_CANCEL:
-//
-//                        Log.e("@@parent wi", "---- Cancel");
-//
-//                        break;
-//
-//                    case MotionEvent.ACTION_MOVE:
-//
-//                        int width2 = ll_slider_parent.getWidth() - view.getWidth();
-///*                        Log.e("@@parent wi", "----" + width2);
-//                        Log.e("@@parent (x - xDelta)", "----" + (x - xDelta));*/
-//
-//                        if ((x - xDelta) >= 0 && (x - xDelta) <= width2) {
-//                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
-//                                    .getLayoutParams();
-//
-//                            Log.e("@@parent x", "---- " + x);
-//                            Log.e("@@parent xD", "---- " + xDelta);
-////
-////                            Log.e("@@parent x-xD", "---- "+(x - xDelta) );
-//
-//                            Log.e("@@parent x-xD", "---- " + x / 10);
-//                            String color = "#00008000";
-//                            if (x / 10 < 10) {
-//                                color = "#0" + x / 10 + "008000";
-//                            } else {
-//                                color = "#" + x / 10 + "008000";
-//                            }
-//
-//                            ll_slider_parent.getBackground().setColorFilter(Color.parseColor(color), PorterDuff.Mode.DARKEN);
-//
-//                            layoutParams.leftMargin = x - xDelta;
-//                            layoutParams.topMargin = 0;
-//                            layoutParams.rightMargin = 0;
-//                            layoutParams.bottomMargin = 0;
-//                            view.setLayoutParams(layoutParams);
-//                        }
-//                        break;
-//                }
-////                iv_drop_slider.invalidate();
-//                return true;
-//            }
-//        });
+    private void showPickupCancelAlert(ModelGetCurrentRideResponse.OnBoard onBoard) {
+        showCustomCancelPickupDialog(onBoard);
+    }
+
+    private void showCustomCancelPickupDialog(final ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        com.carpool.tagalong.views.RegularTextView buttonPositive;
+        com.carpool.tagalong.views.RegularTextView buttonNegative;
+        AlertDialog alertDialog;
+        final ModelGetCurrentRideResponse.OnBoard onBoard1 = onBoard;
+        final EditText reasonText;
+
+        try {
+
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.cancel_pickup_alert_doalog_lyt, null);
+            dialogBuilder.setCancelable(false);
+            dialogBuilder.setView(dialogView);
+
+            reasonText = dialogView.findViewById(R.id.cancel_reason_edt);
+
+            buttonNegative = dialogView.findViewById(R.id.no_cancel_ride);
+            buttonPositive = dialogView.findViewById(R.id.cancel_ride);
+
+            alertDialog = dialogBuilder.create();
+
+            final AlertDialog finalAlertDialog = alertDialog;
+
+            buttonPositive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleCancelPickup(onBoard, reasonText.getText().toString());
+                    finalAlertDialog.cancel();
+                }
+            });
+
+            buttonNegative.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalAlertDialog.cancel();
+                }
+            });
+
+            alertDialog.show();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void handleCancelPickup( ModelGetCurrentRideResponse.OnBoard onBoard, String reason) {
+
+        try {
+
+            ModelCancelOwnRideRequest modelCancelOwnRideRequest = new ModelCancelOwnRideRequest();
+
+            modelCancelOwnRideRequest.setRequestId(onBoard.get_id());
+
+            modelCancelOwnRideRequest.setCancelReason(reason);
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+                    restClientRetrofitService.cancelPickup(TagALongPreferenceManager.getToken(context), modelCancelOwnRideRequest).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Accept/Reject Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
     }
 
     private void pickupRider(ModelGetCurrentRideResponse.OnBoard onBoard, String otp) {
@@ -835,7 +785,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
                 modelPickupRider.setPickupLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
                 modelPickupRider.setPickupLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
-                modelPickupRider.setPickupVerificationCode(Integer.valueOf(otp));
+                modelPickupRider.setPickupVerificationCode(otp);
             }
 
             if (onBoard != null)

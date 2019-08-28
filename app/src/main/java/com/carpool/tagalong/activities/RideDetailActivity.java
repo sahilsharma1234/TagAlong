@@ -43,7 +43,7 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
     private ModelGetRecentRidesResponse.RideData rideData;
     private RegularTextView riderName, sourceLoc, destLoc, cabDetails, startTime, endTime, amountpaid, rating;
     private CircleImageView image;
-    private  ModelGetCurrentRideResponse.RideData modelGetCurrentRideResponse;
+    private ModelGetCurrentRideResponse.RideData modelGetCurrentRideResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,13 +299,13 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
                 rating.setText(rideData.getRating() + "");
                 rating.setOnClickListener(null);
             }
-            cabDetails.setText(modelGetCurrentRideResponse.getDriverDetails().getVehicle()+ " "+modelGetCurrentRideResponse.getDriverDetails().getVehicleNumber());
+            cabDetails.setText(modelGetCurrentRideResponse.getDriverDetails().getVehicle() + " " + modelGetCurrentRideResponse.getDriverDetails().getVehicleNumber());
         }
 
         sourceLoc.setText(rideData.getStartLocation());
         destLoc.setText(rideData.getEndLocation());
         startTime.setText(rideData.getStartedDateWithTime());
         endTime.setText(rideData.getCompletedDateWithTime());
-        amountpaid.setText("$ "+modelGetCurrentRideResponse.getEstimatedFare());
+        amountpaid.setText("$ " + modelGetCurrentRideResponse.getEstimatedFare());
     }
 }

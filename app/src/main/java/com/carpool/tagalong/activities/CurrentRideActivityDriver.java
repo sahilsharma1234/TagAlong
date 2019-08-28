@@ -82,15 +82,12 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.ncorti.slidetoact.SlideToActView;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -128,13 +125,10 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private ShareDialog shareDialog;
     private String rideID;
     private TextToSpeech textToSpeech;
-
     private BroadcastReceiver cancelledListener = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
-
             finish();
         }
     };
@@ -226,7 +220,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 }
             }
         });
-
     }
 
     private void setUIData() {
@@ -746,7 +739,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             if (TagALongPreferenceManager.getUserLocationLatitude(this) != null) {
                 modelPickupRider.setPickupLat(Double.valueOf(TagALongPreferenceManager.getUserLocationLatitude(this)));
                 modelPickupRider.setPickupLong(Double.valueOf(TagALongPreferenceManager.getUserLocationLongitude(this)));
-                modelPickupRider.setPickupVerificationCode(Integer.valueOf(otp));
+                modelPickupRider.setPickupVerificationCode(otp);
             }
 
             if (onBoard != null)
@@ -777,7 +770,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                                     textToSpeech.speak("Welcome" + onBoard.getUserName() + "in TagAlong Ride. Have a happy journey!!", TextToSpeech.QUEUE_FLUSH, null);
                                     getRideDetails(rideID);
                                 }
-
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                             }

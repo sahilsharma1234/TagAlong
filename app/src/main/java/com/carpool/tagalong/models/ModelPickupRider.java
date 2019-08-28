@@ -20,7 +20,7 @@ public class ModelPickupRider {
     public double dropLong;
 
     @SerializedName("pickupVerificationCode")
-    public int pickupVerificationCode;
+    public String pickupVerificationCode;
 
 
     public String getRequestId() {
@@ -71,11 +71,11 @@ public class ModelPickupRider {
         this.dropLong = dropLong;
     }
 
-    public int getPickupVerificationCode() {
+    public String getPickupVerificationCode() {
         return pickupVerificationCode;
     }
 
-    public void setPickupVerificationCode(int pickupVerificationCode) {
+    public void setPickupVerificationCode(String pickupVerificationCode) {
         this.pickupVerificationCode = pickupVerificationCode;
     }
 
@@ -88,7 +88,7 @@ public class ModelPickupRider {
                 ", pickupLong=" + pickupLong +
                 ", dropLat=" + dropLat +
                 ", dropLong=" + dropLong +
-                ", pickupVerificationCode=" + pickupVerificationCode +
+                ", pickupVerificationCode='" + pickupVerificationCode + '\'' +
                 '}';
     }
 }

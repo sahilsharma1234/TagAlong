@@ -145,10 +145,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         if (TagALongPreferenceManager.getDocumentUploadedStatus(getActivity())) {
 
-//            Intent intent = new Intent(getActivity(), StartRideActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-//            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             if(DataManager.bookingStatus || (!DataManager.getModelUserProfileData().getDriverDetails().getVehicleNumber().equals("") && !DataManager.getModelUserProfileData().getDriverDetails().getVehicle().equals(""))) {
                 showRoamingAlert();
             }else {
