@@ -35,7 +35,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.HomeActivity;
 import com.carpool.tagalong.activities.MainActivity;
-import com.carpool.tagalong.activities.StripePaymentActivity;
 import com.carpool.tagalong.adapter.OnBoardRidersAdapter;
 import com.carpool.tagalong.adapter.TimelineAdapter;
 import com.carpool.tagalong.constants.Constants;
@@ -45,7 +44,6 @@ import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
-import com.carpool.tagalong.models.ModelPaymentRequest;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
@@ -407,17 +405,17 @@ public class CurrentRideFragment extends Fragment implements View.OnClickListene
 
     private void handlePayNow() {
 
-        Intent intent = new Intent(context, StripePaymentActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        ModelPaymentRequest modelPaymentRequest = new ModelPaymentRequest();
-        modelPaymentRequest.setAmount(modelGetCurrentRideResponse.getRideData().getEstimatedFare());
-        modelPaymentRequest.setDriverId(modelGetCurrentRideResponse.getRideData().getDriverDetails().getUserId());
-        modelPaymentRequest.setRideId(modelGetCurrentRideResponse.getRideData().getDriverDetails().get_id());
-        modelPaymentRequest.setRequestId(modelGetCurrentRideResponse.getRideData().get_id());
-        intent.putExtra(getString(R.string.order_key), modelPaymentRequest);
-
-        startActivity(intent);
+//        Intent intent = new Intent(context, StripePaymentActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//
+//        ModelPaymentRequest modelPaymentRequest = new ModelPaymentRequest();
+//        modelPaymentRequest.setAmount(modelGetCurrentRideResponse.getRideData().getEstimatedFare());
+//        modelPaymentRequest.setDriverId(modelGetCurrentRideResponse.getRideData().getDriverDetails().getUserId());
+//        modelPaymentRequest.setRideId(modelGetCurrentRideResponse.getRideData().getDriverDetails().get_id());
+//        modelPaymentRequest.setRequestId(modelGetCurrentRideResponse.getRideData().get_id());
+//        intent.putExtra(getString(R.string.order_key), modelPaymentRequest);
+//
+//        startActivity(intent);
     }
 
     private void showCancelAlert() {

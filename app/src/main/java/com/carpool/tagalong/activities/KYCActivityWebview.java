@@ -1,6 +1,5 @@
 package com.carpool.tagalong.activities;
 
-import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,13 +8,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.managers.DataManager;
@@ -25,6 +22,7 @@ import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

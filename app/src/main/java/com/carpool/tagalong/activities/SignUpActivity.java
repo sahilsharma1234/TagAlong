@@ -277,9 +277,10 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
                                 Log.i(TAG, "Sign Up response is: "+response.body().toString());
 
                                 Toast.makeText(context, "Successfully Registered!!", Toast.LENGTH_LONG).show();
+
                                 Intent intent;
                                 intent = new Intent(context, VerificationActivity.class);
-                                intent.putExtra("from", "signup");
+                                intent.putExtra(Constants.FROM, Constants.SIGNUP);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
@@ -301,13 +302,13 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
                             t.printStackTrace();
 //                            Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                        Toast.makeText(context, "Some error occurred!! Please try again!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, getString(R.string.some_error_occurred), Toast.LENGTH_LONG).show();
                         Log.e("SIGN UP", "FAILURE Sign Up");
                     }
                 });
             }
         }else{
-            Toast.makeText(context,"Please check your internet connection!!",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,getString(R.string.check_internet),Toast.LENGTH_LONG).show();
         }
     }
 

@@ -179,16 +179,15 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PHONE_CODE);
         }
 
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("rideId")) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.RIDEID)) {
 
             isFreeRoamEnabled = false;
             disableFreeRoam.setVisibility(View.GONE);
-            rideId = getIntent().getExtras().getString("rideId");
+            rideId = getIntent().getExtras().getString(Constants.RIDEID);
             getRideDetails(rideId);
         } else {
             if (!isFreeRoamEnabled) {
                 enableFreeRoam();
-
                 if(handler != null && runnable != null)
                     blink();
             }

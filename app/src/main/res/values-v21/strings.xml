@@ -101,6 +101,11 @@
     <string name="onboard_welcome">Welcome on board!!</string>
     <string name="driver_picked">Driver has picked you up, enjoy ride!</string>
     <string name="your_otp">Share this OTP while driver pick you up</string>
+    <string name="please_enter_username">Please enter username</string>
+    <string name="please_enter_password">Please enter password</string>
+    <string name="not_a_member_yet">Not a member yet? Register here</string>
+    <string name="some_error_occurred">Some error occurred!! Please try again!</string>
+    <string name="check_internet">Please check your internet connection!!</string>
 
 
 </resources>

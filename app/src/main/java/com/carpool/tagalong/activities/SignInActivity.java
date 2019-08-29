@@ -164,11 +164,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         usernameString = userName.getText().toString();
         passwordString = password.getText().toString();
         if (usernameString.equals("")) {
-            userName.setError("Please enter username");
+            userName.setError(getString(R.string.please_enter_username));
             return false;
         }
         if (passwordString.equals("")) {
-            password.setError("Please enter password");
+            password.setError(getString(R.string.please_enter_password));
             return false;
         }
         return true;
@@ -176,7 +176,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private void makeSignUpTextSpannable() {
 
-        SpannableString spannableString = new SpannableString("Not a member yet? Register here");
+        SpannableString spannableString = new SpannableString(getString(R.string.not_a_member_yet));
 
         ClickableSpan gmail = new ClickableSpan() {
             @Override
@@ -293,13 +293,15 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             t.printStackTrace();
                         }
 
-                        Toast.makeText(context, "Some error occurred!! Please try again!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, getString(R.string.some_error_occurred), Toast.LENGTH_LONG).show();
+
                         Log.e("SIGN IN", "FAILURE Login");
                     }
                 });
             }
         } else {
-            Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+
+            Toast.makeText(context, getString(R.string.check_internet), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -352,7 +354,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     });
                 }
             } else {
-                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getString(R.string.check_internet), Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();

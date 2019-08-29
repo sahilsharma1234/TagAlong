@@ -52,4 +52,6 @@ public class Constants {
     public static final String PICKED_UP = "pickedup";
     public static final String DROPPED = "dropped";
     public static final String RIDEID = "rideId";
+    public static final String FROM = "from";
+    public static final String SIGNUP = "signup";
 }
