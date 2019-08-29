@@ -697,8 +697,10 @@ public class ModelGetCurrentRideResponse implements Serializable {
 
         @SerializedName("location")
         public LocationDriver location;
+
         @SerializedName("rating")
         public double rating;
+
         @SerializedName("mobileNo")
         public String mobileNo;
 

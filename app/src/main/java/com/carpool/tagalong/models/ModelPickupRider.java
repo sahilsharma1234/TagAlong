@@ -19,9 +19,14 @@ public class ModelPickupRider {
     @SerializedName("dropLong")
     public double dropLong;
 
+    @SerializedName("startedDate")
+    public String startedDate;
+
     @SerializedName("pickupVerificationCode")
     public String pickupVerificationCode;
 
+    @SerializedName(" completedDate")
+    public String  completedDate;
 
     public String getRequestId() {
         return requestId;
@@ -79,6 +84,22 @@ public class ModelPickupRider {
         this.pickupVerificationCode = pickupVerificationCode;
     }
 
+    public String getStartedDate() {
+        return startedDate;
+    }
+
+    public void setStartedDate(String startedDate) {
+        this.startedDate = startedDate;
+    }
+
+    public String getCompletedDate() {
+        return completedDate;
+    }
+
+    public void setCompletedDate(String completedDate) {
+        this.completedDate = completedDate;
+    }
+
     @Override
     public String toString() {
         return "ModelPickupRider{" +
@@ -88,7 +109,9 @@ public class ModelPickupRider {
                 ", pickupLong=" + pickupLong +
                 ", dropLat=" + dropLat +
                 ", dropLong=" + dropLong +
+                ", startedDate='" + startedDate + '\'' +
                 ", pickupVerificationCode='" + pickupVerificationCode + '\'' +
+                ", completedDate='" + completedDate + '\'' +
                 '}';
     }
 }

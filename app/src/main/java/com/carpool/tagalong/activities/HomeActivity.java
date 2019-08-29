@@ -3,7 +3,6 @@ package com.carpool.tagalong.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -60,7 +59,6 @@ import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
-
 import com.carpool.tagalong.views.RegularTextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -198,8 +196,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerToggle.syncState();
 
         if (TagALongPreferenceManager.getDeviceProfile(this) != null) {
-            userName.setText(TagALongPreferenceManager.getDeviceProfile(this).getUserName());
-            address.setText(TagALongPreferenceManager.getDeviceProfile(this).getAddress());
+            userName.setText(TagALongPreferenceManager.getDeviceProfile(context).getUserName());
+            address.setText(TagALongPreferenceManager.getDeviceProfile(context).getAddress());
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -751,7 +749,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                 restClientRetrofitService.getUserProfile(TagALongPreferenceManager.getToken(context)).enqueue(new Callback<ModelUserProfile>() {
 
-
                     @Override
                     public void onResponse(Call<ModelUserProfile> call, Response<ModelUserProfile> response) {
 
@@ -784,6 +781,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 if (DataManager.getModelUserProfileData() != null)
                                     Glide.with(context).load(DataManager.getModelUserProfileData().getProfile_pic()).apply(options).into(userImage);
 
+                                if(response.body().getData().getDocuments() != null && response.body().getData().getDocuments().size() > 0){
+                                    TagALongPreferenceManager.setDocumentUploadedStatus(context,true);
+                                }else{
+                                    TagALongPreferenceManager.setDocumentUploadedStatus(context,false);
+                                }
                             } else {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }

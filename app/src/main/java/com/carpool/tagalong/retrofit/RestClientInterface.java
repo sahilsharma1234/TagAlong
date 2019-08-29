@@ -22,7 +22,6 @@ import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
 import com.carpool.tagalong.models.ModelGetUserLocationResponse;
 import com.carpool.tagalong.models.ModelLogoutResponse;
-import com.carpool.tagalong.models.ModelPaymentRequest;
 import com.carpool.tagalong.models.ModelPickupRider;
 import com.carpool.tagalong.models.ModelQuickRideBookResponse;
 import com.carpool.tagalong.models.ModelRateRiderequest;

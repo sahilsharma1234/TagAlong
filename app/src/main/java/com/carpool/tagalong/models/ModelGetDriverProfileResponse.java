@@ -82,6 +82,11 @@ public class ModelGetDriverProfileResponse {
         public String heading;
         @SerializedName("postUrl")
         public String postUrl;
+        @SerializedName("startLocation")
+        public String startLocation;
+        @SerializedName("endLocation")
+        public String endLocation;
+
         @SerializedName("timelineData")
         public List<TimelineData> timelineData;
 
@@ -123,6 +128,22 @@ public class ModelGetDriverProfileResponse {
 
         public void setTimelineData(List<TimelineData> timelineData) {
             this.timelineData = timelineData;
+        }
+
+        public String getStartLocation() {
+            return startLocation;
+        }
+
+        public void setStartLocation(String startLocation) {
+            this.startLocation = startLocation;
+        }
+
+        public String getEndLocation() {
+            return endLocation;
+        }
+
+        public void setEndLocation(String endLocation) {
+            this.endLocation = endLocation;
         }
     }
 

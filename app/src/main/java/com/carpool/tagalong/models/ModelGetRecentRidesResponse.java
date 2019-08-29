@@ -99,6 +99,7 @@ public class ModelGetRecentRidesResponse implements Serializable {
     }
 
     public class RideData implements Serializable{
+
         @SerializedName("_id")
         public String _id;
         @SerializedName("userId")

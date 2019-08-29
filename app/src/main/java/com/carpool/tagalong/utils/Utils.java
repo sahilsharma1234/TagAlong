@@ -27,6 +27,7 @@ import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.service.JobSchedulerService;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -48,21 +49,6 @@ public class Utils {
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    public static String getDateFromDateString(String dateString) {
-        String finalString = "";
-
-        try {
-
-            Date date = new SimpleDateFormat("dd-MM-yyyy").parse(dateString);
-            long dateMillis = date.getTime();
-            SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE, MMMM dd, yyyy"); // the day of the week spelled out completely
-            finalString = simpleDateformat.format(dateMillis);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return finalString;
     }
 
 //    public static String getRideDateFromDateString(String dateString) {
@@ -348,5 +334,52 @@ public class Utils {
         }
         String device_id = tm.getDeviceId();
         return device_id;
+    }
+
+    public static String getCurrentDateTimeAndSet() {
+
+        int mYear, mMonth, mDay, mHour, mMinute;
+        String txtDate, txtTime;
+        String finalFormattedTime, finalFormattedDate;
+
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
+        mMonth = mMonth + 1;
+
+        if (mMonth < 10) {
+            txtDate = (mDay + "/" + "0" + mMonth + "/" + mYear);
+        } else
+            txtDate = (mDay + "/" + (mMonth + 1) + "/" + mYear);
+
+        finalFormattedDate = Utils.getRidePostDateFromDateString(txtDate);
+
+        String am_pm = "";
+
+        Calendar datetime = Calendar.getInstance();
+        datetime.set(Calendar.HOUR_OF_DAY, mHour);
+        datetime.set(Calendar.MINUTE, mMinute);
+
+        if (datetime.get(Calendar.AM_PM) == Calendar.AM)
+            am_pm = "AM";
+        else if (datetime.get(Calendar.AM_PM) == Calendar.PM)
+            am_pm = "PM";
+
+        txtTime = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
+
+        if (txtTime.length() < 2) {
+            txtTime = "0" + txtTime;
+        }
+
+        if (mMinute < 10) {
+            String s = 0 + "" + mMinute;
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate + " " + txtTime + ":" + s + ":" + "00" + " " + am_pm);
+        } else {
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate + " " + txtTime + ":" + datetime.get(Calendar.MINUTE) + ":" + "00" + " " + am_pm);
+        }
+        return finalFormattedDate +" "+finalFormattedTime;
     }
 }

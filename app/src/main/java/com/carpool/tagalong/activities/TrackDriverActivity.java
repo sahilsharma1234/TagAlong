@@ -1,7 +1,6 @@
 package com.carpool.tagalong.activities;
 
 import android.animation.ArgbEvaluator;
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,11 +21,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Dash;
-import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.SphericalUtil;
 
 import org.json.JSONObject;
 
@@ -103,7 +101,7 @@ public class TrackDriverActivity extends BaseActivity  {
             }
         };
 
-        getDriverTimer.schedule(timerTask,1*1000, 15*1000);
+        getDriverTimer.schedule(timerTask,800, 10*1000);
 
     }
 
@@ -194,6 +192,8 @@ public class TrackDriverActivity extends BaseActivity  {
                  addCurrentLocationMarker(this.lat, this.longt);
              }
 
+            double degrees = computeHeading(new LatLng(lat,lont),  new LatLng(this.lat, this.longt));
+
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(lat, lont))
                     .zoom(15)
@@ -206,6 +206,9 @@ public class TrackDriverActivity extends BaseActivity  {
             options.position(new LatLng(lat, lont));
             BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_car);
             options.icon(icon);
+            options.zIndex(1.0f);
+            options.flat(true);
+            options.rotation((float)degrees);
             mMap.addMarker(options);
 
             String url = getDirectionsUrl(new LatLng(lat, lont), new LatLng(this.lat, this.longt));
@@ -355,5 +358,17 @@ public class TrackDriverActivity extends BaseActivity  {
             // Drawing polyline in the Google Map for the i-th route
             mMap.addPolyline(lineOptions);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getDriverTimer.cancel();
+    }
+
+    public static double computeHeading(LatLng from, LatLng to){
+
+        Double HeadingRotation = SphericalUtil.computeHeading(from , to);
+        return HeadingRotation;
     }
 }

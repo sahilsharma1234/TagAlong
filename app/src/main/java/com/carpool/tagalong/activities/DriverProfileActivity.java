@@ -39,7 +39,7 @@ import retrofit2.Response;
 
 import static com.carpool.tagalong.managers.DataManager.modelSearchRideRequest;
 
-public class DriverProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class DriverProfileActivity extends AppCompatActivity implements View.OnClickListener, RecentRideDriverProfileAdapter.rideclicklistener {
 
     private String TAG = DriverProfileActivity.this.getClass().getSimpleName();
     private RecyclerView recycler_view_recent_rides_driver_profile;
@@ -179,7 +179,7 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
             if (ridesList != null && ridesList.size() > 0) {
                 viewAll.setVisibility(View.VISIBLE);
 
-                RecentRideDriverProfileAdapter mAdapter = new RecentRideDriverProfileAdapter(this, ridesList);
+                RecentRideDriverProfileAdapter mAdapter = new RecentRideDriverProfileAdapter(this, ridesList, this);
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
                 recycler_view_recent_rides_driver_profile.setLayoutManager(mLayoutManager);
                 recycler_view_recent_rides_driver_profile.setItemAnimator(new DefaultItemAnimator());
@@ -206,5 +206,16 @@ public class DriverProfileActivity extends AppCompatActivity implements View.OnC
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("driverId",driverId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(ModelGetDriverProfileResponse.Rides s) {
+
+        if(s != null) {
+            Intent intent = new Intent(context, DriverProfileRideTimelineActivity.class);
+            intent.putExtra(Constants.RIDEID, s.get_id());
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 }

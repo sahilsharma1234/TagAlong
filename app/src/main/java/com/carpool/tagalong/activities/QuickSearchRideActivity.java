@@ -94,6 +94,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -170,6 +171,10 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     };
     private ShimmerTextView estimatedCost, estimatedTime;
     private RegularTextView sourceLocname, destLocName;
+
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String finalFormattedTime,finalFormattedDate;
+    private String txtDate, txtTime;
     private Timer getDriverLocationtimer = new Timer();
     private Handler locationHandler      = new Handler(new Handler.Callback() {
 
@@ -240,9 +245,55 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
 
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("rideId")) {
-
             getRideDetails(getIntent().getExtras().getString("rideId"));
+        }
+        getCurrentDateTimeAndSet();
+    }
 
+    private void getCurrentDateTimeAndSet() {
+
+        final Calendar c = Calendar.getInstance();
+        mYear  = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay   = c.get(Calendar.DAY_OF_MONTH);
+        mHour  = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
+        mMonth  = mMonth + 1;
+
+        if (mMonth < 10) {
+            txtDate = (mDay + "/" + "0" + mMonth + "/" + mYear);
+        } else
+            txtDate = (mDay + "/" + (mMonth + 1) + "/" + mYear);
+
+        finalFormattedDate = Utils.getRidePostDateFromDateString(txtDate);
+
+        onTimeSet1(mHour, mMinute);
+    }
+
+    public void onTimeSet1(int hourOfDay, int minute) {
+
+        String am_pm = "";
+
+        Calendar datetime = Calendar.getInstance();
+        datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        datetime.set(Calendar.MINUTE, minute);
+
+        if (datetime.get(Calendar.AM_PM) == Calendar.AM)
+            am_pm = "AM";
+        else if (datetime.get(Calendar.AM_PM) == Calendar.PM)
+            am_pm = "PM";
+
+        txtTime = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
+
+        if(txtTime.length() < 2){
+            txtTime = "0"+txtTime;
+        }
+
+        if (minute < 10) {
+            String s = 0 + "" + minute;
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate+" "+txtTime + ":" + s+ ":" + "00"+" "+am_pm);
+        } else {
+            finalFormattedTime = Utils.getRideTimeFromDateString(txtDate+" "+txtTime + ":" + datetime.get(Calendar.MINUTE)+ ":" + "00" +" "+am_pm);
         }
     }
 
@@ -898,6 +949,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                 modelRequestQuickRideRider.setEndLong(endLng);
                 modelRequestQuickRideRider.setAllowKids(allowkids);
                 modelRequestQuickRideRider.setSmoke(smoke);
+                modelRequestQuickRideRider.setRideDateTime(Utils.getCurrentDateTimeAndSet());
 
                 if (carrybags)
                     modelRequestQuickRideRider.setBags(1);

@@ -67,6 +67,7 @@ dependencies {
 
     implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
 //    implementation 'com.github.fevziomurtekin:PayView:1.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
 }
 
 apply plugin: 'com.google.gms.google-services'

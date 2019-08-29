@@ -14,7 +14,7 @@
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/smoke_lyt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -111,15 +111,15 @@
 
         </RelativeLayout>
 
-    </RelativeLayout>
+    </RelativeLayout>-->
 
     <RelativeLayout
         android:id="@+id/seats_pref"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/carry_bags_pef"
+        android:layout_below="@id/documents_title"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:gravity="center|left">
 
         <com.carpool.tagalong.views.RegularTextView
@@ -167,7 +167,7 @@
     <Button
         android:id="@+id/confirm_prefs"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_below="@id/seats_pref"
         android:layout_marginTop="35dp"
         android:background="@color/colorGold"

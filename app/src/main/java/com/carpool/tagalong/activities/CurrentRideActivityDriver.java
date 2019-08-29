@@ -339,6 +339,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void uploadPic() {
 
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("video/*, image/*");
         startActivityForResult(intent, IMAGE_PICK_REQUEST);
     }
 
@@ -617,6 +618,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
             ModelStartRideRequest modelStartRideRequest = new ModelStartRideRequest();
             modelStartRideRequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelStartRideRequest.setStartedDate(Utils.getCurrentDateTimeAndSet());
 
             if (Utils.isNetworkAvailable(context)) {
 
@@ -813,6 +815,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 return;
 
             modelPickupRider.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelPickupRider.setCompletedDate(Utils.getCurrentDateTimeAndSet());
 
             if (Utils.isNetworkAvailable(context)) {
 
@@ -832,6 +835,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                    textToSpeech.speak("Thanks" + onBoard.getUserName() + "for using TagAlong Ride.  Have a good time ahead!!", TextToSpeech.QUEUE_FLUSH, null);
                                     showSubmitReviewDialog(onBoard);
                                 } else {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
@@ -869,7 +873,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         final EditText feedBackComments;
         Button submitFeedback;
         CircleImageView user_image;
-        final float rating;
+//        final float rating;
+        final float[] finalRating = new float[1];
 
         AlertDialog alertDialog = null;
 
@@ -887,7 +892,17 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
             ratingBar = dialogView.findViewById(R.id.rating_bar);
 
-            rating = ratingBar.getRating();
+            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+                    finalRating[0] = rating;
+
+                }
+            });
+
+//            rating = ratingBar.getRating();
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -906,7 +921,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 @Override
                 public void onClick(View v) {
 
-                    rateRider(onBoard, feedBackComments.getText().toString(), rating);
+                    rateRider(onBoard, feedBackComments.getText().toString(), finalRating[0]);
                     finalAlertDialog.cancel();
                 }
             });

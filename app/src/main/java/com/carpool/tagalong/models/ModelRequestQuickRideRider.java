@@ -25,8 +25,11 @@ public class ModelRequestQuickRideRider {
     public boolean allowKids;
     @SerializedName("bags")
     public int bags;
+
     @SerializedName("estimatedFare")
     public Double estimatedFare;
+    @SerializedName("rideDateTime")
+    public String rideDateTime;
 
     public String getStartLocation() {
         return startLocation;
@@ -116,6 +119,14 @@ public class ModelRequestQuickRideRider {
         this.estimatedFare = estimatedFare;
     }
 
+    public String getRideDateTime() {
+        return rideDateTime;
+    }
+
+    public void setRideDateTime(String rideDateTime) {
+        this.rideDateTime = rideDateTime;
+    }
+
     @Override
     public String toString() {
         return "ModelRequestQuickRideRider{" +
@@ -130,6 +141,7 @@ public class ModelRequestQuickRideRider {
                 ", allowKids=" + allowKids +
                 ", bags=" + bags +
                 ", estimatedFare=" + estimatedFare +
+                ", rideDateTime='" + rideDateTime + '\'' +
                 '}';
     }
 }

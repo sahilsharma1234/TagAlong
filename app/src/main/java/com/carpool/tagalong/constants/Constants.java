@@ -51,4 +51,5 @@ public class Constants {
 
     public static final String PICKED_UP = "pickedup";
     public static final String DROPPED = "dropped";
+    public static final String RIDEID = "rideId";
 }

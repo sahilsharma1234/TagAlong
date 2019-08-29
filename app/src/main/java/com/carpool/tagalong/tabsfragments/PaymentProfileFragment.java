@@ -644,7 +644,11 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                                             DataManager.ridingstatus = true;
                                         }
                                     }
-
+                                    if(response.body().getData().getDocuments() != null && response.body().getData().getDocuments().size() > 0){
+                                        TagALongPreferenceManager.setDocumentUploadedStatus(context,true);
+                                    }else{
+                                        TagALongPreferenceManager.setDocumentUploadedStatus(context,false);
+                                    }
                                     updateUI();
 
                                 } else {

@@ -176,8 +176,8 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         if (getIntent().getExtras() != null) {
             modelGetRideDetailsResponse = (ModelGetCurrentRideResponse) getIntent().getExtras().getSerializable("data");
             rideID = getIntent().getStringExtra("rideId");
-
         }
+
         initializeViews();
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(pickedUpListener,
@@ -302,7 +302,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         if (driverDetails != null) {
             String name = driverDetails.getUserName();
             userName.setText(name);
-            cabDetails.setText(driverDetails.getVehicle() + "   plate No: " + driverDetails.getVehicleNumber());
+            cabDetails.setText(driverDetails.getVehicle() + "  Plate No: " + driverDetails.getVehicleNumber());
         }
 
         String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
@@ -314,7 +314,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         startLocationName.setText(startLocName);
         endLocationName.setText(endLocation);
         startRideTime.setText(rideTime);
-        estimatedCostOfRide.setText("$" + estimatedcost);
+        estimatedCostOfRide.setText("$ " + estimatedcost);
 
         if(modelGetRideDetailsResponse.getRideData().getDriverDetails().getStatus() == Constants.STARTED){
 
@@ -1064,7 +1064,8 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         final EditText feedBackComments;
         Button submitFeedback;
         CircleImageView user_image;
-        final float rating;
+//        final float rating;
+        final float[] finalRating = new float[1];
 
         AlertDialog alertDialog = null;
 
@@ -1081,7 +1082,18 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             user_image = dialogView.findViewById(R.id.iv_user_profile_image);
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
             ratingBar = dialogView.findViewById(R.id.rating_bar);
-            rating = ratingBar.getRating();
+
+            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+                    finalRating[0] = rating;
+
+                }
+            });
+
+//            rating = ratingBar.getRating();
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -1100,7 +1112,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 @Override
                 public void onClick(View v) {
 
-                    rateRider(feedBackComments.getText().toString(), rating);
+                    rateRider(feedBackComments.getText().toString(), finalRating[0]);
                     finalAlertDialog.cancel();
                 }
             });

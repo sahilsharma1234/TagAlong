@@ -133,10 +133,9 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
                             if (response.body() != null) {
 
-//                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 Log.i("Get All rides", "Get all rides RESPONSE " + response.body().toString());
-
                                 initAdapter(response.body().getRideData());
+
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                             }

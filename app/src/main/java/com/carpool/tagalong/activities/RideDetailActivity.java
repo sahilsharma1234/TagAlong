@@ -112,7 +112,7 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
         final EditText feedBackComments;
         Button submitFeedback;
         CircleImageView user_image;
-        final float rating;
+        final float[] finalRating = new float[1];
 
         AlertDialog alertDialog = null;
 
@@ -130,7 +130,15 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
             ratingBar = dialogView.findViewById(R.id.rating_bar);
 
-            rating = ratingBar.getRating();
+            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+                    finalRating[0] = rating;
+
+                }
+            });
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -149,7 +157,7 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
                 @Override
                 public void onClick(View v) {
 
-                    rateDriver(feedBackComments.getText().toString(), rating);
+                    rateDriver(feedBackComments.getText().toString(), finalRating[0]);
                     finalAlertDialog.cancel();
                 }
             });
@@ -292,11 +300,11 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
                     .into(image);
             riderName.setText(rideData.getDriverName());
 
-            if (rideData.getRating().equals("")) {
+            if (String.valueOf(modelGetCurrentRideResponse.getDriverDetails().getRating()).equals("")) {
                 rating.setText("RATE RIDE");
                 rating.setOnClickListener(this);
             } else {
-                rating.setText(rideData.getRating() + "");
+                rating.setText(modelGetCurrentRideResponse.getDriverDetails().getRating() + "");
                 rating.setOnClickListener(null);
             }
             cabDetails.setText(modelGetCurrentRideResponse.getDriverDetails().getVehicle() + " " + modelGetCurrentRideResponse.getDriverDetails().getVehicleNumber());

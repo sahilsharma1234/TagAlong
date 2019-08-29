@@ -45,7 +45,7 @@
 
             android:layout_centerHorizontal="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/avatar_avatar_12"/>
+            android:src="@drawable/ic_profile_message_xxhdpi"/>
 
         <com.carpool.tagalong.views.RegularTextView
             android:layout_width="wrap_content"
