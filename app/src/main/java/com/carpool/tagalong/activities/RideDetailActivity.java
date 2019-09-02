@@ -293,12 +293,13 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
                     .into(image);
             riderName.setText(DataManager.getModelUserProfileData().getUserName());
             rating.setVisibility(View.GONE);
+            cabDetails.setVisibility(View.GONE);
         } else { // if you are the rider then you have to rate driver here so driver name and details
 
             Glide.with(this)
-                    .load(rideData.getDriverPic())
+                    .load(modelGetCurrentRideResponse.getDriverDetails().getProfile_pic())
                     .into(image);
-            riderName.setText(rideData.getDriverName());
+            riderName.setText(modelGetCurrentRideResponse.getDriverDetails().getUserName());
 
             if (String.valueOf(modelGetCurrentRideResponse.getDriverDetails().getRating()).equals("")) {
                 rating.setText("RATE RIDE");

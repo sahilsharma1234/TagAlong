@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Rating;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -73,9 +74,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FreeRoamActivity extends BaseActivity implements View.OnClickListener, QuickRidesRiderAdapter.ridersatusclicklistener {
+public class FreeRoamActivity extends BaseActivity implements View.OnClickListener, QuickRidesRiderAdapter.ridersatusclicklistener, RatingBar.OnRatingBarChangeListener {
 
-    private static final String ANIM_REQUEST_COUNT_BUTTON = "anim_request_count", ANIM_DOWN_SETTINGS = "anim_request_selection", ANIM_SELFIE_TAKEN = "anim_selfie_taken", ANIM_SELFIE_ACTION = "anim_selfie_action";
+    private static final String ANIM_DOWN_SETTINGS = "anim_request_selection";
     private static final int CALL_PHONE_CODE = 265;
     private static boolean isFreeRoamEnabled = false;
     private final String TAG = FreeRoamActivity.this.getClass().getSimpleName();
@@ -122,6 +123,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
         }
     };
+    private String finalRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,27 +385,6 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }).start();
     }
 
-//    private void addStartMarker() {
-//
-//        try {
-//            CameraPosition cameraPosition = new CameraPosition.Builder()
-//                    .target(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()))
-//                    .zoom(17)
-//                    .build();
-//
-////        addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
-//            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//
-//            MarkerOptions options = new MarkerOptions();
-//            options.position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
-//            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_start_ride_point_xhdpi);
-//            options.icon(icon);
-//            mMap.addMarker(options);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void handleRiderDetailsLayout(ModelGetCurrentRideResponse.RideData rideData) {
 
         txt.setVisibility(View.GONE);
@@ -565,17 +546,8 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         com.carpool.tagalong.views.RegularTextView dest_loc = delayDialog.findViewById(R.id.tv_dest_address);
         com.carpool.tagalong.views.RegularTextView time = delayDialog.findViewById(R.id.tv_date);
         com.carpool.tagalong.views.RegularTextView fare_amount = delayDialog.findViewById(R.id.tv_payment_amount);
-
-//        com.carpool.tagalong.views.RegularTextView seats_selected = delayDialog.findViewById(R.id.tv_seat_selected);
-//        ImageView carrying_bags = delayDialog.findViewById(R.id.tv_bags);
-//        ImageView kids_allowed = delayDialog.findViewById(R.id.tv_traveling_with_children);
-
         com.carpool.tagalong.views.RegularTextView tv_message = delayDialog.findViewById(R.id.tv_message);
-
-//        com.carpool.tagalong.views.RegularTextView accept = delayDialog.findViewById(R.id.tv_acept);
-//        com.carpool.tagalong.views.RegularTextView accepted = delayDialog.findViewById(R.id.tv_acepted);
         com.carpool.tagalong.views.RegularTextView cancel = delayDialog.findViewById(R.id.tv_cancel);
-//        com.carpool.tagalong.views.RegularTextView reject = delayDialog.findViewById(R.id.tv_Reject);
         com.carpool.tagalong.views.RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
 
         final RegularEditText otpView = delayDialog.findViewById(R.id.otp_pickup);
@@ -659,11 +631,11 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onSlideComplete(@NotNull SlideToActView slideToActView) {
 
-                if (slideToActView.getText().toString().equalsIgnoreCase("Slide to pickup")) {
+                if (onBoard.getStatus() == Constants.ACCEPTED) {
 
                     pickupRider(onBoard, otpView.getText().toString());
 
-                } else {
+                } else if(onBoard.getStatus() == Constants.PICKUP) {
                     dropRider(onBoard);
                 }
                 delayDialog.dismiss();
@@ -793,6 +765,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                 return;
 
             modelPickupRider.setRideId(rideData.get_id());
+            modelPickupRider.setStartedDate(Utils.getCurrentDateTimeAndSet());
 
             if (Utils.isNetworkAvailable(context)) {
 
@@ -856,6 +829,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                 return;
 
             modelPickupRider.setRideId(rideData.get_id());
+            modelPickupRider.setCompletedDate(Utils.getCurrentDateTimeAndSet());
 
             if (Utils.isNetworkAvailable(context)) {
 
@@ -912,7 +886,6 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         final EditText feedBackComments;
         Button submitFeedback;
         CircleImageView user_image;
-        final float rating;
 
         AlertDialog alertDialog = null;
 
@@ -930,8 +903,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
             ratingBar = dialogView.findViewById(R.id.rating_bar);
 
-            rating = ratingBar.getRating();
-
+            ratingBar.setOnRatingBarChangeListener(this);
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.drawable.avatar_avatar_12)
@@ -949,7 +921,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                 @Override
                 public void onClick(View v) {
 
-                    rateRider(onBoard, feedBackComments.getText().toString(), rating);
+                    rateRider(onBoard, feedBackComments.getText().toString());
                     finalAlertDialog.cancel();
                 }
             });
@@ -961,14 +933,14 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void rateRider(final ModelGetCurrentRideResponse.OnBoard onBoard, String comments, float rating) {
+    private void rateRider(final ModelGetCurrentRideResponse.OnBoard onBoard, String comments) {
 
         try {
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
             modelRateRiderequest.setRateTo(onBoard.getUserId());
             modelRateRiderequest.setRideId(rideData.get_id());
-            modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
+            modelRateRiderequest.setRating(Double.valueOf(finalRating));
             modelRateRiderequest.setReview(comments);
 
             if (Utils.isNetworkAvailable(context)) {
@@ -1024,5 +996,11 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             ProgressDialogLoader.progressDialogDismiss();
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+        finalRating  =  String.valueOf(rating);
     }
 }

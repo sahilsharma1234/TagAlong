@@ -85,7 +85,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CurrentRideActivity extends AppCompatActivity implements View.OnClickListener {
+public class CurrentRideActivity extends AppCompatActivity implements View.OnClickListener, RatingBar.OnRatingBarChangeListener {
 
     private static final int MY_PERMISSIONS_REQUEST = 132;
     private static final int IMAGE_PICK_REQUEST = 134;
@@ -113,6 +113,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private ArrayList<String> invitedGuestList;
     private RegularTextView rideDetailsText, cabDetails, expectedTimeOfArrival, otp;
     private RelativeLayout trackRideLyt, rel2;
+    private String finalRating;
 
     private BroadcastReceiver pickedUpListener = new BroadcastReceiver() {
 
@@ -1060,13 +1061,10 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private void showSubmitReviewDialog() {
 
         com.carpool.tagalong.views.RegularTextView iv_userName;
-        RatingBar ratingBar;
+        final RatingBar ratingBar;
         final EditText feedBackComments;
         Button submitFeedback;
         CircleImageView user_image;
-//        final float rating;
-        final float[] finalRating = new float[1];
-
         AlertDialog alertDialog = null;
 
         try {
@@ -1082,18 +1080,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             user_image = dialogView.findViewById(R.id.iv_user_profile_image);
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
             ratingBar = dialogView.findViewById(R.id.rating_bar);
-
-            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-
-                @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-
-                    finalRating[0] = rating;
-
-                }
-            });
-
-//            rating = ratingBar.getRating();
+            ratingBar.setOnRatingBarChangeListener(this);
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -1112,7 +1099,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 @Override
                 public void onClick(View v) {
 
-                    rateRider(feedBackComments.getText().toString(), finalRating[0]);
+                    rateRider(feedBackComments.getText().toString());
                     finalAlertDialog.cancel();
                 }
             });
@@ -1124,14 +1111,14 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void rateRider(String comments, float rating) {
+    private void rateRider(String comments) {
 
         try {
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
             modelRateRiderequest.setRateTo(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
             modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
-            modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
+            modelRateRiderequest.setRating(Double.valueOf(finalRating));
             modelRateRiderequest.setReview(comments);
 
             if (Utils.isNetworkAvailable(context)) {
@@ -1271,5 +1258,12 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+        finalRating = String.valueOf(rating);
+
     }
 }

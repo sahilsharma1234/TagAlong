@@ -25,7 +25,7 @@ public class ModelPickupRider {
     @SerializedName("pickupVerificationCode")
     public String pickupVerificationCode;
 
-    @SerializedName(" completedDate")
+    @SerializedName("completedDate")
     public String  completedDate;
 
     public String getRequestId() {

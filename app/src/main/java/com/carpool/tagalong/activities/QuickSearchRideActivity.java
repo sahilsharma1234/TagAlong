@@ -77,6 +77,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.SphericalUtil;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 
@@ -107,7 +108,7 @@ import retrofit2.Response;
 
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
-public class QuickSearchRideActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class QuickSearchRideActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, RatingBar.OnRatingBarChangeListener {
 
     private static final int MY_LOCATION_PERMISSIONS_REQUEST = 108;
     private static final String LOG_TAG = "Google Places";
@@ -124,6 +125,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private static int mAX_bag_count = 4;
     private static ModelQuickRideBookResponse modelQuickRideBookResponse;
     private static ModelGetCurrentRideResponse modelGetRideDetailsResponse;
+    private static boolean pickedUpFlag = false;
     private final String TAG = QuickSearchRideActivity.this.getClass().getSimpleName();
     @BindView(R.id.rootll)
     LinearLayout rootll;
@@ -152,6 +154,9 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             finish();
         }
     };
+    private ShimmerTextView estimatedCost, estimatedTime;
+    private RegularTextView sourceLocname, destLocName;
+    private Timer getDriverLocationtimer = new Timer();
     private BroadcastReceiver pickedUpListener = new BroadcastReceiver() {
 
         @Override
@@ -159,16 +164,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             showPickedUpDialog(QuickSearchRideActivity.this);
         }
     };
-    private BroadcastReceiver droppedListener = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            showDroppedDialog(QuickSearchRideActivity.this);
-        }
-    };
-    private ShimmerTextView estimatedCost, estimatedTime;
-    private RegularTextView sourceLocname, destLocName;
-    private Timer getDriverLocationtimer = new Timer();
     private Handler locationHandler = new Handler(new Handler.Callback() {
 
         @Override
@@ -187,6 +182,20 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             return true;
         }
     });
+    private String finalRating;
+    private BroadcastReceiver droppedListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showDroppedDialog(QuickSearchRideActivity.this);
+        }
+    };
+
+    public static double computeHeading(LatLng from, LatLng to) {
+
+        Double HeadingRotation = SphericalUtil.computeHeading(from, to);
+        return HeadingRotation;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,7 +231,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             if (!Utils.isJobServiceOn(this)) {
                 Utils.scheduleApplicationPackageJob(this);
             }
-            locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
+            if (!pickedUpFlag)
+                locationHandler.sendMessage(Message.obtain(locationHandler, 1, null));
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -230,10 +240,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         } else {
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi));
         }
-//        getCurrentDateTimeAndSet();
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PHONE_CODE);
         }
 
@@ -593,19 +601,43 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     private void addAvailableDriversCarMarker(Double lat, Double lont) {
 
         try {
+            double degrees;
+
+            if (mMap != null) {
+                mMap.clear();
+                addStartMarker();
+                addEndMarker();
+            }
+
+            if (!pickedUpFlag)
+                degrees = computeHeading(new LatLng(lat, lont), new LatLng(startLat, startlongt));
+            else
+                degrees = computeHeading(new LatLng(lat, lont), new LatLng(endLat, endLng));
+
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(lat, lont))
                     .zoom(12)
                     .build();
 
-//            addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
             options = new MarkerOptions();
             options.position(new LatLng(lat, lont));
             BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_car);
             options.icon(icon);
+            options.zIndex(1.0f);
+            options.flat(true);
+            options.rotation((float) degrees);
             mMap.addMarker(options);
+
+            if (!pickedUpFlag) {
+
+                String url = getDirectionsUrl(new LatLng(lat, lont), new LatLng(startLat, startlongt));
+                DownloadTask downloadTask = new DownloadTask();
+                // Start downloading json data from Google Directions API
+                downloadTask.execute(url);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -667,6 +699,10 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(listener);
         getDriverLocationtimer.cancel();
+        startLat = null;
+        startlongt = null;
+//        endLat   = null;
+//        endLng = null;
     }
 
     @Override
@@ -1025,7 +1061,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             }
         };
 
-        getDriverLocationtimer.schedule(getDriverLocationTimerTask, 20 * 1000);
+        getDriverLocationtimer.schedule(getDriverLocationTimerTask, 500, 10 * 1000);
     }
 
     private void showCancelAlert(String requestId) {
@@ -1480,6 +1516,15 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
     private void handleCabBookDataNew(final ModelGetCurrentRideResponse.RideData rideData) {
 
+        if (rideData.getStatus() == Constants.PICKUP) {
+            pickedUpFlag = true;
+        } else {
+            pickedUpFlag = false;
+        }
+
+        startLat = rideData.getStartLat();
+        startlongt = rideData.getStartLong();
+
         stratTripLyt.setVisibility(View.GONE);
         endtripLyt.setVisibility(View.GONE);
         searchRide.setVisibility(View.GONE);
@@ -1569,7 +1614,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     protected void onResume() {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
         LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
                 new IntentFilter(Constants.DROPPED));
 
@@ -1599,6 +1644,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                 @Override
                 public void onClick(View v) {
                     alertDialog.cancel();
+                    pickedUpFlag = true;
                     finish();
                 }
             });
@@ -1630,6 +1676,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
                 @Override
                 public void onClick(View v) {
+                    pickedUpFlag = false;
                     showSubmitReviewDialog();
                     alertDialog.cancel();
                 }
@@ -1648,8 +1695,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         final EditText feedBackComments;
         Button submitFeedback;
         CircleImageView user_image;
-        final float rating;
-
         AlertDialog alertDialog = null;
 
         try {
@@ -1665,7 +1710,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             user_image = dialogView.findViewById(R.id.iv_user_profile_image);
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
             ratingBar = dialogView.findViewById(R.id.rating_bar);
-            rating = ratingBar.getRating();
+            ratingBar.setOnRatingBarChangeListener(this);
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -1684,7 +1729,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                 @Override
                 public void onClick(View v) {
 
-                    rateRider(feedBackComments.getText().toString(), rating);
+                    rateRider(feedBackComments.getText().toString());
                     finalAlertDialog.cancel();
                 }
             });
@@ -1696,14 +1741,14 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
     }
 
-    private void rateRider(String comments, float rating) {
+    private void rateRider(String comments) {
 
         try {
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
             modelRateRiderequest.setRateTo(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
             modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
-            modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
+            modelRateRiderequest.setRating(Double.valueOf(finalRating));
             modelRateRiderequest.setReview(comments);
 
             if (Utils.isNetworkAvailable(context)) {
@@ -1754,6 +1799,13 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             ProgressDialogLoader.progressDialogDismiss();
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+        finalRating = String.valueOf(rating);
+
     }
 
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {

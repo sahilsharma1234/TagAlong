@@ -55,7 +55,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
     private CurrentUpcomingFragment.OnFragmentInteractionListener listener;
     private CurrentAndUpcomingRideAdapter mAdapter;
     private RecyclerView currentNdUpcomingrecyclerView;
-    private RelativeLayout add_ride_lyt;
+    private RelativeLayout add_ride_lyt, no_internet;
     private LinearLayout lyt_currnt_upcoming;
     private Button addRideBtn;
 
@@ -98,7 +98,8 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
         currentNdUpcomingrecyclerView = view.findViewById(R.id.current_upcoming_recycler);
         lyt_currnt_upcoming = view.findViewById(R.id.lyt_list_curUpcoming);
         add_ride_lyt = view.findViewById(R.id.add_ride_post_rel);
-        addRideBtn = view.findViewById(R.id.add_ride_btn);
+        addRideBtn   = view.findViewById(R.id.add_ride_btn);
+        no_internet  = view.findViewById(R.id.internet_lost);
         addRideBtn.setOnClickListener(this);
         return view;
     }
@@ -134,9 +135,11 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
                             if (response.body() != null) {
 
                                 Log.i("Get All rides", "Get all rides RESPONSE " + response.body().toString());
+                                no_internet.setVisibility(View.GONE);
                                 initAdapter(response.body().getRideData());
 
                             } else {
+                                no_internet.setVisibility(View.VISIBLE);
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                             }
                         }
@@ -147,6 +150,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
                             if (t != null && t.getMessage() != null) {
                                 t.printStackTrace();
                             }
+                            no_internet.setVisibility(View.VISIBLE);
                             Log.e("Get All rides", "FAILURE GETTING ALL RIDES");
                         }
                     });

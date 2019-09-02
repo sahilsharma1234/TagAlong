@@ -103,11 +103,17 @@ public class NotificationService extends FirebaseMessagingService {
             intent = new Intent(this, CurrentRideActivity.class);
             Intent intent1 = new Intent("pickedup");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+
+            Intent intent2 = new Intent("launchCurrentRideFragment");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
         } else if (type.equals(Constants.TYPE_DROP)) {
 
             intent = new Intent(this, CurrentRideActivity.class);
             Intent intent1 = new Intent("dropped");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
+
+            Intent intent2 = new Intent("launchCurrentRideFragment");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
         } else if (type.equals(Constants.TYPE_QUICKRIDE)) {
 
             intent = new Intent(this, FreeRoamActivity.class);

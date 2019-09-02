@@ -82,12 +82,15 @@ import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.ncorti.slidetoact.SlideToActView;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -96,7 +99,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CurrentRideActivityDriver extends AppCompatActivity implements View.OnClickListener, JoinedRidersAdapter.joinriderlistener, OnBoardRidersAdapter.OnBoardRidersInterface {
+public class CurrentRideActivityDriver extends AppCompatActivity implements View.OnClickListener, JoinedRidersAdapter.joinriderlistener, OnBoardRidersAdapter.OnBoardRidersInterface, RatingBar.OnRatingBarChangeListener {
 
     private static final int MY_PERMISSIONS_REQUEST = 132;
     private static final int IMAGE_PICK_REQUEST = 134;
@@ -132,6 +135,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             finish();
         }
     };
+    private String ratingFinal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -750,6 +754,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 return;
 
             modelPickupRider.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelPickupRider.setStartedDate(Utils.getCurrentDateTimeAndSet());
 
             if (Utils.isNetworkAvailable(context)) {
 
@@ -869,7 +874,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void showSubmitReviewDialog(final ModelGetCurrentRideResponse.OnBoard onBoard) {
 
         RegularTextView iv_userName;
-        RatingBar ratingBar;
+        final RatingBar ratingBar;
         final EditText feedBackComments;
         Button submitFeedback;
         CircleImageView user_image;
@@ -892,17 +897,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
             ratingBar = dialogView.findViewById(R.id.rating_bar);
 
-            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-
-                @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-
-                    finalRating[0] = rating;
-
-                }
-            });
-
-//            rating = ratingBar.getRating();
+            ratingBar.setOnRatingBarChangeListener(this);
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -921,7 +916,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 @Override
                 public void onClick(View v) {
 
-                    rateRider(onBoard, feedBackComments.getText().toString(), finalRating[0]);
+                    rateRider(onBoard, feedBackComments.getText().toString(),String.valueOf(ratingBar.getRating()));
                     finalAlertDialog.cancel();
                 }
             });
@@ -933,14 +928,14 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         }
     }
 
-    private void rateRider(final ModelGetCurrentRideResponse.OnBoard onBoard, String comments, float rating) {
+    private void rateRider(final ModelGetCurrentRideResponse.OnBoard onBoard, String comments, String rating) {
 
         try {
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
             modelRateRiderequest.setRateTo(onBoard.getUserId());
             modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
-            modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
+            modelRateRiderequest.setRating(Double.valueOf(ratingFinal));
             modelRateRiderequest.setReview(comments);
 
             if (Utils.isNetworkAvailable(context)) {
@@ -1379,7 +1374,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             source_loc.setText(joinRequest.getStartLocation());
             dest_loc.setText(joinRequest.getEndLocation());
             time.setText(joinRequest.getRideDateTime());
-            fare_amount.setText(joinRequest.getEstimatedFare() + "");
+            fare_amount.setText("$ "+joinRequest.getEstimatedFare());
 
             slideToActView.setVisibility(View.GONE);
 
@@ -1737,5 +1732,11 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelledListener);
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+        ratingFinal = String.valueOf(rating);
     }
 }
