@@ -180,15 +180,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         }
 
         initializeViews();
-
-//        LocalBroadcastManager.getInstance(this).registerReceiver(pickedUpListener,
-//                new IntentFilter("pickedup "));
-//
-//        LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
-//                new IntentFilter("dropped"));
-//
-//        LocalBroadcastManager.getInstance(this).registerReceiver(listener,
-//                new IntentFilter("fetchRide"));
     }
 
     private void initializeViews() {
@@ -204,7 +195,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         postPic = findViewById(R.id.image_user_1);
         cancelButton = findViewById(R.id.cancel_ride_txt);
         requestedBtn = findViewById(R.id.button_ride);
-//        paynow       = findViewById(R.id.button_payNow);
         uploadPicLytBtn = findViewById(R.id.post_image_layout);
         postImage = findViewById(R.id.post_image_btn);
         rideDetailsText = findViewById(R.id.ride_details_text);
@@ -215,7 +205,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         otp = findViewById(R.id.otp);
         rel2 = findViewById(R.id.rel2);
 
-//        paynow.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         requestedBtn.setOnClickListener(this);
 
@@ -223,9 +212,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         timeLineRecView = findViewById(R.id.timeline_recView);
         selectImageForPost = findViewById(R.id.select_image_post);
         selectedImageForPost = findViewById(R.id.selected_image);
-//        dropmessage  = findViewById(R.id.drop_message);
         dropmessage1 = findViewById(R.id.drop_message1);
-
         dropmessage1.setOnClickListener(this);
         trackRideLyt.setOnClickListener(this);
 
@@ -317,7 +304,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         startRideTime.setText(rideTime);
         estimatedCostOfRide.setText("$ " + estimatedcost);
 
-        if(modelGetRideDetailsResponse.getRideData().getDriverDetails().getStatus() == Constants.STARTED){
+        if (modelGetRideDetailsResponse.getRideData().getDriverDetails().getStatus() == Constants.STARTED) {
 
             if (modelGetRideDetailsResponse.getRideData().getDriverETA() != null)
                 expectedTimeOfArrival.setText("ETA: " + modelGetRideDetailsResponse.getRideData().getDriverETA());
@@ -829,7 +816,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private void addPost(String mediaPath) {
 
-        if(mediaPath != null) {
+        if (mediaPath != null) {
 
             File file = new File(getPath(Uri.parse(mediaPath)));
 
@@ -889,7 +876,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             } else {
                 Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
             }
-        }else {
+        } else {
             Toast.makeText(context, "Please select any media!!", Toast.LENGTH_LONG).show();
         }
     }
@@ -1115,9 +1102,11 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         try {
 
+            ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
-            modelRateRiderequest.setRateTo(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
-            modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelRateRiderequest.setRateTo(modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
+            modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
             modelRateRiderequest.setRating(Double.valueOf(finalRating));
             modelRateRiderequest.setReview(comments);
 
@@ -1126,8 +1115,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
                 if (restClientRetrofitService != null) {
-
-                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
 
                     restClientRetrofitService.rateRide(TagALongPreferenceManager.getToken(context), modelRateRiderequest).enqueue(new Callback<ModelDocumentStatus>() {
 
@@ -1163,6 +1150,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                     });
                 }
             } else {
+                ProgressDialogLoader.progressDialogDismiss();
                 Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
@@ -1253,7 +1241,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         try {
             LocalBroadcastManager.getInstance(context).unregisterReceiver(pickedUpListener);
-            LocalBroadcastManager.getInstance(context). unregisterReceiver(droppedListener);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(droppedListener);
             LocalBroadcastManager.getInstance(context).unregisterReceiver(listener);
         } catch (Exception e) {
             e.printStackTrace();

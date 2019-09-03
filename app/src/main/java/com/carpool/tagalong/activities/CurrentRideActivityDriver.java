@@ -43,7 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.JoinedRidersAdapter;
@@ -336,8 +336,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 .placeholder(R.drawable.avatar_avatar_12)
                 .error(R.drawable.avatar_avatar_12);
 
-        Glide.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).apply(options).into(profilePic);
-        Glide.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).apply(options).into(postPic);
+        GlideApp.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(profilePic);
+        GlideApp.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(postPic);
     }
 
     private void uploadPic() {
@@ -904,7 +904,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     .placeholder(R.drawable.avatar_avatar_12)
                     .error(R.drawable.avatar_avatar_12);
 
-            Glide.with(context).load(onBoard.getProfile_pic()).apply(options).into(user_image);
+            GlideApp.with(context).load(onBoard.getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(user_image);
 
             iv_userName.setText(onBoard.getUserName());
 
@@ -934,7 +934,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
             modelRateRiderequest.setRateTo(onBoard.getUserId());
-            modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelRateRiderequest.setRideId(onBoard.get_id());
             modelRateRiderequest.setRating(Double.valueOf(ratingFinal));
             modelRateRiderequest.setReview(comments);
 
@@ -1368,6 +1368,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
             GlideApp.with(context)
                     .load(joinRequest.getProfile_pic())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);
 
             name.setText(joinRequest.getUserName());
@@ -1439,8 +1440,9 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             seats_selected.setText(seatMap.get(onBoard.getNoOfSeats()));
             driver_address.setText(onBoard.getAddress());
 
-            Glide.with(context)
+            GlideApp.with(context)
                     .load(onBoard.getProfile_pic())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);
 
             name.setText(onBoard.getUserName());

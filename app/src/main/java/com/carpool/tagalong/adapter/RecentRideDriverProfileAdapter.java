@@ -36,9 +36,9 @@ public class RecentRideDriverProfileAdapter extends RecyclerView.Adapter<RecentR
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         final ModelGetDriverProfileResponse.Rides s = ridesList.get(position);
-        String header[] = s.getHeading().split(" to ");
-        holder.fromlocation.setText(header[0]);
-        holder.toLocation.setText(header[1]);
+//        String header[] = s.getHeading().split(" to ");
+        holder.fromlocation.setText(ridesList.get(position).getStartLocation());
+        holder.toLocation.setText(ridesList.get(position).getEndLocation());
         holder.tripImage.setOnClickListener(new View.OnClickListener() {
 
             @Override

@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Rating;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,6 +55,7 @@ import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
+import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 import com.carpool.tagalong.views.RegularEditText;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -79,6 +79,9 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     private static final String ANIM_DOWN_SETTINGS = "anim_request_selection";
     private static final int CALL_PHONE_CODE = 265;
     private static boolean isFreeRoamEnabled = false;
+    private static Handler handler;
+    private static Runnable runnable;
+    private static String rideId;
     private final String TAG = FreeRoamActivity.this.getClass().getSimpleName();
     @BindView(R.id.rootll)
     LinearLayout rootll;
@@ -98,10 +101,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
     };
     private RelativeLayout riderDtlsLyt;
-    private static Handler handler;
     private ModelGetCurrentRideResponse.RideData rideData = null;
-    private static  Runnable runnable;
-    private static String rideId;
     private BroadcastReceiver riderListener = new BroadcastReceiver() {
 
         @Override
@@ -120,14 +120,15 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                     }
                 }
             }
-
         }
     };
+
     private String finalRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
 
         setContentView(R.layout.activity_free_roam);
 
@@ -188,9 +189,10 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             rideId = getIntent().getExtras().getString(Constants.RIDEID);
             getRideDetails(rideId);
         } else {
+            ProgressDialogLoader.progressDialogDismiss();
             if (!isFreeRoamEnabled) {
                 enableFreeRoam();
-                if(handler != null && runnable != null)
+                if (handler != null && runnable != null)
                     blink();
             }
         }
@@ -404,7 +406,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
         quickRideRidersList = view.findViewById(R.id.quick_ride_riders_list);
         ImageView navigateIcon = view.findViewById(R.id.ic_navigate_quickRide);
-        View       handleIcon  = view.findViewById(R.id.ic_navigate_quickRide);
+        View handleIcon = view.findViewById(R.id.ic_navigate_quickRide);
 
         handleIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -421,23 +423,26 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             }
         });
 
-        if (rideData != null) {
-
-            if (rideData.getOnBoard() != null && rideData.getOnBoard().size() > 0) {
-                currentRiderList = rideData.getOnBoard();
-                quickRidesRiderAdapter = new QuickRidesRiderAdapter(context, currentRiderList, this);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                quickRideRidersList.setLayoutManager(linearLayoutManager);
-                quickRideRidersList.setAdapter(quickRidesRiderAdapter);
-            }
-        }
-
         try {
-            riderDtlsLyt.addView(view);
+            if (rideData != null) {
+
+                if (rideData.getOnBoard() != null && rideData.getOnBoard().size() > 0) {
+                    currentRiderList = rideData.getOnBoard();
+                    quickRidesRiderAdapter = new QuickRidesRiderAdapter(context, currentRiderList, this);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                    quickRideRidersList.setLayoutManager(linearLayoutManager);
+                    quickRideRidersList.setAdapter(quickRidesRiderAdapter);
+
+                    riderDtlsLyt.addView(view);
+                    animate(ANIM_DOWN_SETTINGS);
+                    ProgressDialogLoader.progressDialogDismiss();
+                } else {
+                    UIUtils.alertBox(context, "No Riders in this ride!!");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        animate(ANIM_DOWN_SETTINGS);
     }
 
     private void animate(String condition) {
@@ -597,7 +602,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 delayDialog.dismiss();
-                showPickupCancelAlert( onBoard);
+                showPickupCancelAlert(onBoard);
             }
         });
         driver_address.setText(onBoard.getAddress());
@@ -635,7 +640,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
                     pickupRider(onBoard, otpView.getText().toString());
 
-                } else if(onBoard.getStatus() == Constants.PICKUP) {
+                } else if (onBoard.getStatus() == Constants.PICKUP) {
                     dropRider(onBoard);
                 }
                 delayDialog.dismiss();
@@ -693,7 +698,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void handleCancelPickup( ModelGetCurrentRideResponse.OnBoard onBoard, String reason) {
+    private void handleCancelPickup(ModelGetCurrentRideResponse.OnBoard onBoard, String reason) {
 
         try {
 
@@ -719,8 +724,13 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                             if (response.body() != null) {
 
                                 if (response.body().getStatus() == 1) {
-                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                    if (rideData.getOnBoard() != null && rideData.getOnBoard().size() > 0) {
+
+                                    } else {
+                                        finish();
+                                    }
                                 }
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                             }
@@ -939,7 +949,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
             modelRateRiderequest.setRateTo(onBoard.getUserId());
-            modelRateRiderequest.setRideId(rideData.get_id());
+            modelRateRiderequest.setRideId(onBoard.get_id());
             modelRateRiderequest.setRating(Double.valueOf(finalRating));
             modelRateRiderequest.setReview(comments);
 
@@ -1001,6 +1011,6 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
-        finalRating  =  String.valueOf(rating);
+        finalRating = String.valueOf(rating);
     }
 }

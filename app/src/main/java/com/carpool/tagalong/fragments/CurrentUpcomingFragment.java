@@ -52,7 +52,6 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private Context context;
-    private CurrentUpcomingFragment.OnFragmentInteractionListener listener;
     private CurrentAndUpcomingRideAdapter mAdapter;
     private RecyclerView currentNdUpcomingrecyclerView;
     private RelativeLayout add_ride_lyt, no_internet;
@@ -277,7 +276,6 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
 
         if (data != null) {
 
-
             if (data.getRideData().isRideShort()) {
 
                 if (data.getRideData().isDrive()) {
@@ -287,8 +285,6 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
                 } else {
                     handleCurrentQuickRideForRider(data, rideId);
                 }
-
-
             } else {
                 if (data.getRideData().isDrive()) {
 

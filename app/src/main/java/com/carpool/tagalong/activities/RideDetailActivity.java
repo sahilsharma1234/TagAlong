@@ -174,8 +174,8 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
         try {
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
-            modelRateRiderequest.setRateTo(rideData.getUserId());
-            modelRateRiderequest.setRideId(rideData.get_id());
+            modelRateRiderequest.setRateTo(modelGetCurrentRideResponse.getDriverDetails().getUserId());
+            modelRateRiderequest.setRideId(modelGetCurrentRideResponse.getDriverDetails().get_id());
             modelRateRiderequest.setRating(Double.valueOf(String.valueOf(rating)));
             modelRateRiderequest.setReview(comments);
 
@@ -301,11 +301,11 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
                     .into(image);
             riderName.setText(modelGetCurrentRideResponse.getDriverDetails().getUserName());
 
-            if (String.valueOf(modelGetCurrentRideResponse.getDriverDetails().getRating()).equals("")) {
+            if (rideData.getRating() == 0)  {
                 rating.setText("RATE RIDE");
                 rating.setOnClickListener(this);
             } else {
-                rating.setText(modelGetCurrentRideResponse.getDriverDetails().getRating() + "");
+                rating.setText(rideData.getRating() + "");
                 rating.setOnClickListener(null);
             }
             cabDetails.setText(modelGetCurrentRideResponse.getDriverDetails().getVehicle() + " " + modelGetCurrentRideResponse.getDriverDetails().getVehicleNumber());

@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.models.ModelViewAllRidesDriverResponse;
 import com.carpool.tagalong.views.RegularTextView;
@@ -38,11 +37,14 @@ public class ViewAllDriverRidesAdapter extends RecyclerView.Adapter<ViewAllDrive
 
         holder.headerAddress.setText(data.get(position).getHeading());
 
-        ViewAllRiderChildAdapterTimeline mAdapter = new ViewAllRiderChildAdapterTimeline(activity, data.get(position).getTimelineData());
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
+        if(data.get(position).getTimelineData()!= null && data.get(position).getTimelineData().size() > 0 ) {
+
+            ViewAllRiderChildAdapterTimeline mAdapter = new ViewAllRiderChildAdapterTimeline(activity, data.get(position).getTimelineData());
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
@@ -57,16 +59,8 @@ public class ViewAllDriverRidesAdapter extends RecyclerView.Adapter<ViewAllDrive
         public MyViewHolder(View view) {
             super(view);
 
-            headerAddress = view.findViewById(R.id.dateTime);
+            headerAddress = view.findViewById(R.id.headerAddress);
             recyclerView = view.findViewById(R.id.ridesDriverListChild);
-
-//            view.setOnClickListener(new View.OnClickListener() {
-//
-//                @Override
-//                public void onClick(View v) {
-//                    currentUpcomingInterface.onItemClick(data.get(getAdapterPosition()));
-//                }
-//            });
         }
     }
 }

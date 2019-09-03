@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +65,7 @@ public class ViewAllRidesDriverActivity extends AppCompatActivity {
     private void initView() {
 
         context = this;
-        toolbarLayout = findViewById(R.id.toolbar_driverprofile);
+        toolbarLayout = findViewById(R.id.toolbar_driverrides);
         com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
@@ -159,5 +160,16 @@ public class ViewAllRidesDriverActivity extends AppCompatActivity {
             driverRidesRecyclerView.setItemAnimator(new DefaultItemAnimator());
             driverRidesRecyclerView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

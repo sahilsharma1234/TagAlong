@@ -110,13 +110,13 @@
 
         </LinearLayout>
 
-        <ImageView
+      <!--  <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="15dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_ride_map_preview_xxhpi" />
+            android:src="@drawable/ic_ride_map_preview_xxhpi" />-->
 
         <!--    <LinearLayout
                 android:layout_width="match_parent"

@@ -119,7 +119,9 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/otp_text"
                 android:text="cab details"
+                android:layout_alignParentLeft="true"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 

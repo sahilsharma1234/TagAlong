@@ -312,7 +312,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             switch (requestCode) {
 
-                case MY_PERMISSIONS_REQUEST:
+                case MY_PERMISSIONS_REQUEST :
 
                     if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
                     } else {
@@ -325,7 +325,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 Image_Picker_Dialog();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

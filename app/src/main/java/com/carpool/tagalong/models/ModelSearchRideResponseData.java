@@ -26,7 +26,7 @@ public class ModelSearchRideResponseData implements Serializable {
     @SerializedName("rideDateTime")
     public String rideDateTime;
     @SerializedName("rating")
-    public int rating;
+    public double rating;
     @SerializedName("createdAt")
     public String createdAt;
 
@@ -114,11 +114,11 @@ public class ModelSearchRideResponseData implements Serializable {
         this.rideDateTime = rideDateTime;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 

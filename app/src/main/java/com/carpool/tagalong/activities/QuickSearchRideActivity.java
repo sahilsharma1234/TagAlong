@@ -183,6 +183,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }
     });
     private String finalRating;
+
     private BroadcastReceiver droppedListener = new BroadcastReceiver() {
 
         @Override
@@ -200,6 +201,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
 
         setContentView(R.layout.quick_search_ride);
 
@@ -247,6 +250,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("rideId")) {
             getRideDetails(getIntent().getExtras().getString("rideId"));
+        }else{
+            ProgressDialogLoader.progressDialogDismiss();
         }
     }
 
@@ -1132,9 +1137,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                             if (response.body() != null) {
 
                                 if (response.body().getStatus() == 1) {
-
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-//                                    DataManager.setStatus(0);
                                     finish();
                                 }
                             } else {
@@ -1237,6 +1240,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             StringBuffer sb = new StringBuffer();
 
             String line = "";
+
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
@@ -1598,6 +1602,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         driverName.setText(rideData.getDriverDetails().getUserName() + "");
         bookedCabDetailsLayout.addView(view);
         animate(ANIM_DOWN_SETTINGS);
+        ProgressDialogLoader.progressDialogDismiss();
 
         TimerTask getDriverLocationTimerTask = new TimerTask() {
 
@@ -1746,8 +1751,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         try {
 
             ModelRateRiderequest modelRateRiderequest = new ModelRateRiderequest();
-            modelRateRiderequest.setRateTo(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
-            modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
+            modelRateRiderequest.setRateTo(modelGetRideDetailsResponse.getRideData().getDriverDetails().getUserId());
+            modelRateRiderequest.setRideId(modelGetRideDetailsResponse.getRideData().getDriverDetails().get_id());
             modelRateRiderequest.setRating(Double.valueOf(finalRating));
             modelRateRiderequest.setReview(comments);
 

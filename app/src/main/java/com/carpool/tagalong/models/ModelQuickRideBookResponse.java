@@ -6,7 +6,6 @@ import java.util.List;
 
 public class ModelQuickRideBookResponse {
 
-
     @SerializedName("message")
     public String message;
     @SerializedName("status")
@@ -60,6 +59,7 @@ public class ModelQuickRideBookResponse {
     }
 
     public static class DriverDetails {
+
         @SerializedName("_id")
         public String _id;
         @SerializedName("userName")
@@ -67,7 +67,7 @@ public class ModelQuickRideBookResponse {
         @SerializedName("mobileNo")
         public String mobileNo;
         @SerializedName("rating")
-        public int rating;
+        public double rating;
         @SerializedName("profile_pic")
         public String profile_pic;
         @SerializedName("vehicle")
@@ -115,11 +115,11 @@ public class ModelQuickRideBookResponse {
             this.mobileNo = mobileNo;
         }
 
-        public int getRating() {
+        public double getRating() {
             return rating;
         }
 
-        public void setRating(int rating) {
+        public void setRating(double rating) {
             this.rating = rating;
         }
 

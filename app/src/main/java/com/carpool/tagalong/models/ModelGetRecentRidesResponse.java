@@ -127,7 +127,7 @@ public class ModelGetRecentRidesResponse implements Serializable {
         @SerializedName("endLocation")
         public String endLocation;
         @SerializedName("rating")
-        public String rating;
+        public double rating;
         @SerializedName("startedDateWithTime")
         public String startedDateWithTime;
         @SerializedName("completedDateWithTime")
@@ -149,11 +149,11 @@ public class ModelGetRecentRidesResponse implements Serializable {
             this.completedDateWithTime = completedDateWithTime;
         }
 
-        public String getRating() {
+        public double getRating() {
             return rating;
         }
 
-        public void setRating(String rating) {
+        public void setRating(double rating) {
             this.rating = rating;
         }
 
