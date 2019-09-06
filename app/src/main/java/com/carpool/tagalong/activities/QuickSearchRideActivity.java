@@ -706,8 +706,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         getDriverLocationtimer.cancel();
         startLat = null;
         startlongt = null;
-//        endLat   = null;
-//        endLng = null;
     }
 
     @Override
@@ -1619,7 +1617,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     protected void onResume() {
         super.onResume();
 
-//        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
         LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
                 new IntentFilter(Constants.DROPPED));
 
@@ -1706,15 +1704,15 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
             final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
             LayoutInflater inflater = this.getLayoutInflater();
-            final View dialogView = inflater.inflate(R.layout.submit_review_dialog_layout, null);
+            final View dialogView   = inflater.inflate(R.layout.submit_review_dialog_layout, null);
             dialogBuilder.setCancelable(false);
             dialogBuilder.setView(dialogView);
 
             feedBackComments = dialogView.findViewById(R.id.feedback_comments);
-            submitFeedback = dialogView.findViewById(R.id.submitReview);
-            user_image = dialogView.findViewById(R.id.iv_user_profile_image);
+            submitFeedback   = dialogView.findViewById(R.id.submitReview);
+            user_image  = dialogView.findViewById(R.id.iv_user_profile_image);
             iv_userName = dialogView.findViewById(R.id.tv_driver_name);
-            ratingBar = dialogView.findViewById(R.id.rating_bar);
+            ratingBar   = dialogView.findViewById(R.id.rating_bar);
             ratingBar.setOnRatingBarChangeListener(this);
 
             RequestOptions options = new RequestOptions()

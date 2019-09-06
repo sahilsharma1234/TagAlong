@@ -283,82 +283,85 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private void handleCurrentRideForRider() {
 
-        recent_ride_txt.setVisibility(View.GONE);
+        if (modelGetRideDetailsResponse != null) {
 
-        ModelGetCurrentRideResponse.DriverDetails driverDetails = modelGetRideDetailsResponse.getRideData().getDriverDetails();
+            recent_ride_txt.setVisibility(View.GONE);
 
-        if (driverDetails != null) {
-            String name = driverDetails.getUserName();
-            userName.setText(name);
-            cabDetails.setText(driverDetails.getVehicle() + "  Plate No: " + driverDetails.getVehicleNumber());
+            ModelGetCurrentRideResponse.DriverDetails driverDetails = modelGetRideDetailsResponse.getRideData().getDriverDetails();
+
+            if (driverDetails != null) {
+                String name = driverDetails.getUserName();
+                userName.setText(name);
+                cabDetails.setText(driverDetails.getVehicle() + "  Plate No: " + driverDetails.getVehicleNumber());
+            }
+
+            String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
+            String endLocation = modelGetRideDetailsResponse.getRideData().getEndLocation();
+            String rideTime = modelGetRideDetailsResponse.getRideData().getRideDateTime();
+            String estimatedcost = String.valueOf(modelGetRideDetailsResponse.getRideData().getEstimatedFare());
+            otp.setText(modelGetRideDetailsResponse.getRideData().getPickupVerificationCode() + "");
+
+            startLocationName.setText(startLocName);
+            endLocationName.setText(endLocation);
+            startRideTime.setText(rideTime);
+            estimatedCostOfRide.setText("$ " + estimatedcost);
+
+            if (modelGetRideDetailsResponse.getRideData().getDriverDetails().getStatus() == Constants.STARTED) {
+
+                if (modelGetRideDetailsResponse.getRideData().getDriverETA() != null)
+                    expectedTimeOfArrival.setText("ETA: " + modelGetRideDetailsResponse.getRideData().getDriverETA());
+                trackRideLyt.setVisibility(View.VISIBLE);
+            }
+
+            if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.REQUESTED) {
+                requestedBtn.setVisibility(View.VISIBLE);
+                dropmessage1.setVisibility(View.GONE);
+                rel2.setVisibility(View.GONE);
+                trackRideLyt.setVisibility(View.GONE);
+
+            } else if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.ACCEPTED) {
+                requestedBtn.setVisibility(View.GONE);
+                dropmessage1.setVisibility(View.VISIBLE);
+                rel2.setVisibility(View.VISIBLE);
+                rideDetailsText.setText("Ride Details");
+                trackRideLyt.setVisibility(View.VISIBLE);
+            }
+            if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.PICKUP) {
+                emergency_icon.setVisibility(View.VISIBLE);
+                trackRideLyt.setVisibility(View.GONE);
+                rel2.setVisibility(View.GONE);
+            }
+
+            timelineAdapter = new TimelineAdapter(context, timelineData);
+            onBoardRidersAdapter = new OnBoardRidersAdapter(this, modelGetRideDetailsResponse.getRideData().getOnBoard(), null);
+
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            onBoardRecyclerView.setLayoutManager(mLayoutManager);
+            onBoardRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            onBoardRecyclerView.setAdapter(onBoardRidersAdapter);
+
+            LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+
+            timeLineRecView.setLayoutManager(mLayoutManager1);
+            timeLineRecView.setItemAnimator(new DefaultItemAnimator());
+            timeLineRecView.setAdapter(timelineAdapter);
+
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.avatar_avatar_12)
+                    .error(R.drawable.avatar_avatar_12);
+
+            Glide.with(context)
+                    .load(modelGetRideDetailsResponse.getRideData().getDriverDetails().getProfile_pic())
+                    .apply(options)
+                    .into(profilePic);
+
+            // profile image in the upload timeline section
+            Glide.with(context)
+                    .load(modelGetRideDetailsResponse.getRideData().getProfile_pic())
+                    .apply(options)
+                    .into(postPic);
         }
-
-        String startLocName = modelGetRideDetailsResponse.getRideData().getStartLocation();
-        String endLocation = modelGetRideDetailsResponse.getRideData().getEndLocation();
-        String rideTime = modelGetRideDetailsResponse.getRideData().getRideDateTime();
-        String estimatedcost = String.valueOf(modelGetRideDetailsResponse.getRideData().getEstimatedFare());
-        otp.setText(modelGetRideDetailsResponse.getRideData().getPickupVerificationCode() + "");
-
-        startLocationName.setText(startLocName);
-        endLocationName.setText(endLocation);
-        startRideTime.setText(rideTime);
-        estimatedCostOfRide.setText("$ " + estimatedcost);
-
-        if (modelGetRideDetailsResponse.getRideData().getDriverDetails().getStatus() == Constants.STARTED) {
-
-            if (modelGetRideDetailsResponse.getRideData().getDriverETA() != null)
-                expectedTimeOfArrival.setText("ETA: " + modelGetRideDetailsResponse.getRideData().getDriverETA());
-            trackRideLyt.setVisibility(View.VISIBLE);
-        }
-
-        if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.REQUESTED) {
-            requestedBtn.setVisibility(View.VISIBLE);
-            dropmessage1.setVisibility(View.GONE);
-            rel2.setVisibility(View.GONE);
-            trackRideLyt.setVisibility(View.GONE);
-
-        } else if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.ACCEPTED) {
-            requestedBtn.setVisibility(View.GONE);
-            dropmessage1.setVisibility(View.VISIBLE);
-            rel2.setVisibility(View.VISIBLE);
-            rideDetailsText.setText("Ride Details");
-            trackRideLyt.setVisibility(View.VISIBLE);
-        }
-        if (modelGetRideDetailsResponse.getRideData().getStatus() == Constants.PICKUP) {
-            emergency_icon.setVisibility(View.VISIBLE);
-            trackRideLyt.setVisibility(View.GONE);
-            rel2.setVisibility(View.GONE);
-        }
-
-        timelineAdapter = new TimelineAdapter(context, timelineData);
-        onBoardRidersAdapter = new OnBoardRidersAdapter(this, modelGetRideDetailsResponse.getRideData().getOnBoard(), null);
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        onBoardRecyclerView.setLayoutManager(mLayoutManager);
-        onBoardRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        onBoardRecyclerView.setAdapter(onBoardRidersAdapter);
-
-        LinearLayoutManager mLayoutManager1 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-
-        timeLineRecView.setLayoutManager(mLayoutManager1);
-        timeLineRecView.setItemAnimator(new DefaultItemAnimator());
-        timeLineRecView.setAdapter(timelineAdapter);
-
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.drawable.avatar_avatar_12)
-                .error(R.drawable.avatar_avatar_12);
-
-        Glide.with(context)
-                .load(modelGetRideDetailsResponse.getRideData().getDriverDetails().getProfile_pic())
-                .apply(options)
-                .into(profilePic);
-
-        // profile image in the upload timeline section
-        Glide.with(context)
-                .load(modelGetRideDetailsResponse.getRideData().getProfile_pic())
-                .apply(options)
-                .into(postPic);
     }
 
     @Override

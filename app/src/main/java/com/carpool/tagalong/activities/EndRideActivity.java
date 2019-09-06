@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -492,7 +493,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             modelRidePostRequest.setStartLocation(startLocation);
             modelRidePostRequest.setEndLocation(endRide.getText().toString());
             modelRidePostRequest.setRideDateTime(datetime);
-            modelRidePostRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
+            modelRidePostRequest.setBags(bagsCheckBox.isSelected() ? 1 : 0);
             modelRidePostRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
             modelRidePostRequest.setNoOfSeats(carry_bag_count);
             modelRidePostRequest.setDrive(true);
@@ -610,5 +611,16 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             };
             return filter;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

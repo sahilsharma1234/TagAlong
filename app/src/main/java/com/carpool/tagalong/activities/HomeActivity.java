@@ -993,5 +993,4 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
 }

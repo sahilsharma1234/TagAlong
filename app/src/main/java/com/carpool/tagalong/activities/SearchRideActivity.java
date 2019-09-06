@@ -510,7 +510,7 @@ public class SearchRideActivity extends AppCompatActivity implements View.OnClic
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, mYear, mMonth, mDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, R.style.CustomDatePickerDialog,this, mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis() - 1000);
 
 //        DatePickerDialog datePickerDialog = new DatePickerDialog(this,

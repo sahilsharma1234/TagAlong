@@ -16,6 +16,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -87,7 +88,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
     private ImageView startPin;
     private String txtDate, txtTime;
     private String finalFormattedDate, finalFormattedTime;
-
     private BroadcastReceiver listener = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -188,7 +188,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
 
         ArrayList resultList = null;
         ArrayList placeIdList = null;
-
         HttpURLConnection conn = null;
 
         StringBuilder jsonResults = new StringBuilder();
@@ -243,7 +242,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
             JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
 
             // Extract the Place descriptions from the results
-            resultList = new ArrayList(predsJsonArray.length());
+            resultList  = new ArrayList(predsJsonArray.length());
             placeIdList = new ArrayList(predsJsonArray.length());
 
             for (int i = 0; i < predsJsonArray.length(); i++) {
@@ -367,10 +366,6 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
             case R.id.startPin:
                 handleStartPinClick();
                 break;
-
-            case android.R.id.home:
-                finish();
-                break;
         }
     }
 
@@ -396,7 +391,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this, mYear, mMonth, mDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, R.style.CustomDatePickerDialog,this, mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis() - 1000);
 
         datePickerDialog.show();
@@ -417,6 +412,18 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         if (!txtDate.equals("")) {
             handleTimePicker();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case  android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getCurrentDateTimeAndSet() {
@@ -542,16 +549,13 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
                     if (constraint != null) {
 
                         // Retrieve the autocomplete results.
-//                        if (!lastHit.equals(constraint.toString())) {
                         resultList = autocomplete(constraint.toString());
-//                            lastHit = constraint.toString();
 
                         // Assign the data to the FilterResults
                         filterResults.values = resultList;
 
                         filterResults.count = resultList.size();
                     }
-//                    }
                     return filterResults;
                 }
 

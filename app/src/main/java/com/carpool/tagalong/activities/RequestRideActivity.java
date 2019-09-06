@@ -60,7 +60,6 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         onlinePaymentBtn = findViewByIdAndCast(R.id.online_payment);
-//        cashBtn = findViewByIdAndCast(R.id.cash_payment);
         requestRide = findViewByIdAndCast(R.id.request_ride_btn);
         profileDriver = findViewByIdAndCast(R.id.profile_driver_txt);
 
@@ -79,7 +78,6 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 
         profileDriver.setOnClickListener(this);
         onlinePaymentBtn.setOnClickListener(this);
-//        cashBtn.setOnClickListener(this);
         requestRide.setOnClickListener(this);
 
         title.setText("Request Ride");
@@ -107,7 +105,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                     .load(modelSearchRideResponseData.getProfile_pic())
                     .into(profile_pic);
 
-            estimatedCost.setText(String.valueOf(modelSearchRideResponseData.getEstimatedFare()));
+            estimatedCost.setText("$ "+String.valueOf(modelSearchRideResponseData.getEstimatedFare()));
             ratings.setText(modelSearchRideResponseData.getRating() + "");
 
             if (modelSearchRideRequest != null) {
@@ -174,9 +172,6 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         Intent intent = new Intent("launchCurrentRideFragment");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            finishAndRemoveTask();
-//        }
     }
 
     private void requestRide() {

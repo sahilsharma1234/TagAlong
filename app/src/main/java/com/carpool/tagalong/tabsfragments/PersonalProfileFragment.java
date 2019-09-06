@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.HomeActivity;
@@ -44,7 +43,6 @@ import com.hbb20.CountryCodePicker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -163,6 +161,19 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                 }
             }
         }).start();
+
+        if(DataManager.getModelUserProfileData()!= null) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+
+                    GlideApp.with(getActivity())
+                            .load(DataManager.modelUserProfileData.getProfile_pic())
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profilePic);
+                }
+            });
+        }
     }
 
     private boolean checkStoragePermission() {
@@ -201,17 +212,8 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                 rating.setText(data.getRating() + "");
                 trips.setText(data.getTrips() + "");
 
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
+                handleGenderPreferences(data);
 
-                        handleGenderPreferences(data);
-                        GlideApp.with(getActivity())
-                                .load(data.getProfile_pic())
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(profilePic);
-                    }
-                });
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -234,7 +236,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                         gender.setText(pair.getValue().toString());
                     }
 
-    //                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                    //                    System.out.println(pair.getKey() + " = " + pair.getValue());
                     it.remove(); // avoids a ConcurrentModificationException
                 }
             }
@@ -330,7 +332,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             }
             if (bitmap != null)
                 reduceImageAndSet(bitmap);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -357,7 +359,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Glide.with(getActivity()).load(b2).into(profilePic);
+                        profilePic.setImageBitmap(b2);
                     }
                 });
             }
@@ -441,12 +443,13 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
     private void handleSavePersonalDetails() {
 
-        try {
+        try
+        {
+
             if (genderSpinner.getSelectedItemPosition() == 0) {
                 Toast.makeText(getActivity(), "Please select a gender!!", Toast.LENGTH_LONG).show();
                 return;
             }
-
 
             if (lastNameEdt.getText().toString().trim().equals("")) {
                 Toast.makeText(getActivity(), "Last name is mandatory!!", Toast.LENGTH_LONG).show();
@@ -466,9 +469,6 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
             gender.setText(genderSpinner.getSelectedItem().toString().trim());
             poolGender.setText(poolPreferenceSpinner.getSelectedItem().toString().trim());
-//        cityTxt.setText(cityEdt.getText().toString());
-//        regionTxt.setText(regionEdt.getText().toString());
-
             nameEdt.setVisibility(View.GONE);
             lastNameEdt.setVisibility(View.GONE);
             zipCodeEdt.setVisibility(View.GONE);
@@ -478,9 +478,6 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             addressEdt.setVisibility(View.GONE);
             genderSpinner.setVisibility(View.GONE);
             poolPreferenceSpinner.setVisibility(View.GONE);
-//        cityEdt.setVisibility(View.GONE);
-//        regionEdt.setVisibility(View.GONE);
-
             nameTxt.setVisibility(View.VISIBLE);
             emailTxt.setVisibility(View.VISIBLE);
             lastNameTxt.setVisibility(View.VISIBLE);
@@ -490,8 +487,6 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             addressTxt.setVisibility(View.VISIBLE);
             gender.setVisibility(View.VISIBLE);
             poolGender.setVisibility(View.VISIBLE);
-//        cityTxt.setVisibility(View.VISIBLE);
-//        regionTxt.setVisibility(View.VISIBLE);
 
             savePersonalDetails();
         } catch (Exception e) {
@@ -665,7 +660,10 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, -18);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, mYear, mMonth, mDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.CustomDatePickerDialog,this, mYear, mMonth, mDay);
+        datePickerDialog.getDatePicker().setSpinnersShown(true);
+        datePickerDialog.getDatePicker().setCalendarViewShown(false);
+
         datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
 
         datePickerDialog.show();

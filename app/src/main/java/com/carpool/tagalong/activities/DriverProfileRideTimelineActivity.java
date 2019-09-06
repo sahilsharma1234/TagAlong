@@ -35,6 +35,7 @@ import retrofit2.Response;
 
 public class DriverProfileRideTimelineActivity extends AppCompatActivity {
 
+    private static final String TAG = DriverProfileRideTimelineActivity.class.getSimpleName();
     private List<ModelGetCurrentRideResponse.Timeline> timelineData = new ArrayList<>();
     private String rideId;
     private TimelineAdapter timelineAdapter;
@@ -139,7 +140,7 @@ public class DriverProfileRideTimelineActivity extends AppCompatActivity {
                             if (t != null && t.getMessage() != null) {
                                 t.printStackTrace();
                             }
-                            Log.e("Cancel Rider Own Ride", "FAILURE verification");
+                            Log.e(TAG, "FAILURE verification");
                         }
                     });
                 }

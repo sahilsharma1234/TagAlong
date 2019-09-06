@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class ModelGetEstimatedFareResponse {
 
-
     @SerializedName("status")
     public int status;
     @SerializedName("message")

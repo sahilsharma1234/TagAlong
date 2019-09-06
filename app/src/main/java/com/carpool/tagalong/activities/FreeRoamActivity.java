@@ -150,7 +150,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
 
         ImageView share = toolbarLayout.findViewById(R.id.share);
-        riderDtlsLyt = findViewById(R.id.rider_dtls_lyt_roam);
+        riderDtlsLyt    = findViewById(R.id.rider_dtls_lyt_roam);
         txt = findViewById(R.id.waiting_txt);
         share.setImageResource(R.drawable.ic_support);
         share.setVisibility(View.VISIBLE);
@@ -183,7 +183,6 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
 
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(Constants.RIDEID)) {
-
             isFreeRoamEnabled = false;
             disableFreeRoam.setVisibility(View.GONE);
             rideId = getIntent().getExtras().getString(Constants.RIDEID);
