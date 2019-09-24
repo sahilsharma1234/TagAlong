@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -75,7 +76,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     private EditText vehicleRegNumEdt;
     private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
     private RelativeLayout uploadImage, mainDocuLyt, progressBarLyt;
-    private CheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
+    private AppCompatCheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
     private Spinner vehicleBrandSpinner, vehicleModelSpinner, vehicleColorSpinner, vehicleYearSpinner;
 
     private List<String> vehicleBrandArrayList, vehicleModelArrayList, vehicleColorArrayList, vehicleYearArrayListString;
@@ -134,6 +135,49 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         vehicleModelArrayList.add(0, "Select model");
         vehicleColorArrayList.add(0, "Select color");
 
+        smokeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+
+                    DataManager.getModelUserProfileData().getDriverDetails().setSmoke(true);
+                } else {
+                    DataManager.getModelUserProfileData().getDriverDetails().setSmoke(false);
+                }
+
+                saveDrivingDetailsPreferences();
+            }
+        });
+
+        kidsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+
+                    DataManager.getModelUserProfileData().getDriverDetails().setAllowKids(true);
+                } else {
+                    DataManager.getModelUserProfileData().getDriverDetails().setAllowKids(false);
+                }
+
+                saveDrivingDetailsPreferences();
+            }
+        });
+
+        bagsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    DataManager.getModelUserProfileData().getDriverDetails().setBags(1);
+                } else {
+                    DataManager.getModelUserProfileData().getDriverDetails().setBags(0);
+                }
+
+                saveDrivingDetailsPreferences();
+            }
+        });
     }
 
     private void handleStartSetup() {
@@ -212,16 +256,24 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         });
     }
 
-//    private void reloadFragent(){
-//
-//        // Reload current fragment
-//        Fragment frg = null;
-//        frg = getActivity().getSupportFragmentManager().findFragmentByTag("Driving");
-//        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//        ft.detach(frg);
-//        ft.attach(frg);
-//        ft.commit();
-//    }
+    @Override
+    public void setMenuVisibility(final boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if (menuVisible) {
+
+                    data = DataManager.getModelUserProfileData();
+                    smokeCheckBox.setChecked(data.getDriverDetails().isSmoke());
+                    kidsCheckBox.setChecked(data.getDriverDetails().isAllowKids());
+                    bagsCheckBox.setChecked(data.getDriverDetails().getBags() == 0 ? false : true);
+                }
+            }
+        },2000);
+    }
 
     public void Image_Picker_Dialog() {
 
@@ -247,8 +299,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                         photoFile = createImageFile();
                         photoURi = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", photoFile);
                     } catch (IOException ex) {
-                        // Error occurred while creating the File
-//                        Log.i(TAG, "IOException");
+                        ex.printStackTrace();
                     }
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
@@ -312,7 +363,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             switch (requestCode) {
 
-                case MY_PERMISSIONS_REQUEST :
+                case MY_PERMISSIONS_REQUEST:
 
                     if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
                     } else {
@@ -342,7 +393,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST);
+                    checkAndRequestPermissions();
+//                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST);
                 }
             });
 
@@ -529,10 +581,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             vehicleRegistrationTxt.setText(data.getDriverDetails().getVehicleNumber());
             vehicleYearTxt.setText(data.getDriverDetails().getVehicleYear() + "");
 
-            smokeCheckBox.setChecked(data.getDriverDetails().isSmoke());
-            kidsCheckBox.setChecked(data.getDriverDetails().isAllowKids());
-            bagsCheckBox.setChecked(data.getDriverDetails().getBags() == 0 ? false : true);
-
             if (data.getDocuments() != null && data.getDocuments().size() > 0) {
 
                 documentsList = data.getDocuments();
@@ -564,7 +612,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     }
                 }
             } else {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", new File(mCurrentPhotoPath)));
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoURi);
                 if (bitmap != null) {
 
                     uploadDocToServer(null);
@@ -702,6 +750,50 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         }
     }
 
+    private void saveDrivingDetailsPreferences() {
+
+        if (Utils.isNetworkAvailable(getActivity())) {
+
+            ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
+            modelUpdateProfileRequest.setSmoke(smokeCheckBox.isChecked() ? true : false);
+            modelUpdateProfileRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
+            modelUpdateProfileRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
+
+            Log.i("Driving DETAILS", "DRIVE PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
+
+            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+            if (restClientRetrofitService != null) {
+
+                restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {
+
+                    @Override
+                    public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                        if (response.body() != null) {
+//                            Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+
+                            Utils.getUserProfile(getActivity());
+                        } else {
+                            Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                        if (t != null && t.getMessage() != null) {
+                            t.printStackTrace();
+                        }
+                        Log.e("SAVE DRIVING DETAILS", "FAILURE SAVING PROFILE");
+                    }
+                });
+            }
+        } else {
+            Toast.makeText(getActivity(), "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void getCarModelBrandListFromServer() {
 
         if (Utils.isNetworkAvailable(getActivity())) {
@@ -716,7 +808,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     public void onResponse(Call<ModelGetCarBrandModelResponse> call, Response<ModelGetCarBrandModelResponse> response) {
 
                         if (response.body() != null) {
-//                            Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                             handleResponse(response.body());
                         } else {
                             Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();

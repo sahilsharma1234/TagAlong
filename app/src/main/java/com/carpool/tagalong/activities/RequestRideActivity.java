@@ -60,21 +60,21 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         onlinePaymentBtn = findViewByIdAndCast(R.id.online_payment);
-        requestRide = findViewByIdAndCast(R.id.request_ride_btn);
-        profileDriver = findViewByIdAndCast(R.id.profile_driver_txt);
+        requestRide      = findViewByIdAndCast(R.id.request_ride_btn);
+        profileDriver    = findViewByIdAndCast(R.id.profile_driver_txt);
 
         name = findViewById(R.id.profile_main_name);
         startLocation = findViewById(R.id.start_point_source_name);
-        endLocation = findViewById(R.id.end_point_dest_name);
-        startTime = findViewById(R.id.ride_start_timing);
-        profile_pic = findViewById(R.id.image_profile_user);
+        endLocation   = findViewById(R.id.end_point_dest_name);
+        startTime     = findViewById(R.id.ride_start_timing);
+        profile_pic   = findViewById(R.id.image_profile_user);
         estimatedCost = findViewById(R.id.estimated_cost);
-        seats = findViewById(R.id.noOfSeats);
-        bags = findViewById(R.id.noOfBags);
-        kids = findViewById(R.id.noOfKids);
+        seats   = findViewById(R.id.noOfSeats);
+        bags    = findViewById(R.id.noOfBags);
+        kids    = findViewById(R.id.noOfKids);
         ratings = findViewById(R.id.ratings);
         progressBarLayout = findViewById(R.id.requestRideProgressBar);
-        smokesStatus = findViewById(R.id.smoke_status);
+        smokesStatus      = findViewById(R.id.smoke_status);
 
         profileDriver.setOnClickListener(this);
         onlinePaymentBtn.setOnClickListener(this);
@@ -116,7 +116,6 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     bags.setText("Yes");
                 }
-//                bags.setText(modelSearchRideRequest.getBags() + "");
                 kids.setText(modelSearchRideRequest.isAllowKids() ? "Yes" : "No");
 
                 if (modelSearchRideResponseData.isSmoke()) {
@@ -169,7 +168,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 
         DataManager.setStatus(1);
 
-        Intent intent = new Intent("launchCurrentRideFragment");
+        Intent intent = new Intent(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
     }
@@ -192,7 +191,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         modelRequestRide.setAllowKids(modelSearchRideRequest.isAllowKids());
         modelRequestRide.setSmoke(modelSearchRideRequest.isSmoke());
         modelRequestRide.setEstimatedFare(modelSearchRideResponseData.getEstimatedFare());
-        modelRequestRide.setDistBtwSrcDest(modelSearchRideResponseData.getTotalDistanceFromSrcDest());
+        modelRequestRide.setDistBtwSrcDest(Double.valueOf(modelSearchRideResponseData.getDistBtwSrcDest()));
 
         if (Utils.isNetworkAvailable(context)) {
 

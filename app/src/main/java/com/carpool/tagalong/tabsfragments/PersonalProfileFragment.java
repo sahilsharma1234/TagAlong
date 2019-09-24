@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -70,6 +71,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     private String[] genderArray = new String[]{"Select Gender", "Male", "Female", "Other"};
     private String[] poolPreferenceArray = new String[]{"Select Pool Preference", "All", "Male", "Female"};
     private ImageView uploadProfilePic, profilePic;
+    private ProgressBar profileLoader;
 
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String txtDate, txtTime;
@@ -110,6 +112,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         zipCodeEdt = view.findViewById(R.id.zipCodeUserEdt);
         zipCodeTxt = view.findViewById(R.id.zipCodeUserTxt);
         dobEdt = view.findViewById(R.id.dobEdt);
+        profileLoader = view.findViewById(R.id.profileLoader);
 //        cityEdt = view.findViewById(R.id.city_edt);
 //        cityTxt = view.findViewById(R.id.city_txt);
 //        regionTxt = view.findViewById(R.id.region_txt);
@@ -162,7 +165,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             }
         }).start();
 
-        if(DataManager.getModelUserProfileData()!= null) {
+        if (DataManager.getModelUserProfileData() != null) {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -220,9 +223,10 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         }
     }
 
-    private void handleGenderPreferences(ModelUserProfileData data){
+    private void handleGenderPreferences(ModelUserProfileData data) {
 
         try {
+
             if (data.getGender() != null) {
 
                 Iterator it = genderMap.entrySet().iterator();
@@ -236,7 +240,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                         gender.setText(pair.getValue().toString());
                     }
 
-                    //                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                    // System.out.println(pair.getKey() + " = " + pair.getValue());
                     it.remove(); // avoids a ConcurrentModificationException
                 }
             }
@@ -256,7 +260,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                     it.remove(); // avoids a ConcurrentModificationException
                 }
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -443,8 +447,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
 
     private void handleSavePersonalDetails() {
 
-        try
-        {
+        try {
 
             if (genderSpinner.getSelectedItemPosition() == 0) {
                 Toast.makeText(getActivity(), "Please select a gender!!", Toast.LENGTH_LONG).show();
@@ -497,6 +500,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
     private void editPersonalDetails() {
 
         try {
+
             saveTxt.setVisibility(View.VISIBLE);
             editTxt.setVisibility(View.GONE);
 
@@ -507,25 +511,20 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             mobileNumberEdt.setText(mobileNumberTxt.getText().toString());
             addressEdt.setText(addressTxt.getText().toString());
             zipCodeEdt.setText(zipCodeTxt.getText().toString());
-//        cityEdt.setText(cityTxt.getText().toString());
-//        regionEdt.setText(regionTxt.getText().toString());
 
             nameEdt.setVisibility(View.VISIBLE);
             lastNameEdt.setVisibility(View.VISIBLE);
             dobEdt.setVisibility(View.VISIBLE);
             zipCodeEdt.setVisibility(View.VISIBLE);
-//        cityEdt.setVisibility(View.VISIBLE);
             emailEdt.setVisibility(View.VISIBLE);
             mobileNumberEdt.setVisibility(View.VISIBLE);
             addressEdt.setVisibility(View.VISIBLE);
-//        regionEdt.setVisibility(View.VISIBLE);
             genderSpinner.setVisibility(View.VISIBLE);
             poolPreferenceSpinner.setVisibility(View.VISIBLE);
 
             nameTxt.setVisibility(View.GONE);
             lastNameTxt.setVisibility(View.GONE);
-//        cityTxt.setVisibility(View.GONE);
-//        regionTxt.setVisibility(View.GONE);
+
             dobTxt.setVisibility(View.GONE);
             zipCodeTxt.setVisibility(View.GONE);
             emailTxt.setVisibility(View.GONE);
@@ -533,6 +532,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
             addressTxt.setVisibility(View.GONE);
             gender.setVisibility(View.GONE);
             poolGender.setVisibility(View.GONE);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -660,7 +660,7 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, -18);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.CustomDatePickerDialog,this, mYear, mMonth, mDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.CustomDatePickerDialog, this, mYear, mMonth, mDay);
         datePickerDialog.getDatePicker().setSpinnersShown(true);
         datePickerDialog.getDatePicker().setCalendarViewShown(false);
 

@@ -15,7 +15,6 @@ import android.util.Log;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.ChatActivity;
-import com.carpool.tagalong.activities.CurrentRideActivity;
 import com.carpool.tagalong.activities.FreeRoamActivity;
 import com.carpool.tagalong.activities.HomeActivity;
 import com.carpool.tagalong.constants.Constants;
@@ -51,17 +50,14 @@ public class NotificationService extends FirebaseMessagingService {
         try {
             if (remoteMessage.getData().size() > 0) {
                 Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-                String message = null;
-
+                String message;
                 message = remoteMessage.getData().get("body");
-
                 try {
                     sendNotification(remoteMessage, message, remoteMessage.getData().get("title"), remoteMessage.getData().get("type"));
                     return;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    sendNotification(remoteMessage, remoteMessage.getData().get("body"), remoteMessage.getData().get("title"),
-                            "");
+                    sendNotification(remoteMessage, remoteMessage.getData().get("body"), remoteMessage.getData().get("title"),"");
                     return;
                 }
             }
@@ -70,14 +66,6 @@ public class NotificationService extends FirebaseMessagingService {
         }
     }
     // [END receive_message]
-
-    /**
-     * Handle time allotted to BroadcastReceivers.
-     */
-    private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
-    }
-
     /**
      * Create and show a simple notification containing the received FCM message.
      *
@@ -86,55 +74,43 @@ public class NotificationService extends FirebaseMessagingService {
     private void sendNotification(RemoteMessage remoteMessage, String messageBody, String title, String type) {
 
         Intent intent = null;
-//
-//        if(title.contains("Driver Cancelled a Ride")){
-//            intent = new Intent(this, HomeActivity.class);
-//            intent.putExtra(Constants.START_RIDE,title);
-//            DataManager.setStatus(0);
-//            Intent intent1 = new Intent("launchCurrentRideFragment");
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-//        }
-//        else
-//
+
         if (type.equals(Constants.TYPE_PANIC_BUTTON)) {
 
         } else if (type.equals(Constants.TYPE_PICKUP)) {
 
-            intent = new Intent(this, CurrentRideActivity.class);
-            Intent intent1 = new Intent("pickedup");
+            intent = new Intent(this, HomeActivity.class);
+            intent.putExtra(Constants.START_RIDE,  Constants.CURRENTUPCOMING);
+            Intent intent1 = new Intent(Constants.PICKED_UP);
+
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-//
-//            Intent intent2 = new Intent("launchCurrentRideFragment");
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
         } else if (type.equals(Constants.TYPE_DROP)) {
 
-            intent = new Intent(this, CurrentRideActivity.class);
-            Intent intent1 = new Intent("dropped");
+            intent = new Intent(this, HomeActivity.class);
+            intent.putExtra(Constants.START_RIDE, Constants.CURRENTUPCOMING);
+            Intent intent1 = new Intent(Constants.DROPPED);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-
-//            Intent intent2 = new Intent("launchCurrentRideFragment");
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent2);
         } else if (type.equals(Constants.TYPE_QUICKRIDE)) {
 
             intent = new Intent(this, FreeRoamActivity.class);
-            Intent intent1 = new Intent("riderListener");
-            intent1.putExtra("rideId", remoteMessage.getData().get("rideId"));
+            Intent intent1 = new Intent(Constants.RIDELISTENER);
+
+            intent1.putExtra(Constants.RIDEID, remoteMessage.getData().get(Constants.RIDEID));
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         } else if (type.equals(Constants.TYPE_CHAT)) {
 
-            String senderId = remoteMessage.getData().get("sender");
+            String senderId = remoteMessage.getData().get(Constants.SENDER);
             intent = new Intent(this, ChatActivity.class);
-            intent.putExtra("receiverId", senderId);
-            Intent intent1 = new Intent("chatMessage");
-            intent1.putExtra("receiverId", senderId);
+            intent.putExtra(Constants.RECEIVERID, senderId);
+            Intent intent1 = new Intent(Constants.CHAT_MESSAGE);
+            intent1.putExtra(Constants.RECEIVERID, senderId);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
-        }else if(title.contains("Payment")) {
-           // nothing to do in payment notification because
-        }
-        else {
+        } else if (title.contains("Payment")) {
+            // nothing to do in payment notification because
+        } else {
             intent = new Intent(this, HomeActivity.class);
             intent.putExtra(Constants.START_RIDE, title);
-            Intent intent1 = new Intent("launchCurrentRideFragment");
+            Intent intent1 = new Intent(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent1);
         }
 
@@ -151,12 +127,14 @@ public class NotificationService extends FirebaseMessagingService {
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.avatar_avatar_12)
+                        .setSmallIcon(R.drawable.ic_launcher_tg)
                         .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(messageBody))
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =

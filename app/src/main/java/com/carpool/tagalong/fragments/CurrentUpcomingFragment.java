@@ -100,6 +100,7 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
         addRideBtn   = view.findViewById(R.id.add_ride_btn);
         no_internet  = view.findViewById(R.id.internet_lost);
         addRideBtn.setOnClickListener(this);
+        Utils.clearNotifications(getActivity());
         return view;
     }
 

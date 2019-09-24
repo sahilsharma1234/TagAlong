@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -41,9 +42,10 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
 
     private Toolbar toolbar;
     private ModelGetRecentRidesResponse.RideData rideData;
-    private RegularTextView riderName, sourceLoc, destLoc, cabDetails, startTime, endTime, amountpaid, rating;
+    private RegularTextView riderName, sourceLoc, destLoc, cabDetails, startTime, endTime, amountpaid, rating, rideStatus;
     private CircleImageView image;
     private ModelGetCurrentRideResponse.RideData modelGetCurrentRideResponse;
+    private RelativeLayout amountLytl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
         endTime = findViewById(R.id.endTime);
         amountpaid = findViewById(R.id.estimated_cost);
         image = findViewById(R.id.user_image);
+        rideStatus = findViewById(R.id.ride_timing);
+        amountLytl = findViewById(R.id.rel1);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -313,8 +317,19 @@ public class RideDetailActivity extends AppCompatActivity implements View.OnClic
 
         sourceLoc.setText(rideData.getStartLocation());
         destLoc.setText(rideData.getEndLocation());
-        startTime.setText(rideData.getStartedDateWithTime());
-        endTime.setText(rideData.getCompletedDateWithTime());
-        amountpaid.setText("$ " + modelGetCurrentRideResponse.getEstimatedFare());
+
+        if(rideData.getStatus() == Constants.DRIVER_CANCELLED || rideData.getStatus() == Integer.parseInt(Constants.TYPE_RIDE_CANCELLED_BY_PASSENGER)  || rideData.getStatus() == Constants.OWN_CANCELLED ){
+            endTime.setVisibility(View.GONE);
+            startTime.setText(rideData.getRideDate());
+            rideStatus.setText("Cancelled Ride");
+            amountLytl.setVisibility(View.GONE);
+        }else{
+            startTime.setText(rideData.getStartedDateWithTime());
+            endTime.setText(rideData.getCompletedDateWithTime());
+            endTime.setVisibility(View.VISIBLE);
+            amountpaid.setVisibility(View.VISIBLE);
+            amountLytl.setVisibility(View.VISIBLE);
+            amountpaid.setText("$ " + modelGetCurrentRideResponse.getEstimatedFare());
+        }
     }
 }

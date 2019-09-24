@@ -37,7 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="50dp">
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/smoke_prefe_chck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="50dp">
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/kids_travelling_chck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="50dp">
 
-            <CheckBox
+            <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/carry_bags_pref_chck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

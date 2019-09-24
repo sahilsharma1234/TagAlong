@@ -46,6 +46,13 @@
                         android:layout_centerHorizontal="true"
                         android:paddingBottom="5dp"
                         android:src="@drawable/ic_camera_driving_xxhdpi" />
+                    <ProgressBar
+                        android:id="@+id/profileLoader"
+                        android:layout_width="40dp"
+                        android:visibility="gone"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"/>
 
                 </RelativeLayout>
 

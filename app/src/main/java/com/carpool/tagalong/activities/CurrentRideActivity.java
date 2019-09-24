@@ -176,10 +176,11 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
         if (getIntent().getExtras() != null) {
             modelGetRideDetailsResponse = (ModelGetCurrentRideResponse) getIntent().getExtras().getSerializable("data");
-            rideID = getIntent().getStringExtra("rideId");
+            rideID = getIntent().getStringExtra(Constants.RIDEID);
         }
 
         initializeViews();
+        Utils.clearNotifications(context);
     }
 
     private void initializeViews() {
@@ -376,7 +377,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case R.id.add_ride_btn:
-//                handleAddRide();
                 break;
 
             case R.id.post_image_layout:
@@ -390,7 +390,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case R.id.share:
-//                launchContacts();
                 handleShareRide();
                 break;
 
@@ -573,26 +572,6 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-//    private void showEmergencyShareAlert() {
-//
-//        try {
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-////            LayoutInflater inflater = getLayoutInflater();
-////            View dialogLayout = inflater.inflate(R.layout.submit_review_dialog_layout, null);
-////            builder.setView(dialogLayout);
-//            builder.setTitle("Share Ride");
-//            builder.setMessage("You want to share this ride on:");
-//            builder.setCancelable(true);
-//
-//            final AlertDialog alert = builder.create();
-//            alert.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
-//            alert.show();
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//        }
-//    }
-
     private void shareRideOnFacebook() {
 
         ShareLinkContent content = new ShareLinkContent.Builder()
@@ -768,7 +747,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                 new IntentFilter(Constants.DROPPED));
 
         LocalBroadcastManager.getInstance(this).registerReceiver(cancelledListener,
-                new IntentFilter("launchCurrentRideFragment"));
+                new IntentFilter(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT));
 
         LocalBroadcastManager.getInstance(this).registerReceiver(pickedUpListener,
                 new IntentFilter(Constants.PICKED_UP));
@@ -846,6 +825,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                         public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
                             ProgressDialogLoader.progressDialogDismiss();
+                            postPath = null;
 
                             if (response.body() != null) {
 
@@ -854,7 +834,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                     selectImageForPost.setVisibility(View.VISIBLE);
                                     selectedImageForPost.setVisibility(View.GONE);
-                                    postPath = null;
+
                                     getPost();
 
                                 } else {
@@ -867,7 +847,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
                         @Override
                         public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
-
+                            getPost();
                             ProgressDialogLoader.progressDialogDismiss();
                             if (t != null && t.getMessage() != null) {
                                 t.printStackTrace();
@@ -1006,6 +986,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             e.printStackTrace();
         }
     }
+
 
     private void showAlertDialog(String message, String title, boolean cancelable, int code) {
 

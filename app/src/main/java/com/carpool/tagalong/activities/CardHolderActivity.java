@@ -37,7 +37,7 @@ public class CardHolderActivity extends AppCompatActivity {
     private EditText cardNumber;
     private Button addCard;
     private CreditCards card;
-    private  String crd1,crd2,crd3,crd4, mnth,yearString,name,cvvString;
+    private String crd1, crd2, crd3, crd4, mnth, yearString, cvvString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,22 +46,22 @@ public class CardHolderActivity extends AppCompatActivity {
 
         setContentView(R.layout.card_holder);
 
-        step1   =   findViewById(R.id.step1);
-        step2   =   findViewById(R.id.step2);
-        step3   =   findViewById(R.id.step3);
-        step4   =   findViewById(R.id.step4);
-        month   =   findViewById(R.id.month);
-        year    =   findViewById(R.id.year);
-        addCard =   findViewById(R.id.add_card);
-        cvv     =   findViewById(R.id.cvv);
+        step1 = findViewById(R.id.step1);
+        step2 = findViewById(R.id.step2);
+        step3 = findViewById(R.id.step3);
+        step4 = findViewById(R.id.step4);
+        month = findViewById(R.id.month);
+        year  = findViewById(R.id.year);
+        addCard = findViewById(R.id.add_card);
+        cvv = findViewById(R.id.cvv);
         cardNumber = findViewById(R.id.card_number);
 
-        if(getIntent().getExtras()!=null){
+        if (getIntent().getExtras() != null) {
 
-            if(getIntent().getExtras().containsKey(Constants.CARD)){
+            if (getIntent().getExtras().containsKey(Constants.CARD)) {
                 card = (CreditCards) getIntent().getSerializableExtra(Constants.CARD);
 
-                if(card != null){
+                if (card != null) {
 
                     step1.setVisibility(View.GONE);
                     step2.setVisibility(View.GONE);
@@ -72,7 +72,6 @@ public class CardHolderActivity extends AppCompatActivity {
                     month.setText(card.getExp_month());
                     year.setText(card.getExp_year());
                     addCard.setVisibility(View.GONE);
-
                 }
             }
         }
@@ -192,6 +191,7 @@ public class CardHolderActivity extends AppCompatActivity {
 
             }
         });
+
         addCard.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -203,33 +203,33 @@ public class CardHolderActivity extends AppCompatActivity {
 
     private boolean validateSignUpData() {
 
-        crd1        = step1.getText().toString();
-        crd2        = step2.getText().toString();
-        crd3        = step3.getText().toString();
-        crd4        = step4.getText().toString();
-        mnth        = month.getText().toString();
-        yearString  = year.getText().toString();
-        cvvString   = cvv.getText().toString().trim();
+        crd1 = step1.getText().toString();
+        crd2 = step2.getText().toString();
+        crd3 = step3.getText().toString();
+        crd4 = step4.getText().toString();
+        mnth = month.getText().toString();
+        yearString = year.getText().toString();
+        cvvString  = cvv.getText().toString().trim();
 
-        if(crd1.equals("")){
+        if (crd1.equals("")) {
             return false;
         }
-        if(crd2.equals("")){
+        if (crd2.equals("")) {
             return false;
         }
-        if(crd3.equals("")){
+        if (crd3.equals("")) {
             return false;
         }
-        if(crd4.equals("")){
+        if (crd4.equals("")) {
             return false;
         }
-        if(mnth.equals("")){
+        if (mnth.equals("")) {
             return false;
         }
-        if(yearString.equals("")) {
+        if (yearString.equals("")) {
             return false;
         }
-        if(cvvString.equals("")){
+        if (cvvString.equals("")) {
             return false;
         }
         return true;
@@ -237,10 +237,10 @@ public class CardHolderActivity extends AppCompatActivity {
 
     private void prepareCard() {
 
-        if(validateSignUpData()){
+        if (validateSignUpData()) {
 
             ModelAddCardRequest modelAddCardRequest = new ModelAddCardRequest();
-            modelAddCardRequest.setNumber(crd1+""+crd2+""+crd3+""+crd4);
+            modelAddCardRequest.setNumber(crd1 + "" + crd2 + "" + crd3 + "" + crd4);
             modelAddCardRequest.setCvv(cvvString);
             modelAddCardRequest.setExp_month(Integer.valueOf(mnth));
             modelAddCardRequest.setExp_year(Integer.valueOf(yearString));
@@ -249,7 +249,7 @@ public class CardHolderActivity extends AppCompatActivity {
         }
     }
 
-    private void addCard(ModelAddCardRequest modelAddCardRequest){
+    private void addCard(ModelAddCardRequest modelAddCardRequest) {
 
         try {
             if (Utils.isNetworkAvailable(this)) {
@@ -273,7 +273,6 @@ public class CardHolderActivity extends AppCompatActivity {
                                 Toast.makeText(CardHolderActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 Utils.getUserProfile(CardHolderActivity.this);
                                 finish();
-
                             } else {
                                 Toast.makeText(CardHolderActivity.this, response.message(), Toast.LENGTH_LONG).show();
                             }

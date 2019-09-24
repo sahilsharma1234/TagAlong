@@ -47,14 +47,12 @@ public class RecentRideChaildAdapter extends RecyclerView.Adapter<RecentRideChai
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-
         RequestOptions options = new RequestOptions()
                 .centerCrop()
                 .placeholder(R.drawable.avatar_avatar_12)
                 .error(R.drawable.avatar_avatar_12);
 
         Glide.with(activity).load(timelineData.get(position).getPostUrl()).apply(options).into(holder.iv_trip_img);
-
     }
 
     @Override

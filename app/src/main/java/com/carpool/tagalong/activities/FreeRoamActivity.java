@@ -101,6 +101,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
     };
     private RelativeLayout riderDtlsLyt;
+    TextView waitingTxt ;
     private ModelGetCurrentRideResponse.RideData rideData = null;
     private BroadcastReceiver riderListener = new BroadcastReceiver() {
 
@@ -110,8 +111,8 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             if (intent != null) {
 
                 if (intent.getExtras() != null) {
-                    if (intent.getExtras().containsKey("rideId")) {
-                        String rideId = intent.getExtras().getString("rideId");
+                    if (intent.getExtras().containsKey(Constants.RIDEID)) {
+                        String rideId = intent.getExtras().getString(Constants.RIDEID);
                         if (!rideId.equals("")) {
                             isFreeRoamEnabled = false;
                             disableFreeRoam.setVisibility(View.GONE);
@@ -128,7 +129,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ProgressDialogLoader.progressDialogCreation(this,getString(R.string.please_wait));
+        ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
 
         setContentView(R.layout.activity_free_roam);
 
@@ -148,9 +149,8 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         toolbarLayout = findViewById(R.id.toolbarFreeRoaming);
         com.carpool.tagalong.views.RegularTextView title = toolbarLayout.findViewById(R.id.toolbar_title);
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
-
         ImageView share = toolbarLayout.findViewById(R.id.share);
-        riderDtlsLyt    = findViewById(R.id.rider_dtls_lyt_roam);
+        riderDtlsLyt = findViewById(R.id.rider_dtls_lyt_roam);
         txt = findViewById(R.id.waiting_txt);
         share.setImageResource(R.drawable.ic_support);
         share.setVisibility(View.VISIBLE);
@@ -173,9 +173,9 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi));
         }
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT));
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(riderListener, new IntentFilter("riderListener"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(riderListener, new IntentFilter(Constants.RIDELISTENER));
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -191,10 +191,23 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             ProgressDialogLoader.progressDialogDismiss();
             if (!isFreeRoamEnabled) {
                 enableFreeRoam();
-                if (handler != null && runnable != null)
-                    blink();
+//                blink();
             }
         }
+        Utils.clearNotifications(context);
+
+//        runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                TextView txt = findViewById(R.id.waiting_txt);
+//                if (txt.getVisibility() == View.VISIBLE) {
+//                    txt.setVisibility(View.INVISIBLE);
+//                } else {
+//                    txt.setVisibility(View.VISIBLE);
+//                }
+//                blink();
+//            }
+//        };
     }
 
     @Override
@@ -226,6 +239,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                         public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
                             isFreeRoamEnabled = true;
+                            txt.setVisibility(View.VISIBLE);
                             disableFreeRoam.setVisibility(View.VISIBLE);
                         }
 
@@ -307,6 +321,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(listener);
+//        handler.removeCallbacks(runnable);
     }
 
     @Override
@@ -319,72 +334,87 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void blink() {
+//    private void blink() {
+//        handler = new Handler();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                int timeToBlink = 850;    //in milissegunds
+//                try {
+//                    Thread.sleep(timeToBlink);
+//                } catch (Exception e) {
+//                }
+//                handler.post(runnable);
+//            }
+//        }).start();
+//    }
 
-        handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                txt = findViewById(R.id.waiting_txt);
-                if (txt.getVisibility() == View.VISIBLE) {
-                    txt.setVisibility(View.INVISIBLE);
-                } else {
-                    txt.setVisibility(View.VISIBLE);
-                }
-                blink();
-            }
-        };
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                int timeToBlink = 1000;//in milissegunds
-                int count = 0;
-
-                try {
-                    Thread.sleep(timeToBlink);
-                    count++;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (count == 5) {
-
-                    handler.post(runnable);
+//    private void blink() {
 //
-//                    handler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            txt = findViewById(R.id.waiting_txt);
-//                            if (txt.getVisibility() == View.VISIBLE) {
-//                                txt.setVisibility(View.INVISIBLE);
-//                            } else {
-//                                txt.setVisibility(View.VISIBLE);
-//                            }
-//                            blink();
-//                        }
-//                    });
-                } else {
-
-                    handler.post(runnable);
-//                    handler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            txt = findViewById(R.id.waiting_txt);
-//                            if (txt.getVisibility() == View.VISIBLE) {
-//                                txt.setVisibility(View.INVISIBLE);
-//                            } else {
-//                                txt.setVisibility(View.VISIBLE);
-//                            }
-//                            blink();
-//                        }
-//                    });
-                }
-            }
-        }).start();
-    }
+//        handler  = new Handler();
+//        runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                txt = findViewById(R.id.waiting_txt);
+//                if (txt.getVisibility() == View.VISIBLE) {
+//                    txt.setVisibility(View.INVISIBLE);
+//                } else {
+//                    txt.setVisibility(View.VISIBLE);
+//                }
+//                blink();
+//            }
+//        };
+//
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                int timeToBlink = 1000;//in milissegunds
+//                int count = 0;
+//
+//                try {
+//                    Thread.sleep(timeToBlink);
+//                    count++;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//                if (count == 5) {
+//
+//                    handler.post(runnable);
+////
+////                    handler.post(new Runnable() {
+////                        @Override
+////                        public void run() {
+////                            txt = findViewById(R.id.waiting_txt);
+////                            if (txt.getVisibility() == View.VISIBLE) {
+////                                txt.setVisibility(View.INVISIBLE);
+////                            } else {
+////                                txt.setVisibility(View.VISIBLE);
+////                            }
+////                            blink();
+////                        }
+////                    });
+//                } else {
+//
+//                    handler.post(runnable);
+////                    handler.post(new Runnable() {
+////                        @Override
+////                        public void run() {
+////                            txt = findViewById(R.id.waiting_txt);
+////                            if (txt.getVisibility() == View.VISIBLE) {
+////                                txt.setVisibility(View.INVISIBLE);
+////                            } else {
+////                                txt.setVisibility(View.VISIBLE);
+////                            }
+////                            blink();
+////                        }
+////                    });
+//                }
+//            }
+//        }).start();
+//    }
 
     private void handleRiderDetailsLayout(ModelGetCurrentRideResponse.RideData rideData) {
 
@@ -511,9 +541,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     public void onItemClick(ModelGetCurrentRideResponse.OnBoard onboard) {
 
         if (onboard != null) {
-
             showDialogAlert(onboard);
-
         }
     }
 
@@ -636,9 +664,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
             public void onSlideComplete(@NotNull SlideToActView slideToActView) {
 
                 if (onBoard.getStatus() == Constants.ACCEPTED) {
-
                     pickupRider(onBoard, otpView.getText().toString());
-
                 } else if (onBoard.getStatus() == Constants.PICKUP) {
                     dropRider(onBoard);
                 }

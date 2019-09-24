@@ -165,10 +165,11 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi));
         }
         modelGetRideDetailsResponse = (ModelGetCurrentRideResponse) getIntent().getExtras().getSerializable("data");
-        rideID = getIntent().getStringExtra("rideId");
+        rideID = getIntent().getStringExtra(Constants.RIDEID);
         timelineData = modelGetRideDetailsResponse.getRideData().getTimeline();
 
         initializeViews();
+        Utils.clearNotifications(context);
     }
 
     private void initializeViews() {
@@ -1146,6 +1147,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                             public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
                                 ProgressDialogLoader.progressDialogDismiss();
+                                postPath = null;
 
                                 if (response.body() != null) {
 
@@ -1154,7 +1156,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                                         Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                                         selectImageForPost.setVisibility(View.VISIBLE);
                                         selectedImageForPost.setVisibility(View.GONE);
-                                        postPath = null;
                                         getPost();
                                     } else {
                                         Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
@@ -1166,6 +1167,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
                             @Override
                             public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                                getPost();
 
                                 ProgressDialogLoader.progressDialogDismiss();
                                 if (t != null && t.getMessage() != null) {
@@ -1183,7 +1185,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 Toast.makeText(context, "Error uploading Image!! Please try again", Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(context, "Please select any media!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Please select a media!!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1192,7 +1194,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         super.onResume();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(cancelledListener,
-                new IntentFilter("launchCurrentRideFragment"));
+                new IntentFilter(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT));
     }
 
     public String getPath(Uri uri) {
@@ -1301,6 +1303,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         RegularTextView cancel = delayDialog.findViewById(R.id.tv_cancel);
         RegularTextView reject = delayDialog.findViewById(R.id.tv_Reject);
         RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
+        RegularTextView rating = delayDialog.findViewById(R.id.tv_driver_Ratings);
+
 
         final RegularEditText otpView = delayDialog.findViewById(R.id.otp_pickup);
         final SlideToActView slideToActView = delayDialog.findViewById(R.id.tv_slider);
@@ -1370,6 +1374,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     .load(joinRequest.getProfile_pic())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);
+            rating.setText(joinRequest.getRating()+"");
 
             name.setText(joinRequest.getUserName());
             source_loc.setText(joinRequest.getStartLocation());
@@ -1444,6 +1449,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     .load(onBoard.getProfile_pic())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);
+
+            rating.setText(onBoard.getRating()+"");
 
             name.setText(onBoard.getUserName());
             source_loc.setText(onBoard.getStartLocation());

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.adapter.ChatAdapter;
+import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.models.chat.ChatModel;
 import com.carpool.tagalong.models.chat.ChatSendMessageRequest;
 import com.carpool.tagalong.models.chat.ModelChatSendMessageResponse;
@@ -57,8 +58,8 @@ public class ChatActivity extends AppCompatActivity {
             if(intent != null){
 
                 if(intent.getExtras()!= null){
-                    if(intent.getExtras().containsKey("receiverId")){
-                        receiverId  =  intent.getExtras().getString("receiverId");
+                    if(intent.getExtras().containsKey(Constants.RECEIVERID)){
+                        receiverId  =  intent.getExtras().getString(Constants.RECEIVERID);
                         if(receiverId!= null){
                             getChatConversation();
                         }
@@ -122,7 +123,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(chatListener, new IntentFilter("chatMessage"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(chatListener, new IntentFilter(Constants.CHAT_MESSAGE));
     }
 
     private void setToolBar() {

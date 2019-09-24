@@ -29,6 +29,16 @@ public class ModelSearchRideResponseData implements Serializable {
     public double rating;
     @SerializedName("createdAt")
     public String createdAt;
+    @SerializedName("distBtwSrcDest")
+    public String distBtwSrcDest;
+
+    public String getDistBtwSrcDest() {
+        return distBtwSrcDest;
+    }
+
+    public void setDistBtwSrcDest(String distBtwSrcDest) {
+        this.distBtwSrcDest = distBtwSrcDest;
+    }
 
     public double getTotalDistanceFromSrcDest() {
         return totalDistanceFromSrcDest;
@@ -145,6 +155,7 @@ public class ModelSearchRideResponseData implements Serializable {
                 ", rideDateTime='" + rideDateTime + '\'' +
                 ", rating=" + rating +
                 ", createdAt='" + createdAt + '\'' +
+                ", distBtwSrcDest='" + distBtwSrcDest + '\'' +
                 '}';
     }
 }

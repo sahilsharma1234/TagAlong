@@ -6,13 +6,20 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.glide.GlideApp;
 import com.carpool.tagalong.models.ModelDocuments;
@@ -51,25 +58,27 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
             @Override
             public void run() {
+                myViewHolder.progressBar.setVisibility(View.VISIBLE);
 
                 GlideApp.with(context).asBitmap().load(documentsList.get(i).getUrl())
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(myViewHolder.document_image);
-//                        .listener(new RequestListener<Bitmap>() {
-//
-//                                      @Override
-//                                      public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Bitmap> target, boolean b) {
-//                                          Toast.makeText(context, "Some Error occurs!!", Toast.LENGTH_SHORT).show();
-//                                          return false;
-//                                      }
-//
-//                                      @Override
-//                                      public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
-//                                          myViewHolder.document_image.setImageBitmap(reduceImageAndSet(bitmap));
-//                                          return false;
-//                                      }
-//                                  }
-//                        ).submit();
+                        .listener(new RequestListener<Bitmap>() {
+
+                                      @Override
+                                      public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Bitmap> target, boolean b) {
+                                          Toast.makeText(context, "Some Error occurs!!", Toast.LENGTH_SHORT).show();
+                                          myViewHolder.progressBar.setVisibility(View.GONE);
+                                          return false;
+                                      }
+
+                                      @Override
+                                      public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
+                                          myViewHolder.document_image.setImageBitmap(reduceImageAndSet(bitmap));
+                                          myViewHolder.progressBar.setVisibility(View.GONE);
+                                          return false;
+                                      }
+                                  }
+                        ).submit();
             }
         },0);
 
@@ -117,6 +126,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView document_image, delete_document, refresh_document;
+        ProgressBar progressBar;
 
         public MyViewHolder(View view) {
             super(view);
@@ -124,6 +134,8 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
             document_image     = view.findViewById(R.id.document);
             delete_document    = view.findViewById(R.id.delete);
             refresh_document   = view.findViewById(R.id.reload);
+            progressBar        = view.findViewById(R.id.documentBar);
+
         }
     }
 

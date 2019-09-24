@@ -213,10 +213,6 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
         ModelUserProfileData data = DataManager.modelUserProfileData;
 
         if (data != null) {
-//            account_number.setText(data.getPaymentDetails().getAccountNumber());
-//            short_code.setText(data.getPaymentDetails().getShortCode());
-//            routing_number.setText(data.getPaymentDetails().getRoutingNumber());
-//            bank_name.setText(data.getPaymentDetails().getBankName());
             creditCardsList = data.getCard();
 
             updateUI();
@@ -225,46 +221,46 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
 
 //    private void handleSavePaymentDetails() {
 //
-////        editTxt.setVisibility(View.VISIBLE);
-////        saveTxt.setVisibility(View.GONE);
-////
-////        account_number.setText(account_number_edt.getText().toString());
-////        short_code.setText(short_code_edt.getText().toString());
-////        routing_number.setText(routing_number_edt.getText().toString());
-////        bank_name.setText(bank_name_edt.getText().toString());
-////
-////        account_number_edt.setVisibility(View.GONE);
-////        short_code_edt.setVisibility(View.GONE);
-////        routing_number_edt.setVisibility(View.GONE);
-////        bank_name_edt.setVisibility(View.GONE);
-////
-////        account_number.setVisibility(View.VISIBLE);
-////        short_code.setVisibility(View.VISIBLE);
-////        routing_number.setVisibility(View.VISIBLE);
-////        bank_name.setVisibility(View.VISIBLE);
+//        editTxt.setVisibility(View.VISIBLE);
+//        saveTxt.setVisibility(View.GONE);
 //
-////        savePaymentDetails();
-////        saveMerchantPaymentDetails();
+//        account_number.setText(account_number_edt.getText().toString());
+//        short_code.setText(short_code_edt.getText().toString());
+//        routing_number.setText(routing_number_edt.getText().toString());
+//        bank_name.setText(bank_name_edt.getText().toString());
+//
+//        account_number_edt.setVisibility(View.GONE);
+//        short_code_edt.setVisibility(View.GONE);
+//        routing_number_edt.setVisibility(View.GONE);
+//        bank_name_edt.setVisibility(View.GONE);
+//
+//        account_number.setVisibility(View.VISIBLE);
+//        short_code.setVisibility(View.VISIBLE);
+//        routing_number.setVisibility(View.VISIBLE);
+//        bank_name.setVisibility(View.VISIBLE);
+//
+//        savePaymentDetails();
+//        saveMerchantPaymentDetails();
 //    }
 //
-////    private void savePaymentDetails() {
-////
-////        try {
-////
-////            if (Utils.isNetworkAvailable(getActivity())) {
-////
-////                ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
-////                modelUpdateProfileRequest.setAccountNumber(account_number.getText().toString());
-////                modelUpdateProfileRequest.setShortCode(short_code.getText().toString());
-////                modelUpdateProfileRequest.setRoutingNumber(routing_number.getText().toString());
-////                modelUpdateProfileRequest.setBankName(bank_name.getText().toString());
-////
-////                Log.i("Payment DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
-////
-////                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
-////
-////                if (restClientRetrofitService != null) {
-////
+//    private void savePaymentDetails() {
+//
+//        try {
+//
+//            if (Utils.isNetworkAvailable(getActivity())) {
+//
+//                ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
+//                modelUpdateProfileRequest.setAccountNumber(account_number.getText().toString());
+//                modelUpdateProfileRequest.setShortCode(short_code.getText().toString());
+//               modelUpdateProfileRequest.setRoutingNumber(routing_number.getText().toString());
+//              modelUpdateProfileRequest.setBankName(bank_name.getText().toString());
+//
+//               Log.i("Payment DETAILS", "PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
+//
+//               RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+//
+//                if (restClientRetrofitService != null) {
+//
 ////                    ProgressDialogLoader.progressDialogCreation(getActivity(), getActivity().getString(R.string.please_wait));
 ////
 ////                    restClientRetrofitService.updateProfile(TagALongPreferenceManager.getToken(getActivity()), modelUpdateProfileRequest).enqueue(new Callback<ModelDocumentStatus>() {

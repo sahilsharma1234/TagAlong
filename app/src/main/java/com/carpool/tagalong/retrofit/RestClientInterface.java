@@ -236,7 +236,7 @@ public interface RestClientInterface {
     @retrofit2.http.POST("ride/book_quick_ride")
     Call<ModelQuickRideBookResponse> bookQuickRide(@Header("x-auth") String value, @Body ModelRequestQuickRideRider modelRequestQuickRideRider);
 
-    @retrofit2.http.GET(" user/resend_confirmation_wepay")
+    @retrofit2.http.GET("user/resend_confirmation_wepay")
     Call<ModelDocumentStatus> resendConfirmation(@Header("x-auth") String value);
 
     @retrofit2.http.GET("user/get_user_location")

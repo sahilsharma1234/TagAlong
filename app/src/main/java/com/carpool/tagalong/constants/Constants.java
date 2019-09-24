@@ -54,4 +54,10 @@ public class Constants {
     public static final String RIDEID = "rideId";
     public static final String FROM = "from";
     public static final String SIGNUP = "signup";
+    public static final String CURRENTUPCOMING = "current_upcoming";
+    public static final String RIDELISTENER = "ride_listener";
+    public static final String SENDER = "sender";
+    public static final String RECEIVERID = "receiverId";
+    public static final String CHAT_MESSAGE = "chatMessage";
+    public static final String LAUNCH_CURRENT_RIDE_FRAGMENT = "launchCurrentRideFragment";
 }

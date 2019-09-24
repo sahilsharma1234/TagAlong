@@ -79,8 +79,6 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, HomeFragment.OnFragmentInteractionListener, TimelineFragment.OnFragmentInteractionListener, CurrentRideFragment.OnFragmentInteractionListener, RecentRidesFragment.OnFragmentInteractionListener
         , ProfileFragment.OnFragmentInteractionListener {
 
-    private static final String ANIM_PREFERENCE_SET = "share";
-    private static final String ANIM_PREFERENCE_GONE = "shareGone";
     private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
     private static final int LOCATION_REQUEST_CODE = 178;
     private static HomeActivity homeActivity;
@@ -130,7 +128,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
 
         context = this;
         if (checkAndRequestPermissions()) {
@@ -224,7 +221,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         LocalBroadcastManager.getInstance(this).registerReceiver(listener,
-                new IntentFilter("launchCurrentRideFragment"));
+                new IntentFilter(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT));
 
         if (getIntent().getExtras() != null) {
 
@@ -250,7 +247,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
+        shareDialog = new ShareDialog(context);
+        Utils.clearNotifications(context);
     }
 
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -269,7 +267,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-//        getCurrentRide();
 
         if (DataManager.getYearsList() == null) {
             Utils.getYearsList(context);
@@ -436,57 +433,61 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void handleLogout() {
 
-        if (Utils.isNetworkAvailable(this)) {
+        try {
+            if (Utils.isNetworkAvailable(this)) {
 
-            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-            if (restClientRetrofitService != null) {
+                if (restClientRetrofitService != null) {
 
-                ProgressDialogLoader.progressDialogCreation(context, getString(R.string.please_wait));
+                    ProgressDialogLoader.progressDialogCreation(context, getString(R.string.please_wait));
 
-                restClientRetrofitService.logout(TagALongPreferenceManager.getToken(this)).enqueue(new Callback<ModelLogoutResponse>() {
+                    restClientRetrofitService.logout(TagALongPreferenceManager.getToken(this)).enqueue(new Callback<ModelLogoutResponse>() {
 
-                    @Override
-                    public void onResponse(Call<ModelLogoutResponse> call, Response<ModelLogoutResponse> response) {
+                        @Override
+                        public void onResponse(Call<ModelLogoutResponse> call, Response<ModelLogoutResponse> response) {
 
-                        ProgressDialogLoader.progressDialogDismiss();
+                            ProgressDialogLoader.progressDialogDismiss();
 
-                        if (response.body() != null) {
+                            if (response.body() != null) {
 
-                            TagALongPreferenceManager.saveDeviceProfile(HomeActivity.this, null);
-                            TagALongPreferenceManager.saveToken(HomeActivity.this, "");
-                            Toast.makeText(context, "Logged out Successfully", Toast.LENGTH_LONG).show();
+                                TagALongPreferenceManager.saveDeviceProfile(HomeActivity.this, null);
+                                TagALongPreferenceManager.saveToken(HomeActivity.this, "");
+                                Toast.makeText(context, "Logged out Successfully", Toast.LENGTH_LONG).show();
 
-                            Intent intent = new Intent(HomeActivity.this, SignInActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finishAffinity();
+                                Intent intent = new Intent(HomeActivity.this, SignInActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finishAffinity();
 
-                            DataManager.setStatus(1);
-                            DataManager.setIsDocumentUploaded(false);
-                            DataManager.setModelUserProfileData(null);
-                            DataManager.setModelSearchRideRequest(null);
-                            TagALongPreferenceManager.setDocumentUploadedStatus(context, false);
-                            if(Utils.isJobServiceOn(context)){
+                                DataManager.setStatus(1);
+                                DataManager.setIsDocumentUploaded(false);
+                                DataManager.setModelUserProfileData(null);
+                                DataManager.setModelSearchRideRequest(null);
+                                TagALongPreferenceManager.setDocumentUploadedStatus(context, false);
+                                if(Utils.isJobServiceOn(context)){
 
-                                JobScheduler jobScheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE );
-                                jobScheduler.cancel(3);
+                                    JobScheduler jobScheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE );
+                                    jobScheduler.cancel(3);
 
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ModelLogoutResponse> call, Throwable t) {
-                        ProgressDialogLoader.progressDialogDismiss();
+                        @Override
+                        public void onFailure(Call<ModelLogoutResponse> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
 
-                        if (t != null && t.getMessage() != null) {
-                            t.printStackTrace();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Home", "FAILURE logout");
                         }
-                        Log.e("Home", "FAILURE logout");
-                    }
-                });
+                    });
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

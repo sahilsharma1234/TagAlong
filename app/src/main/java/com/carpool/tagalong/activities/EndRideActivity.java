@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,6 +33,7 @@ import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelRidePostRequest;
 import com.carpool.tagalong.models.ModelRidePostResponse;
+import com.carpool.tagalong.models.ModelUserProfileData;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
@@ -89,7 +91,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
     private Toolbar toolbar;
     private String startLocation;
     private String datetime;
-    private CheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
+    private AppCompatCheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
     private ImageView endPin;
 
     @Override
@@ -436,25 +438,29 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             Button confirm_ride = dialogLayout.findViewById(R.id.confirm_prefs);
 
             ImageView minus_stepper = dialogLayout.findViewById(R.id.minus_stepper);
-            ImageView plus_stepper = dialogLayout.findViewById(R.id.plus_stepper);
+            ImageView plus_stepper  = dialogLayout.findViewById(R.id.plus_stepper);
             carryBagCountTxt = dialogLayout.findViewById(R.id.carry_bag_count_txt);
 
             carryBagCountTxt.setText(carry_bag_count+"");
 
             smokeCheckBox = dialogLayout.findViewById(R.id.smoke_prefe_chck);
 
-            kidsCheckBox = dialogLayout.findViewById(R.id.kids_travelling_chck);
+            kidsCheckBox  = dialogLayout.findViewById(R.id.kids_travelling_chck);
 
-            bagsCheckBox = dialogLayout.findViewById(R.id.carry_bags_pref_chck);
+            bagsCheckBox  = dialogLayout.findViewById(R.id.carry_bags_pref_chck);
+
+            ModelUserProfileData data = DataManager.getModelUserProfileData();
+
+            smokeCheckBox.setChecked(data.getDriverDetails().isSmoke());
+            kidsCheckBox.setChecked(data.getDriverDetails().isAllowKids());
+            bagsCheckBox.setChecked(data.getDriverDetails().getBags() == 0 ? false : true);
 
             confirm_ride.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
                     alert.cancel();
-
                     handleConfirmRideAction();
-
                 }
             });
 
@@ -463,7 +469,6 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
                 @Override
                 public void onClick(View v) {
                     handleReduceCarryBag();
-
                 }
             });
 
@@ -493,7 +498,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             modelRidePostRequest.setStartLocation(startLocation);
             modelRidePostRequest.setEndLocation(endRide.getText().toString());
             modelRidePostRequest.setRideDateTime(datetime);
-            modelRidePostRequest.setBags(bagsCheckBox.isSelected() ? 1 : 0);
+            modelRidePostRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0 );
             modelRidePostRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
             modelRidePostRequest.setNoOfSeats(carry_bag_count);
             modelRidePostRequest.setDrive(true);
@@ -523,13 +528,11 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
 
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
 
-                                Intent intent = new Intent("launchCurrentRideFragment");
+                                Intent intent = new Intent(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
                                 finish();
-//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                                    finishAndRemoveTask();
-//                                }
+
                             } else if (response.body() != null && response.body().getStatus() == 0) {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }

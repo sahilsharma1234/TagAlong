@@ -253,6 +253,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         }else{
             ProgressDialogLoader.progressDialogDismiss();
         }
+
+        Utils.clearNotifications(context);
     }
 
     private void initializeViews() {
@@ -1149,6 +1151,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                             if (t != null && t.getMessage() != null) {
                                 t.printStackTrace();
                             }
+                            finish();
                             Log.e("Cancel Rider Own quick Ride", "FAILURE verification");
                         }
                     });
@@ -1545,6 +1548,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
         RegularTextView otp = view.findViewById(R.id.otp_text);
 
+        if(!pickedUpFlag)
         otp.setText("OTP: " + rideData.getPickupVerificationCode());
 
         callDriver.setOnClickListener(new View.OnClickListener() {
@@ -1617,7 +1621,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
     protected void onResume() {
         super.onResume();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter("launchCurrentRideFragment"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(listener, new IntentFilter(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT));
         LocalBroadcastManager.getInstance(this).registerReceiver(droppedListener,
                 new IntentFilter(Constants.DROPPED));
 

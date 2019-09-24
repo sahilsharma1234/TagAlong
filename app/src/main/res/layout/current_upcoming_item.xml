@@ -104,16 +104,16 @@
 
                     </RelativeLayout>
 
-                  <!--  <de.hdodenhof.circleimageview.CircleImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/driverImage"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/activity_vertical_margin"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/avatar_avatar_12" />-->
+                        android:src="@drawable/avatar_avatar_12" />
 
-                    <com.carpool.tagalong.views.RegularTextView
+                   <!-- <com.carpool.tagalong.views.RegularTextView
                         android:id="@+id/rideDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                         android:gravity="center|start"
                         android:text="As Driver"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp" />-->
 
 
                 </RelativeLayout>

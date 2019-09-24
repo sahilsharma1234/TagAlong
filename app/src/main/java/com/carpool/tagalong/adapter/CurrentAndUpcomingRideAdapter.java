@@ -30,7 +30,7 @@ public class CurrentAndUpcomingRideAdapter extends RecyclerView.Adapter<CurrentA
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recent_rides_item, parent, false);
+                .inflate(R.layout.current_upcoming_item, parent, false);
         return new MyViewHolder(itemView);
     }
 

@@ -143,7 +143,7 @@ public class ProfileFragment extends Fragment {
 
         int tabId=getArguments().getInt("tab_id");
         toggleTabBar(tabId);
-        viewPager.setOffscreenPageLimit(0);
+        viewPager.setOffscreenPageLimit(1);
 
         return view;
     }
@@ -162,6 +162,7 @@ public class ProfileFragment extends Fragment {
                 break;
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
