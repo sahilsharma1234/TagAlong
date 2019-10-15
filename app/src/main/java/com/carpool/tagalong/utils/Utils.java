@@ -1,6 +1,7 @@
 package com.carpool.tagalong.utils;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -15,10 +16,13 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.carpool.tagalong.R;
+import com.carpool.tagalong.activities.SendReportActivity;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
+import com.carpool.tagalong.models.ModelSendReportRequest;
 import com.carpool.tagalong.models.ModelUserProfile;
 import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
 import com.carpool.tagalong.models.wepay.CreditCards;
@@ -354,7 +358,7 @@ public class Utils {
         if (mMonth < 10) {
             txtDate = (mDay + "/" + "0" + mMonth + "/" + mYear);
         } else
-            txtDate = (mDay + "/" + (mMonth + 1) + "/" + mYear);
+            txtDate = (mDay + "/" + (mMonth) + "/" + mYear);
 
         finalFormattedDate = Utils.getRidePostDateFromDateString(txtDate);
 
@@ -381,11 +385,63 @@ public class Utils {
         } else {
             finalFormattedTime = Utils.getRideTimeFromDateString(txtDate + " " + txtTime + ":" + datetime.get(Calendar.MINUTE) + ":" + "00" + " " + am_pm);
         }
-        return finalFormattedDate +" "+finalFormattedTime;
+        return finalFormattedDate + " " + finalFormattedTime;
     }
 
-    public static void clearNotifications(Context context){
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+    public static void clearNotifications(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
+    }
+
+    public static void sendReportToServer(final Activity context, String rideId, String reportTitle, String reportDesc) {
+
+        try {
+            if (Utils.isNetworkAvailable(context)) {
+
+                ModelSendReportRequest modelSendReportRequest = new ModelSendReportRequest();
+                modelSendReportRequest.setRideId(rideId);
+                modelSendReportRequest.setReportTitle(reportTitle);
+                modelSendReportRequest.setReportDescription(reportDesc);
+
+                ProgressDialogLoader.progressDialogCreation(context, context.getString(R.string.please_wait));
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+                    restClientRetrofitService.sendRouteReport(TagALongPreferenceManager.getToken(context), modelSendReportRequest).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                    context.finishAndRemoveTask();
+                                context.setResult(SendReportActivity.RESULT_CODE);
+                                context.finish();
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                            ProgressDialogLoader.progressDialogDismiss();
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e(TAG, "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, "Not able to send report for now!", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 }

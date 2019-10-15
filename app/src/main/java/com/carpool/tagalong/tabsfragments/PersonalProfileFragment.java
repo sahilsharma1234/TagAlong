@@ -173,6 +173,8 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                     GlideApp.with(getActivity())
                             .load(DataManager.modelUserProfileData.getProfile_pic())
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .dontAnimate().dontTransform()
+                            .override(120, 120)
                             .into(profilePic);
                 }
             });
@@ -595,6 +597,10 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                             public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
                                 if (response.body() != null) {
+                                    if (response.body().getStatus() == 0 && response.body().getMessage().equalsIgnoreCase("invalid token")) {
+                                        ((HomeActivity) getActivity()).handleLogout();
+                                        return;
+                                    }
                                     Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                                     // get user profile again to save updated profile
                                     ((HomeActivity) getActivity()).getUserProfile();

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -93,6 +93,8 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
     private String datetime;
     private AppCompatCheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
     private ImageView endPin;
+    @BindView(R.id.sendReportActionButton)
+    AppCompatImageView sendReportActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +168,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
         }
 
         endRideConfirm.setOnClickListener(this);
+        sendReportActionButton.setOnClickListener(this);
 
         if (getIntent().getExtras() != null) {
 
@@ -304,8 +307,8 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             e.printStackTrace();
         }
         if (flag.equals(Constants.END_RIDE)) {
-            this.endLat = lat;
-            this.endLong = lng;
+            endLat = lat;
+            endLong = lng;
             setDestinationLatLong(new LatLng(lat, lng));
         }
     }
@@ -381,7 +384,17 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             case R.id.endPin:
                 handleEndPinClick();
                 break;
+
+            case R.id.sendReportActionButton:
+                handleReportActionButtonClick();
         }
+    }
+
+    private void handleReportActionButtonClick() {
+
+        Intent intent = new Intent(context, SendReportActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void handleIncreaseCarryBag() {
@@ -453,7 +466,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
 
             smokeCheckBox.setChecked(data.getDriverDetails().isSmoke());
             kidsCheckBox.setChecked(data.getDriverDetails().isAllowKids());
-            bagsCheckBox.setChecked(data.getDriverDetails().getBags() == 0 ? false : true);
+            bagsCheckBox.setChecked(data.getDriverDetails().getBags() != 0);
 
             confirm_ride.setOnClickListener(new View.OnClickListener() {
 
@@ -499,10 +512,10 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             modelRidePostRequest.setEndLocation(endRide.getText().toString());
             modelRidePostRequest.setRideDateTime(datetime);
             modelRidePostRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0 );
-            modelRidePostRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
+            modelRidePostRequest.setAllowKids(kidsCheckBox.isChecked());
             modelRidePostRequest.setNoOfSeats(carry_bag_count);
             modelRidePostRequest.setDrive(true);
-            modelRidePostRequest.setSmoke(smokeCheckBox.isChecked() ? true : false);
+            modelRidePostRequest.setSmoke(smokeCheckBox.isChecked());
 
             if (Utils.isNetworkAvailable(context)) {
 

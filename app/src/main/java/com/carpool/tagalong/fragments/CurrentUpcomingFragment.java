@@ -133,7 +133,10 @@ public class CurrentUpcomingFragment extends Fragment implements View.OnClickLis
                             ProgressDialogLoader.progressDialogDismiss();
 
                             if (response.body() != null) {
-
+                                if (response.body().getStatus() == 0 && response.body().getMessage().equalsIgnoreCase("invalid token")) {
+                                    ((HomeActivity) getActivity()).handleLogout();
+                                    return;
+                                }
                                 Log.i("Get All rides", "Get all rides RESPONSE " + response.body().toString());
                                 no_internet.setVisibility(View.GONE);
                                 initAdapter(response.body().getRideData());

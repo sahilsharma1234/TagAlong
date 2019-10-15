@@ -431,7 +431,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         loadFragment("Emergency Rides");
     }
 
-    private void handleLogout() {
+    public void handleLogout() {
 
         try {
             if (Utils.isNetworkAvailable(this)) {
@@ -465,9 +465,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 DataManager.setModelUserProfileData(null);
                                 DataManager.setModelSearchRideRequest(null);
                                 TagALongPreferenceManager.setDocumentUploadedStatus(context, false);
-                                if(Utils.isJobServiceOn(context)){
+                                if (Utils.isJobServiceOn(context)) {
 
-                                    JobScheduler jobScheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE );
+                                    JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
                                     jobScheduler.cancel(3);
 
                                 }
@@ -782,11 +782,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 if (DataManager.getModelUserProfileData() != null)
                                     Glide.with(context).load(DataManager.getModelUserProfileData().getProfile_pic()).apply(options).into(userImage);
 
-                                if(response.body().getData().getDocuments() != null && response.body().getData().getDocuments().size() > 0){
-                                    TagALongPreferenceManager.setDocumentUploadedStatus(context,true);
-                                }else{
-                                    TagALongPreferenceManager.setDocumentUploadedStatus(context,false);
+                                if (response.body().getData().getDocuments() != null && response.body().getData().getDocuments().size() > 0) {
+                                    TagALongPreferenceManager.setDocumentUploadedStatus(context, true);
+                                } else {
+                                    TagALongPreferenceManager.setDocumentUploadedStatus(context, false);
                                 }
+                            } else if (response.body().getStatus() == 0 && response.body().getMessage().equalsIgnoreCase("invalid token")) {
+                                handleLogout();
+                                return;
                             } else {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }

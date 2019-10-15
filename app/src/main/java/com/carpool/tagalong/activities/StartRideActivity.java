@@ -297,8 +297,8 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
             e.printStackTrace();
         }
         if (flag.equals(Constants.START_RIDE)) {
-            this.startLat = lat;
-            this.startlongt = lng;
+            startLat = lat;
+            startlongt = lng;
             setSourceLatLong(new LatLng(lat, lng));
         }
     }
@@ -404,7 +404,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         if (month < 10) {
             txtDate = (dayOfMonth + "/" + "0" + month + "/" + year);
         } else
-            txtDate = (dayOfMonth + "/" + (month + 1) + "/" + year);
+            txtDate = (dayOfMonth + "/" + (month) + "/" + year);
 
         finalFormattedDate = Utils.getRidePostDateFromDateString(txtDate);
 
@@ -439,7 +439,7 @@ public class StartRideActivity extends BaseActivity implements View.OnClickListe
         if (mMonth < 10) {
             txtDate = (mDay + "/" + "0" + mMonth + "/" + mYear);
         } else
-            txtDate = (mDay + "/" + (mMonth + 1) + "/" + mYear);
+            txtDate = (mDay + "/" + (mMonth) + "/" + mYear);
 
         onTimeSet1(mHour, mMinute);
 

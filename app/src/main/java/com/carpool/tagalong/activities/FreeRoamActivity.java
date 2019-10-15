@@ -55,7 +55,6 @@ import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
-import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 import com.carpool.tagalong.views.RegularEditText;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -466,7 +465,8 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
                     animate(ANIM_DOWN_SETTINGS);
                     ProgressDialogLoader.progressDialogDismiss();
                 } else {
-                    UIUtils.alertBox(context, "No Riders in this ride!!");
+                    Toast.makeText(context, "No Riders in this ride!!", Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
         } catch (Exception e) {

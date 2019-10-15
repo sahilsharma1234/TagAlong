@@ -1,14 +1,23 @@
 package com.carpool.tagalong.activities;
 
 import android.animation.ArgbEvaluator;
-import android.graphics.Color;
+import android.animation.ValueAnimator;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.models.ModelGetUserLocationResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
@@ -16,15 +25,16 @@ import com.carpool.tagalong.retrofit.RestClientInterface;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.Utils;
 import com.carpool.tagalong.views.DirectionsJSONParser;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.SphericalUtil;
 
 import org.json.JSONObject;
 
@@ -44,18 +54,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.google.android.gms.maps.model.JointType.ROUND;
+public class TrackDriverActivity extends BaseActivity {
 
-public class TrackDriverActivity extends BaseActivity  {
-
+    private static final String API_KEY = "AIzaSyChV_kPPwQkFZ_beep4K4y6DEHz9dUKYg4";
     MarkerOptions options = null;
     ArgbEvaluator argbEvaluator;
-    private String driverId;
-    private static final String API_KEY = "AIzaSyChV_kPPwQkFZ_beep4K4y6DEHz9dUKYg4";
-    private Timer getDriverTimer = new Timer();
-    Double lat,longt;
-
+    Double lat, longt;
     ArrayList<LatLng> points;
+    private DownloadTask downloadTask;
+    private ParserTask parserTask;
+    private String driverId;
+    private Timer getDriverTimer = new Timer();
+    private Marker marker;
+    private float v;
+    private AppCompatImageView sendReportActionButton;
+    private BroadcastReceiver cancelledListener = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,39 +89,55 @@ public class TrackDriverActivity extends BaseActivity  {
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        sendReportActionButton = findViewById(R.id.sendReportActionButton);
 
         try {
             if (getIntent().getExtras().containsKey("driverId")) {
-
                 driverId = getIntent().getExtras().getString("driverId");
-
             }
 
             if (getIntent().getExtras().containsKey("rideLat")) {
 
-                lat = (Double)getIntent().getExtras().get("rideLat");
+                lat = (Double) getIntent().getExtras().get("rideLat");
             }
 
             if (getIntent().getExtras().containsKey("rideLongt")) {
 
-                longt = (Double)(getIntent().getExtras().get("rideLongt"));
+                longt = (Double) (getIntent().getExtras().get("rideLongt"));
             }
 
-            addCurrentLocationMarker(lat,longt);
+            if (mMap != null)
+                addCurrentLocationMarker(lat, longt);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        TimerTask timerTask  = new TimerTask() {
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 getDriverLocationAndDraw(driverId);
             }
         };
 
-        getDriverTimer.schedule(timerTask,800, 10*1000);
+        getDriverTimer.schedule(timerTask, 800, 20 * 1000);
 
+        sendReportActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TrackDriverActivity.this, SendReportActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(cancelledListener,
+                new IntentFilter(Constants.LAUNCH_CURRENT_RIDE_FRAGMENT));
     }
 
     private void addCurrentLocationMarker(Double lat, Double longt) {
@@ -152,7 +187,7 @@ public class TrackDriverActivity extends BaseActivity  {
                                 showDriver(response.body().getCoordinates().get(1), response.body().getCoordinates().get(0));
 
                             } else if (response.body() != null && response.body().getStatus() == 0) {
-                                Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                                Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -187,16 +222,16 @@ public class TrackDriverActivity extends BaseActivity  {
 
         try {
 
-             if(mMap != null){
-                 mMap.clear();
-                 addCurrentLocationMarker(this.lat, this.longt);
-             }
-
-            double degrees = computeHeading(new LatLng(lat,lont),  new LatLng(this.lat, this.longt));
+            if (mMap != null) {
+                mMap.clear();
+                addCurrentLocationMarker(this.lat, this.longt);
+            }
+//
+            double degrees = getBearing(new LatLng(lat, lont), new LatLng(this.lat, this.longt));
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(lat, lont))
-                    .zoom(15)
+                    .zoom(13)
                     .build();
 
 //            addOverlay(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()));
@@ -204,22 +239,80 @@ public class TrackDriverActivity extends BaseActivity  {
 
             options = new MarkerOptions();
             options.position(new LatLng(lat, lont));
+
+//            options.position(new LatLng(this.lat, this.longt));
             BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_car);
             options.icon(icon);
             options.zIndex(1.0f);
             options.flat(true);
-            options.rotation((float)degrees);
+            options.rotation((float) degrees);
             mMap.addMarker(options);
 
             String url = getDirectionsUrl(new LatLng(lat, lont), new LatLng(this.lat, this.longt));
-
-            DownloadTask downloadTask = new DownloadTask();
             // Start downloading json data from Google Directions API
-            downloadTask.execute(url);
+            if (downloadTask != null) {
+                downloadTask.cancel(true);
+            }
+
+            downloadTask = new DownloadTask();
+            downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void animateCarOnMap(final List<LatLng> latLngs) {
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng latLng : latLngs) {
+            builder.include(latLng);
+        }
+        LatLngBounds bounds = builder.build();
+        CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 2);
+        mMap.animateCamera(mCameraUpdate);
+//        if (emission == 1) {
+        marker = mMap.addMarker(new MarkerOptions().position(latLngs.get(0))
+                .flat(true)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car)));
+//        }
+        marker.setPosition(latLngs.get(0));
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+        valueAnimator.setDuration(1000);
+        valueAnimator.setInterpolator(new LinearInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                v = valueAnimator.getAnimatedFraction();
+                double lng = v * latLngs.get(0).longitude + (1 - v)
+                        * latLngs.get(0).longitude;
+                double lat = v * latLngs.get(0).latitude + (1 - v)
+                        * latLngs.get(0).latitude;
+                LatLng newPos = new LatLng(lat, lng);
+                marker.setPosition(newPos);
+                marker.setAnchor(0.5f, 0.5f);
+                marker.setRotation(getBearing(latLngs.get(0), newPos));
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition
+                        (new CameraPosition.Builder().target(newPos)
+                                .zoom(15.5f).build()));
+            }
+        });
+        valueAnimator.start();
+    }
+
+    private float getBearing(LatLng begin, LatLng end) {
+        double lat = Math.abs(begin.latitude - end.latitude);
+        double lng = Math.abs(begin.longitude - end.longitude);
+
+        if (begin.latitude < end.latitude && begin.longitude < end.longitude)
+            return (float) (Math.toDegrees(Math.atan(lng / lat)));
+        else if (begin.latitude >= end.latitude && begin.longitude < end.longitude)
+            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
+        else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude)
+            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
+        else if (begin.latitude < end.latitude && begin.longitude >= end.longitude)
+            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
+        return -1;
     }
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
@@ -282,6 +375,18 @@ public class TrackDriverActivity extends BaseActivity  {
         return data;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            getDriverTimer.cancel();
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(cancelledListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private class DownloadTask extends AsyncTask<String, String, String> {
 
         @Override
@@ -300,8 +405,12 @@ public class TrackDriverActivity extends BaseActivity  {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            ParserTask parserTask = new ParserTask();
-            parserTask.execute(result);
+
+            if (parserTask != null) {
+                parserTask.cancel(true);
+            }
+            parserTask = new ParserTask();
+            parserTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, result);
         }
     }
 
@@ -328,47 +437,35 @@ public class TrackDriverActivity extends BaseActivity  {
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
-            points = new ArrayList<LatLng>();
-            PolylineOptions lineOptions = new PolylineOptions();
-            MarkerOptions markerOptions = new MarkerOptions();
+            drawPolyline(result);
 
-            for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList();
-                lineOptions = new PolylineOptions();
-
-                List<HashMap<String, String>> path = result.get(i);
-
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap point = path.get(j);
-
-                    double lat = Double.parseDouble((String) point.get("lat"));
-                    double lng = Double.parseDouble((String) point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
-
-                    points.add(position);
-                }
-
-                lineOptions.addAll(points);
-                lineOptions.width(6);
-                lineOptions.color(Color.BLACK);
-                lineOptions.geodesic(false);
-                lineOptions.jointType(ROUND);
-            }
-
-            // Drawing polyline in the Google Map for the i-th route
-            mMap.addPolyline(lineOptions);
+//            points = new ArrayList<LatLng>();
+//            PolylineOptions lineOptions = new PolylineOptions();
+//            MarkerOptions markerOptions = new MarkerOptions();
+//
+//            for (int i = 0; i < result.size(); i++) {
+//                points = new ArrayList();
+//                lineOptions = new PolylineOptions();
+//
+//                List<HashMap<String, String>> path = result.get(i);
+//
+//                for (int j = 0; j < path.size(); j++) {
+//                    HashMap point = path.get(j);
+//                    double lat1 = Double.parseDouble((String) point.get("lat"));
+//                    double lng1 = Double.parseDouble((String) point.get("lng"));
+//                    LatLng position = new LatLng(lat1, lng1);
+//                    points.add(position);
+//                }
+//
+//                lineOptions.addAll(points);
+//                lineOptions.width(6);
+//                lineOptions.color(Color.BLACK);
+//                lineOptions.geodesic(false);
+//                lineOptions.jointType(ROUND);
+//            }
+//
+//            // Drawing polyline in the Google Map for the i-th route
+//            mMap.addPolyline(lineOptions);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        getDriverTimer.cancel();
-    }
-
-    public static double computeHeading(LatLng from, LatLng to){
-
-        Double HeadingRotation = SphericalUtil.computeHeading(from , to);
-        return HeadingRotation;
     }
 }

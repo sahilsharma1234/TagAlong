@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
+
 import com.carpool.tagalong.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -41,12 +42,15 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.SquareCap;
 import com.google.android.gms.tasks.OnSuccessListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
 public abstract class BaseActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -59,6 +63,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
     private FusedLocationProviderClient mFusedLocationClient;
     private List<LatLng> listLatLng = new ArrayList<>();
     private Polyline blackPolyLine, greyPolyLine;
+
+    ValueAnimator animator;
 
     Animator.AnimatorListener polyLineAnimationListener = new Animator.AnimatorListener() {
         @Override
@@ -368,8 +374,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
                         /** Traversing all points */
                         for (int l = 0; l < list.size(); l++) {
                             HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("lat", Double.toString(((LatLng) list.get(l)).latitude));
-                            hm.put("lng", Double.toString(((LatLng) list.get(l)).longitude));
+                            hm.put("lat", Double.toString(list.get(l).latitude));
+                            hm.put("lng", Double.toString(list.get(l).longitude));
                             path.add(hm);
                         }
                     }
@@ -420,6 +426,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
 
     void drawPolyline(List<List<HashMap<String, String>>> result) {
 
+        this.listLatLng.clear();
+
         ArrayList<LatLng> points = null;
         PolylineOptions lineOptions = null;
 
@@ -445,7 +453,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
             this.listLatLng.addAll(points);
         }
 
-        lineOptions.width(10);
+        lineOptions.width(6);
         lineOptions.color(Color.BLACK);
         lineOptions.startCap(new SquareCap());
         lineOptions.endCap(new SquareCap());
@@ -453,7 +461,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
         blackPolyLine = mMap.addPolyline(lineOptions);
 
         PolylineOptions greyOptions = new PolylineOptions();
-        greyOptions.width(10);
+        greyOptions.width(6);
         greyOptions.color(Color.GRAY);
         greyOptions.startCap(new SquareCap());
         greyOptions.endCap(new SquareCap());
@@ -464,8 +472,11 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
     }
 
     private void animatePolyLine() {
+        if (animator != null) {
+            animator.cancel();
+        }
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+        animator = ValueAnimator.ofInt(0, 100);
         animator.setDuration(1000);
         animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

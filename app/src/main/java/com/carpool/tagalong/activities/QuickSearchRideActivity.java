@@ -276,10 +276,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         bookedCabDetailsLayout = findViewById(R.id.bookedCabDriverDetails);
         stratTripLyt = findViewById(R.id.startLayout);
         endtripLyt = findViewById(R.id.endTrip);
-//
-//        payAndBookNow.setBackgroundColor(R.color.grey);
-//        payAndBookNow.setEnabled(false);
-//        payAndBookNow.setClickable(false);
 
         estimatedCost.setText("    ");
         estimatedTime.setText("    ");
@@ -498,13 +494,13 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             e.printStackTrace();
         }
         if (flag.equals(Constants.START_RIDE)) {
-            this.startLat = lat;
-            this.startlongt = lng;
+            startLat = lat;
+            startlongt = lng;
             showNearbyDrivers(lat, lng);
 
         } else {
-            this.endLat = lat;
-            this.endLng = lng;
+            endLat = lat;
+            endLng = lng;
 
             new AsyncTask<Void, Void, Void>() {
 
@@ -878,12 +874,6 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             ImageView plus_stepper = dialogLayout.findViewById(R.id.plus_stepper);
             carryBagCountTxt = dialogLayout.findViewById(R.id.carry_bag_count_txt);
 
-//            smokeCheckBox = dialogLayout.findViewById(R.id.smoke_prefe_chck);
-//
-//            kidsCheckBox = dialogLayout.findViewById(R.id.kids_travelling_chck);
-//
-//            bagsCheckBox = dialogLayout.findViewById(R.id.carry_bags_pref_chck);
-
             confirm_ride.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -923,25 +913,14 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             if (Utils.isNetworkAvailable(context)) {
 
                 ModelRequestQuickRideRider modelRequestQuickRideRider = new ModelRequestQuickRideRider();
-
-                modelRequestQuickRideRider.setBags(Integer.parseInt(carryBagCountTxt.getText().toString()));
                 modelRequestQuickRideRider.setStartLocation(sourceLocname.getText().toString());
                 modelRequestQuickRideRider.setEndLocation(destLocName.getText().toString());
-
                 modelRequestQuickRideRider.setStartLat(startLat);
                 modelRequestQuickRideRider.setStartLong(startlongt);
                 modelRequestQuickRideRider.setEndLat(endLat);
-
                 modelRequestQuickRideRider.setEndLong(endLng);
-                modelRequestQuickRideRider.setAllowKids(allowkids);
-                modelRequestQuickRideRider.setSmoke(smoke);
                 modelRequestQuickRideRider.setRideDateTime(Utils.getCurrentDateTimeAndSet());
-
-                if (carrybags)
-                    modelRequestQuickRideRider.setBags(1);
-                else
-                    modelRequestQuickRideRider.setBags(0);
-
+                modelRequestQuickRideRider.setNoOfSeats(Integer.parseInt(carryBagCountTxt.getText().toString()));
                 modelRequestQuickRideRider.setEstimatedFare(Double.valueOf(estimatedCost.getText().toString().split(" ")[1]));
 
                 RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
@@ -1521,11 +1500,7 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
     private void handleCabBookDataNew(final ModelGetCurrentRideResponse.RideData rideData) {
 
-        if (rideData.getStatus() == Constants.PICKUP) {
-            pickedUpFlag = true;
-        } else {
-            pickedUpFlag = false;
-        }
+        pickedUpFlag = rideData.getStatus() == Constants.PICKUP;
 
         startLat = rideData.getStartLat();
         startlongt = rideData.getStartLong();

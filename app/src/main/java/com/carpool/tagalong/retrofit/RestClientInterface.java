@@ -31,6 +31,7 @@ import com.carpool.tagalong.models.ModelRidePostRequest;
 import com.carpool.tagalong.models.ModelRidePostResponse;
 import com.carpool.tagalong.models.ModelSearchRideRequest;
 import com.carpool.tagalong.models.ModelSearchRideResponse;
+import com.carpool.tagalong.models.ModelSendReportRequest;
 import com.carpool.tagalong.models.ModelSignInRequest;
 import com.carpool.tagalong.models.ModelSignInResponse;
 import com.carpool.tagalong.models.ModelSignUpResponse;
@@ -241,4 +242,7 @@ public interface RestClientInterface {
 
     @retrofit2.http.GET("user/get_user_location")
     Call<ModelGetUserLocationResponse> getUserLocation(@Header("x-auth") String value, @Query("userId") String userId);
+
+    @retrofit2.http.POST("user/send_route_report")
+    Call<ModelDocumentStatus> sendRouteReport(@Header("x-auth") String value, @Body ModelSendReportRequest modelSendReportRequest);
 }

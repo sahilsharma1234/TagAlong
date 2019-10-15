@@ -86,11 +86,27 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
         registerOnwePay.setOnClickListener(this);
         verify.setOnClickListener(this);
 
-        handleWePayRegistrationDetails();
+//        handleWePayRegistrationDetails();
 
         return view;
     }
 
+    @Override
+    public void setMenuVisibility(final boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if (menuVisible) {
+
+                    handleWePayRegistrationDetails();
+
+                }
+            }
+        }, 1000);
+    }
 
     private void handleWePayRegistrationDetails() {
 

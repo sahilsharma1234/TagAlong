@@ -45,9 +45,10 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
     implementation 'com.jakewharton:butterknife:8.7.0'
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
     // image filters
     implementation 'info.androidhive:imagefilters:1.0.7'
@@ -68,6 +69,11 @@ dependencies {
     implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
 //    implementation 'com.github.fevziomurtekin:PayView:1.0.2'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
+
+    // Rx
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

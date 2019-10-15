@@ -43,6 +43,7 @@
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     android:text="@string/register_wepay_merchant"
                     android:textColor="@color/black" />
 
@@ -65,6 +66,7 @@
                     android:layout_below="@id/reg_txt"
                     android:layout_centerHorizontal="true"
                     android:text="Register"
+                    android:visibility="gone"
                     android:background="@drawable/button_shape_signin"
                     android:layout_marginTop="90dp"/>
 

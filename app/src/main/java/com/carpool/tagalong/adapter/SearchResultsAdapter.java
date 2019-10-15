@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
@@ -58,6 +57,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         GlideApp.with(context)
                 .load(modelSearchRideResponseDataList.get(i).getProfile_pic())
                 .apply(options)
+                .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(searchViewHolder.profile_pic);
     }

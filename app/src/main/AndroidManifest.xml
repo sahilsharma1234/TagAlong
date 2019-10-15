@@ -40,11 +40,11 @@
         android:theme="@style/MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-
+        <activity android:name=".activities.SendReportDetailActivity"></activity>
+        <activity android:name=".activities.SendReportActivity" />
         <activity
             android:name=".activities.DriverProfileRideTimelineActivity"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AboutUsActivity"
             android:screenOrientation="portrait" />
@@ -57,11 +57,10 @@
         <activity
             android:name=".activities.TrackDriverActivity"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/mytheme.dialog" />
-
-        <activity android:name=".activities.RideDetailActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RideDetailActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -81,8 +80,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.CurrentRideActivity" />
         </activity>
-        <activity android:name=".activities.ViewAllRidesDriverActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activities.ViewAllRidesDriverActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ChatActivity"
             android:screenOrientation="portrait">
@@ -153,7 +153,7 @@
         </activity>
         <activity
             android:name=".activities.QuickSearchRideActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait">
@@ -267,7 +267,7 @@
         <activity
             android:name=".activities.FreeRoamActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CardHolderActivity"
             android:launchMode="singleTop"

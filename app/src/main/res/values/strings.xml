@@ -108,5 +108,6 @@
     <string name="not_a_member_yet">Not a member yet? Register here</string>
     <string name="some_error_occurred">Some error occurred!! Please try again!</string>
     <string name="check_internet">Please check your internet connection!!</string>
+    <string name="send_a_report">Send a report</string>
 
 </resources>

@@ -798,66 +798,73 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
 
     private void addPost(String mediaPath) {
 
-        if (mediaPath != null) {
+        if (mediaPath != null || !mediaPath.equals("")) {
 
-            File file = new File(getPath(Uri.parse(mediaPath)));
+            postPath = "";
 
-            RequestBody type = RequestBody.create(MediaType.parse("text/plain"), Constants.TYPE_IMAGE);
+            try {
+                File file = new File(getPath(Uri.parse(mediaPath)));
 
-            RequestBody rideId = RequestBody.create(MediaType.parse("text/plain"), modelGetRideDetailsResponse.getRideData().get_id());
+                RequestBody type = RequestBody.create(MediaType.parse("text/plain"), Constants.TYPE_IMAGE);
 
-            // Create a request body with file and image/video media type
-            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
-            // Create MultipartBody.Part using file request-body,file name and part name
-            MultipartBody.Part part = MultipartBody.Part.createFormData("media", file.getName(), fileReqBody);
+                RequestBody rideId = RequestBody.create(MediaType.parse("text/plain"), modelGetRideDetailsResponse.getRideData().get_id());
 
-            if (Utils.isNetworkAvailable(context)) {
+                // Create a request body with file and image/video media type
+                RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
+                // Create MultipartBody.Part using file request-body,file name and part name
+                MultipartBody.Part part = MultipartBody.Part.createFormData("media", file.getName(), fileReqBody);
 
-                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+                if (Utils.isNetworkAvailable(context)) {
 
-                if (restClientRetrofitService != null) {
+                    RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
-                    ProgressDialogLoader.progressDialogCreation(this, context.getString(R.string.please_wait));
+                    if (restClientRetrofitService != null) {
 
-                    restClientRetrofitService.addPost(TagALongPreferenceManager.getToken(context), rideId, type, part).enqueue(new Callback<ModelDocumentStatus>() {
+                        ProgressDialogLoader.progressDialogCreation(this, context.getString(R.string.please_wait));
 
-                        @Override
-                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+                        restClientRetrofitService.addPost(TagALongPreferenceManager.getToken(context), rideId, type, part).enqueue(new Callback<ModelDocumentStatus>() {
 
-                            ProgressDialogLoader.progressDialogDismiss();
-                            postPath = null;
+                            @Override
+                            public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
-                            if (response.body() != null) {
+                                ProgressDialogLoader.progressDialogDismiss();
 
-                                if (response.body().getStatus() == 1) {
+                                if (response.body() != null) {
 
-                                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                    selectImageForPost.setVisibility(View.VISIBLE);
-                                    selectedImageForPost.setVisibility(View.GONE);
+                                    if (response.body().getStatus() == 1) {
 
-                                    getPost();
+                                        Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                        selectImageForPost.setVisibility(View.VISIBLE);
+                                        selectedImageForPost.setVisibility(View.GONE);
 
+                                        getPost();
+
+                                    } else {
+                                        Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                                    }
                                 } else {
                                     Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                                 }
-                            } else {
-                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
-                            getPost();
-                            ProgressDialogLoader.progressDialogDismiss();
-                            if (t != null && t.getMessage() != null) {
-                                t.printStackTrace();
+                            @Override
+                            public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+                                getPost();
+                                ProgressDialogLoader.progressDialogDismiss();
+                                if (t != null && t.getMessage() != null) {
+                                    t.printStackTrace();
+                                }
+                                Log.e("Upload Document", "FAILURE verification");
                             }
-                            Log.e("Upload Document", "FAILURE verification");
-                        }
-                    });
+                        });
+                    }
+                } else {
+                    Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
                 }
-            } else {
-                Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                ProgressDialogLoader.progressDialogDismiss();
+                e.printStackTrace();
+                Toast.makeText(context, "Error uploading Image!! Please try again", Toast.LENGTH_LONG).show();
             }
         } else {
             Toast.makeText(context, "Please select any media!!", Toast.LENGTH_LONG).show();

@@ -43,6 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
@@ -337,8 +338,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 .placeholder(R.drawable.avatar_avatar_12)
                 .error(R.drawable.avatar_avatar_12);
 
-        GlideApp.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(profilePic);
-        GlideApp.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(postPic);
+        Glide.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(profilePic);
+        Glide.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(postPic);
     }
 
     private void uploadPic() {
@@ -905,7 +906,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     .placeholder(R.drawable.avatar_avatar_12)
                     .error(R.drawable.avatar_avatar_12);
 
-            GlideApp.with(context).load(onBoard.getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(user_image);
+            Glide.with(context).load(onBoard.getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(user_image);
 
             iv_userName.setText(onBoard.getUserName());
 
@@ -1028,7 +1029,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-
                                     getRideDetails(rideID);
                                 }
                             } else {
@@ -1119,7 +1119,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
     private void addPost(String mediaPath) {
 
-        if (mediaPath != null) {
+        if (!mediaPath.equals("")) {
 
             try {
                 File file = new File(getPath(Uri.parse(mediaPath)));
@@ -1147,7 +1147,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                             public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
                                 ProgressDialogLoader.progressDialogDismiss();
-                                postPath = null;
+                                postPath = "";
 
                                 if (response.body() != null) {
 
@@ -1182,7 +1182,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(context, "Error uploading Image!! Please try again", Toast.LENGTH_LONG).show();
+                ProgressDialogLoader.progressDialogDismiss();
+                Toast.makeText(context, "Error uploading Image!! Please try again!!", Toast.LENGTH_LONG).show();
             }
         } else {
             Toast.makeText(context, "Please select a media!!", Toast.LENGTH_LONG).show();
@@ -1208,7 +1209,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void getPost() {
 
         try {
-
+            postPath = "";
             ModelGetTimelineRequest modelGetTimelineRequest = new ModelGetTimelineRequest();
             modelGetTimelineRequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
 
@@ -1226,6 +1227,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                         public void onResponse(Call<ModelGetTimelineResponse> call, Response<ModelGetTimelineResponse> response) {
 
                             ProgressDialogLoader.progressDialogDismiss();
+
 
                             if (response.body() != null) {
 
@@ -1370,7 +1372,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             seats_selected.setText(seatMap.get(joinRequest.getNoOfSeats()));
             driver_address.setText(joinRequest.getAddress());
 
-            GlideApp.with(context)
+            Glide.with(context)
                     .load(joinRequest.getProfile_pic())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);
