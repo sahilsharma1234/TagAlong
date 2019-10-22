@@ -11,6 +11,26 @@ public class ModelSendReportRequest {
     public String reportTitle;
     @SerializedName("reportDescription")
     public String reportDescription;
+    @SerializedName("startLocation")
+    public String startLocation;
+    @SerializedName("endLocation")
+    public String endLocation;
+
+    public String getStartLocation() {
+        return startLocation;
+    }
+
+    public void setStartLocation(String startLocation) {
+        this.startLocation = startLocation;
+    }
+
+    public String getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(String endLocation) {
+        this.endLocation = endLocation;
+    }
 
     public String getRideId() {
         return rideId;

@@ -25,7 +25,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,10 +51,12 @@ import com.carpool.tagalong.fragments.TimelineFragment;
 import com.carpool.tagalong.listeners.AlertDialogPermissionBoxClickInterface;
 import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelLogoutResponse;
+import com.carpool.tagalong.models.ModelSignInResponseData;
 import com.carpool.tagalong.models.ModelUserProfile;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
+import com.carpool.tagalong.service.SinchService;
 import com.carpool.tagalong.utils.ProgressDialogLoader;
 import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
@@ -67,6 +68,8 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.SinchError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +79,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, HomeFragment.OnFragmentInteractionListener, TimelineFragment.OnFragmentInteractionListener, CurrentRideFragment.OnFragmentInteractionListener, RecentRidesFragment.OnFragmentInteractionListener
+public class HomeActivity extends BaseActivityCalling implements SinchService.StartFailedListener, View.OnClickListener, HomeFragment.OnFragmentInteractionListener, TimelineFragment.OnFragmentInteractionListener, CurrentRideFragment.OnFragmentInteractionListener, RecentRidesFragment.OnFragmentInteractionListener
         , ProfileFragment.OnFragmentInteractionListener {
 
     private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
@@ -96,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private CircleImageView userImage;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
+    public static SinchClient sinchClient;
     private BroadcastReceiver listener = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -196,6 +200,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             userName.setText(TagALongPreferenceManager.getDeviceProfile(context).getUserName());
             address.setText(TagALongPreferenceManager.getDeviceProfile(context).getAddress());
 
+//            registerSinchClient(TagALongPreferenceManager.getDeviceProfile(context));
+
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.drawable.avatar_avatar_12)
@@ -249,6 +255,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(context);
         Utils.clearNotifications(context);
+    }
+
+    private void registerSinchClient(ModelSignInResponseData deviceProfile) {
+
+        if (!getSinchServiceInterface().isStarted()) {
+            getSinchServiceInterface().startClient(deviceProfile.get_id());
+        }
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        getSinchServiceInterface().setStartListener(this);
+        registerSinchClient(TagALongPreferenceManager.getDeviceProfile(context));
     }
 
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -459,6 +478,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finishAffinity();
+
+                                if (getSinchServiceInterface() != null) {
+                                    getSinchServiceInterface().stopClient();
+                                }
 
                                 DataManager.setStatus(1);
                                 DataManager.setIsDocumentUploaded(false);
@@ -909,6 +932,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int permissionlocationGPS = ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
+        int permissionrecordAudio = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.RECORD_AUDIO);
+
+        int permissionReadPhoneState = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.READ_PHONE_STATE);
+
         List<String> listPermissionsNeeded = new ArrayList<>();
 
         if (permissionStorage != PackageManager.PERMISSION_GRANTED) {
@@ -917,6 +946,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         if (permissionlocationGPS != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if (permissionrecordAudio != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
+        }
+
+        if (permissionReadPhoneState != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
         }
 
         if (!listPermissionsNeeded.isEmpty()) {
@@ -978,6 +1015,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             });
         }
         builder.show();
+    }
+
+    @Override
+    public void onStartFailed(SinchError error) {
+
+    }
+
+    @Override
+    public void onStarted() {
+        Log.d("Calling homeActivity", "Successful connection");
     }
 
     /**

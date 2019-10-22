@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -28,17 +27,19 @@ import com.carpool.tagalong.models.ModelSignInResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
 import com.carpool.tagalong.retrofit.RestClientInterface;
+import com.carpool.tagalong.service.SinchService;
 import com.carpool.tagalong.utils.UIUtils;
 import com.carpool.tagalong.utils.Utils;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.hbb20.CountryCodePicker;
+import com.sinch.android.rtc.SinchError;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignInActivity extends BaseActivityCalling implements SinchService.StartFailedListener, View.OnClickListener {
 
     private static final String TAG = "Sign IN";
     private CallbackManager callbackManager;
@@ -236,7 +237,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             TagALongPreferenceManager.saveToken(context, response.body().getToken());
                             TagALongPreferenceManager.saveDeviceProfile(context, response.body().getData());
 
-                            if(response.body().getData().isVerifyMobile()) {
+                            if (!getSinchServiceInterface().isStarted()) {
+
+                                getSinchServiceInterface().startClient(response.body().getData().get_id());
+
+                            }
+
+                            if (response.body().getData().isVerifyMobile()) {
 
                                 Intent intent;
                                 intent = new Intent(context, HomeActivity.class);
@@ -254,7 +261,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                         isDocumentUploaded();
                                     }
                                 });
-                            }else{
+                            } else {
                                 Intent intent;
                                 intent = new Intent(context, VerificationActivity.class);
                                 startActivity(intent);
@@ -310,7 +317,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         URLSpan[] spans = s.getSpans(20, s.length(), URLSpan.class);
         for (URLSpan span : spans) {
             int start = s.getSpanStart(span);
-            int end   = s.getSpanEnd(span);
+            int end = s.getSpanEnd(span);
             s.removeSpan(span);
             span = new URLSpanNoUnderline(span.getURL());
             s.setSpan(span, start, end, 0);
@@ -359,6 +366,22 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onStartFailed(SinchError error) {
+        Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStarted() {
+
+        Log.d("Calling", "Successful connection");
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        getSinchServiceInterface().setStartListener(this);
     }
 
     private class URLSpanNoUnderline extends URLSpan {

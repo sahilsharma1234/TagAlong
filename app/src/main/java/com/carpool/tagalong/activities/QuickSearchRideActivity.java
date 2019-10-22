@@ -920,7 +920,8 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
                 modelRequestQuickRideRider.setEndLat(endLat);
                 modelRequestQuickRideRider.setEndLong(endLng);
                 modelRequestQuickRideRider.setRideDateTime(Utils.getCurrentDateTimeAndSet());
-                modelRequestQuickRideRider.setNoOfSeats(Integer.parseInt(carryBagCountTxt.getText().toString()));
+//                modelRequestQuickRideRider.setNoOfSeats(Integer.parseInt(carryBagCountTxt.getText().toString()));
+                modelRequestQuickRideRider.setNoOfSeats(0);
                 modelRequestQuickRideRider.setEstimatedFare(Double.valueOf(estimatedCost.getText().toString().split(" ")[1]));
 
                 RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
@@ -994,12 +995,14 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             @Override
             public void onClick(View v) {
 
-                Intent call = new Intent(Intent.ACTION_CALL);
-                call.setData(Uri.parse("tel:" + modelQuickRideBookResponse.getDriverDetails().getMobileNo()));
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                startActivity(call);
+                openPlaceCallActivity(modelQuickRideBookResponse);
+
+//                Intent call = new Intent(Intent.ACTION_CALL);
+//                call.setData(Uri.parse("tel:" + modelQuickRideBookResponse.getDriverDetails().getMobileNo()));
+//                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                    return;
+//                }
+//                startActivity(call);
             }
         });
 
@@ -1046,6 +1049,14 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
         };
 
         getDriverLocationtimer.schedule(getDriverLocationTimerTask, 500, 10 * 1000);
+    }
+
+    private void openPlaceCallActivity(ModelQuickRideBookResponse modelQuickRideBookResponse) {
+        Intent mainActivity = new Intent(this, PlaceCallActivity.class);
+        mainActivity.putExtra("callerId", modelQuickRideBookResponse.getDriverDetails().get_id());
+        mainActivity.putExtra("recepientName", modelQuickRideBookResponse.getDriverDetails().getUserName());
+        mainActivity.putExtra("recepientImage", modelQuickRideBookResponse.getDriverDetails().getProfile_pic());
+        startActivity(mainActivity);
     }
 
     private void showCancelAlert(String requestId) {
@@ -1530,12 +1541,18 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
             @Override
             public void onClick(View v) {
 
-                Intent call = new Intent(Intent.ACTION_CALL);
-                call.setData(Uri.parse("tel:" + rideData.getDriverDetails().getMobileNo()));
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                startActivity(call);
+//                Intent call = new Intent(Intent.ACTION_CALL);
+//                call.setData(Uri.parse("tel:" + rideData.getDriverDetails().getMobileNo()));
+//                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                    return;
+//                }
+//                startActivity(call);
+//
+                Intent mainActivity = new Intent(context, PlaceCallActivity.class);
+                mainActivity.putExtra("callerId", rideData.getDriverDetails().getUserId());
+                mainActivity.putExtra("recepientName", rideData.getDriverDetails().getUserName());
+                mainActivity.putExtra("recepientImage", rideData.getDriverDetails().getProfile_pic());
+                startActivity(mainActivity);
             }
         });
 

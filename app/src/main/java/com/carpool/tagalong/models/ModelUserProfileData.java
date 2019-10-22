@@ -29,10 +29,8 @@ public class ModelUserProfileData {
     public ModelUserDriverDetails driverDetails;
     @SerializedName("paymentDetails")
     public ModelPaymentDetails paymentDetails;
-
     @SerializedName("wepayDetails")
     public ModelWePayDetails wepayDetails;
-
     @SerializedName("documents")
     public List<ModelDocuments> documents;
     @SerializedName("gender")

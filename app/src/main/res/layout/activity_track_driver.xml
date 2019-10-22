@@ -20,7 +20,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatImageView
+    <!--<android.support.v7.widget.AppCompatImageView
         android:id="@+id/sendReportActionButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -28,6 +28,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="@dimen/_30_px"
         android:layout_marginBottom="@dimen/_30_px"
-        android:src="@drawable/ic_baloon_btn" />
+        android:src="@drawable/ic_baloon_btn" />-->
 
 </RelativeLayout>

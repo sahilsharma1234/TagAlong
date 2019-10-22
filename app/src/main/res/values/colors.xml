@@ -26,4 +26,9 @@
     <color name="eyeOutline">#000000</color>
     <color name="overlayHint">#7FFF00</color>
 
+
+    <color name="sinch_purple">#ff63029d</color>
+    <color name="off_white">#fffafafa</color>
+    <color name="greyish">#fff2f1f2</color>
+
 </resources>

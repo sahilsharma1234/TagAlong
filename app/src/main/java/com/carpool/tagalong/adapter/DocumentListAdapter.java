@@ -1,7 +1,7 @@
 package com.carpool.tagalong.adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -15,13 +15,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.carpool.tagalong.R;
-import com.carpool.tagalong.glide.GlideApp;
 import com.carpool.tagalong.models.ModelDocuments;
 
 import java.io.ByteArrayOutputStream;
@@ -30,10 +30,10 @@ import java.util.List;
 public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapter.MyViewHolder> {
 
     private List<ModelDocuments> documentsList;
-    private Context context;
+    private Activity context;
     private drivinginteraction drivinginteraction;
 
-    public DocumentListAdapter(Context context, List<ModelDocuments> documentsList, drivinginteraction drivinginteraction){
+    public DocumentListAdapter(Activity context, List<ModelDocuments> documentsList, drivinginteraction drivinginteraction) {
 
         this.documentsList = documentsList;
         this.context       = context;
@@ -53,14 +53,14 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int i) {
 
         final int pos = i;
-
+//
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
                 myViewHolder.progressBar.setVisibility(View.VISIBLE);
 
-                GlideApp.with(context).asBitmap().load(documentsList.get(i).getUrl())
+                Glide.with(context).asBitmap().load(documentsList.get(i).getUrl())
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .listener(new RequestListener<Bitmap>() {
 
@@ -73,8 +73,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
                                       @Override
                                       public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
-                                          myViewHolder.document_image.setImageBitmap(reduceImageAndSet(bitmap));
-                                          myViewHolder.progressBar.setVisibility(View.GONE);
+                                          setImage(myViewHolder, bitmap);
                                           return false;
                                       }
                                   }
@@ -87,6 +86,17 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
             public void onClick(View v) {
 
                 showDeleteAlertDialog("Delete Document", true, 0, documentsList.get(pos).get_id(), pos);
+            }
+        });
+    }
+
+    private void setImage(final MyViewHolder viewHolder, final Bitmap bitmap) {
+
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                viewHolder.document_image.setImageBitmap(reduceImageAndSet(bitmap));
+                viewHolder.progressBar.setVisibility(View.GONE);
             }
         });
     }

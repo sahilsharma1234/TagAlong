@@ -9,10 +9,8 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
@@ -44,7 +42,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -60,14 +57,14 @@ public class TrackDriverActivity extends BaseActivity {
     MarkerOptions options = null;
     ArgbEvaluator argbEvaluator;
     Double lat, longt;
-    ArrayList<LatLng> points;
+    //    ArrayList<LatLng> points;
     private DownloadTask downloadTask;
     private ParserTask parserTask;
     private String driverId;
     private Timer getDriverTimer = new Timer();
     private Marker marker;
     private float v;
-    private AppCompatImageView sendReportActionButton;
+    //    private AppCompatImageView sendReportActionButton;
     private BroadcastReceiver cancelledListener = new BroadcastReceiver() {
 
         @Override
@@ -89,7 +86,7 @@ public class TrackDriverActivity extends BaseActivity {
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        sendReportActionButton = findViewById(R.id.sendReportActionButton);
+//        sendReportActionButton = findViewById(R.id.sendReportActionButton);
 
         try {
             if (getIntent().getExtras().containsKey("driverId")) {
@@ -122,14 +119,14 @@ public class TrackDriverActivity extends BaseActivity {
 
         getDriverTimer.schedule(timerTask, 800, 20 * 1000);
 
-        sendReportActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TrackDriverActivity.this, SendReportActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        });
+//        sendReportActionButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(TrackDriverActivity.this, SendReportActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
+//            }
+//        });
     }
 
     @Override

@@ -63,7 +63,7 @@ public class SendReportDetailActivity extends AppCompatActivity implements View.
 
     @BindView(R.id.thirdTick)
     ImageView thirdSelection;
-
+    String startLoc, endLoc;
     private String selectedItem = "Moderate";
     private String type = "";
 
@@ -78,6 +78,16 @@ public class SendReportDetailActivity extends AppCompatActivity implements View.
             if (getIntent().getExtras().containsKey("type")) {
 
                 type = getIntent().getExtras().getString("type");
+            }
+
+            if (getIntent().getExtras().containsKey("startLoc")) {
+
+                startLoc = getIntent().getExtras().getString("startLoc");
+            }
+
+            if (getIntent().getExtras().containsKey("endLoc")) {
+
+                endLoc = getIntent().getExtras().getString("endLoc");
             }
         }
 
@@ -122,7 +132,6 @@ public class SendReportDetailActivity extends AppCompatActivity implements View.
                     thirdThumbText.setText("Otherside");
 
                     break;
-
             }
         }
     }
@@ -139,7 +148,8 @@ public class SendReportDetailActivity extends AppCompatActivity implements View.
                 break;
 
             case R.id.img_close:
-                finishAffinity();
+                setResult(SendReportActivity.RESULT_CODE);
+                finish();
                 break;
 
             case R.id.laterReportAction:
@@ -161,7 +171,7 @@ public class SendReportDetailActivity extends AppCompatActivity implements View.
                 break;
 
             case R.id.sendReportActionButton:
-                Utils.sendReportToServer(SendReportDetailActivity.this, "5d9ecfea41bd442ce00ea5dd", parentImageText.getText().toString(), selectedItem);
+                Utils.sendReportToServer(SendReportDetailActivity.this, startLoc, endLoc, parentImageText.getText().toString(), selectedItem);
                 break;
         }
     }

@@ -608,6 +608,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
     private void uploadPic() {
 
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
         startActivityForResult(intent, IMAGE_PICK_REQUEST);
     }
 

@@ -59,6 +59,12 @@ public class ModelUpdateProfileRequest {
     @SerializedName("original_device")
     public String original_device;
 
+    @SerializedName("driver_license_number")
+    public String driver_license_number;
+
+    @SerializedName("driver_license_state")
+    public String driver_license_state;
+
     public String getCity() {
         return city;
     }
@@ -277,6 +283,22 @@ public class ModelUpdateProfileRequest {
         this.vehicle = vehicle;
     }
 
+    public String getDriver_license_number() {
+        return driver_license_number;
+    }
+
+    public void setDriver_license_number(String driver_license_number) {
+        this.driver_license_number = driver_license_number;
+    }
+
+    public String getDriver_license_state() {
+        return driver_license_state;
+    }
+
+    public void setDriver_license_state(String driver_license_state) {
+        this.driver_license_state = driver_license_state;
+    }
+
     @Override
     public String toString() {
         return "ModelUpdateProfileRequest{" +
@@ -307,6 +329,8 @@ public class ModelUpdateProfileRequest {
                 ", region='" + region + '\'' +
                 ", original_ip='" + original_ip + '\'' +
                 ", original_device='" + original_device + '\'' +
+                ", driver_license_number='" + driver_license_number + '\'' +
+                ", driver_license_state='" + driver_license_state + '\'' +
                 '}';
     }
 }

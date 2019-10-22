@@ -72,8 +72,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     private static final int IMAGE_PICK_REQUEST = 135;
     private static final int GALLERY_PICTURE = 125;
     private static final int CAMERA_PICTURE = 126;
-    private com.carpool.tagalong.views.RegularTextView vehicleTxt, vehicleRegistrationTxt, vehicleYearTxt, vehicleColorTxt, vehicleModelTxt;
-    private EditText vehicleRegNumEdt;
+    private com.carpool.tagalong.views.RegularTextView vehicleTxt, vehicleRegistrationTxt, vehicleYearTxt, vehicleColorTxt, vehicleModelTxt, driving_lic_number_txt, driving_lic_state_txt;
+    private EditText vehicleRegNumEdt, driving_lic_number_edt, driving_lic_state_edt;
     private com.carpool.tagalong.views.RegularTextView saveTxt, editTxt;
     private RelativeLayout uploadImage, mainDocuLyt, progressBarLyt;
     private AppCompatCheckBox smokeCheckBox, kidsCheckBox, bagsCheckBox;
@@ -121,6 +121,10 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         vehicleColorSpinner = view.findViewById(R.id.vehicle_color_spinner);
         vehicleYearSpinner = view.findViewById(R.id.vehicle_year_spinner);
         recyclerViewDocuments = view.findViewById(R.id.documentRecyclerView);
+        driving_lic_number_edt = view.findViewById(R.id.driving_lic_number_edt);
+        driving_lic_number_txt = view.findViewById(R.id.driving_lic_number);
+        driving_lic_state_edt = view.findViewById(R.id.driving_license_state_edt);
+        driving_lic_state_txt = view.findViewById(R.id.driving_license_state);
 
         saveTxt.setOnClickListener(this);
         editTxt.setOnClickListener(this);
@@ -269,10 +273,10 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     data = DataManager.getModelUserProfileData();
                     smokeCheckBox.setChecked(data.getDriverDetails().isSmoke());
                     kidsCheckBox.setChecked(data.getDriverDetails().isAllowKids());
-                    bagsCheckBox.setChecked(data.getDriverDetails().getBags() == 0 ? false : true);
+                    bagsCheckBox.setChecked(data.getDriverDetails().getBags() != 0);
                 }
             }
-        },2000);
+        }, 2000);
     }
 
     public void Image_Picker_Dialog() {
@@ -394,7 +398,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
                     checkAndRequestPermissions();
-//                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST);
                 }
             });
 
@@ -429,18 +432,24 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             vehicleYearTxt.setText(year);
             vehicleColorTxt.setText(color);
             vehicleModelTxt.setText(model);
+            driving_lic_state_txt.setText(driving_lic_state_edt.getText().toString());
+            driving_lic_number_txt.setText(driving_lic_number_edt.getText().toString());
 
             vehicleBrandSpinner.setVisibility(View.GONE);
             vehicleRegNumEdt.setVisibility(View.GONE);
             vehicleYearSpinner.setVisibility(View.GONE);
             vehicleColorSpinner.setVisibility(View.GONE);
             vehicleModelSpinner.setVisibility(View.GONE);
+            driving_lic_state_edt.setVisibility(View.GONE);
+            driving_lic_number_edt.setVisibility(View.GONE);
 
             vehicleTxt.setVisibility(View.VISIBLE);
             vehicleRegistrationTxt.setVisibility(View.VISIBLE);
             vehicleYearTxt.setVisibility(View.VISIBLE);
             vehicleColorTxt.setVisibility(View.VISIBLE);
             vehicleModelTxt.setVisibility(View.VISIBLE);
+            driving_lic_state_txt.setVisibility(View.VISIBLE);
+            driving_lic_number_txt.setVisibility(View.VISIBLE);
 
             saveDrivingDetails();
         } catch (Exception e) {
@@ -496,6 +505,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                 }
             }
             vehicleRegNumEdt.setText(vehicleRegistrationTxt.getText().toString());
+            driving_lic_state_edt.setText(driving_lic_state_txt.getText().toString());
+            driving_lic_number_edt.setText(driving_lic_number_txt.getText().toString());
         }
 
         vehicleBrandSpinner.setVisibility(View.VISIBLE);
@@ -503,12 +514,16 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         vehicleYearSpinner.setVisibility(View.VISIBLE);
         vehicleColorSpinner.setVisibility(View.VISIBLE);
         vehicleModelSpinner.setVisibility(View.VISIBLE);
+        driving_lic_number_edt.setVisibility(View.VISIBLE);
+        driving_lic_state_edt.setVisibility(View.VISIBLE);
 
         vehicleTxt.setVisibility(View.GONE);
         vehicleRegistrationTxt.setVisibility(View.GONE);
         vehicleYearTxt.setVisibility(View.GONE);
         vehicleColorTxt.setVisibility(View.GONE);
         vehicleModelTxt.setVisibility(View.GONE);
+        driving_lic_state_txt.setVisibility(View.GONE);
+        driving_lic_number_txt.setVisibility(View.GONE);
     }
 
     @Override
@@ -551,11 +566,9 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-
                 getCarModelBrandListFromServer();
                 handleStartSetup();
             }
@@ -580,11 +593,12 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             vehicleModelTxt.setText(data.getDriverDetails().getVehicle());
             vehicleRegistrationTxt.setText(data.getDriverDetails().getVehicleNumber());
             vehicleYearTxt.setText(data.getDriverDetails().getVehicleYear() + "");
+            driving_lic_number_txt.setText(data.getDriverDetails().getDriver_license_number());
+            driving_lic_state_txt.setText(data.getDriverDetails().getDriver_license_state());
 
             if (data.getDocuments() != null && data.getDocuments().size() > 0) {
 
                 documentsList = data.getDocuments();
-
                 documentListAdapter = new DocumentListAdapter(getActivity(), documentsList, this);
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
                 recyclerViewDocuments.setLayoutManager(mLayoutManager);
@@ -705,14 +719,16 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         if (Utils.isNetworkAvailable(getActivity())) {
 
             ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
-            modelUpdateProfileRequest.setSmoke(smokeCheckBox.isChecked() ? true : false);
+            modelUpdateProfileRequest.setSmoke(smokeCheckBox.isChecked());
             modelUpdateProfileRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
-            modelUpdateProfileRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
+            modelUpdateProfileRequest.setAllowKids(kidsCheckBox.isChecked());
             modelUpdateProfileRequest.setVehicleBrand(vehicleTxt.getText().toString());
             modelUpdateProfileRequest.setVehicle(vehicleModelTxt.getText().toString());
             modelUpdateProfileRequest.setVehicleNumber(vehicleRegistrationTxt.getText().toString());
             modelUpdateProfileRequest.setVehicleYear(Integer.parseInt(vehicleYearTxt.getText().toString()));
             modelUpdateProfileRequest.setVehicleColor(vehicleColorTxt.getText().toString());
+            modelUpdateProfileRequest.setDriver_license_number(driving_lic_number_txt.getText().toString());
+            modelUpdateProfileRequest.setDriver_license_state(driving_lic_state_txt.getText().toString());
 
             Log.i("Driving DETAILS", "DRIVE PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
 
@@ -724,7 +740,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
-
                         if (response.body() != null) {
                             Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
 
@@ -737,7 +752,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
-
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }
@@ -755,9 +769,9 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         if (Utils.isNetworkAvailable(getActivity())) {
 
             ModelUpdateProfileRequest modelUpdateProfileRequest = new ModelUpdateProfileRequest();
-            modelUpdateProfileRequest.setSmoke(smokeCheckBox.isChecked() ? true : false);
+            modelUpdateProfileRequest.setSmoke(smokeCheckBox.isChecked());
             modelUpdateProfileRequest.setBags(bagsCheckBox.isChecked() ? 1 : 0);
-            modelUpdateProfileRequest.setAllowKids(kidsCheckBox.isChecked() ? true : false);
+            modelUpdateProfileRequest.setAllowKids(kidsCheckBox.isChecked());
 
             Log.i("Driving DETAILS", "DRIVE PROFILE REQUEST: " + modelUpdateProfileRequest.toString());
 
@@ -771,8 +785,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                     public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
 
                         if (response.body() != null) {
-//                            Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-
                             Utils.getUserProfile(getActivity());
                         } else {
                             Toast.makeText(getActivity(), response.message(), Toast.LENGTH_LONG).show();

@@ -218,7 +218,6 @@ public class PersonalProfileFragment extends Fragment implements View.OnClickLis
                 trips.setText(data.getTrips() + "");
 
                 handleGenderPreferences(data);
-
             }
         } catch (Exception e) {
             e.printStackTrace();

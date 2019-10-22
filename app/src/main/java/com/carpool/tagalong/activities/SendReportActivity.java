@@ -27,6 +27,7 @@ public class SendReportActivity extends AppCompatActivity implements ReportAdapt
     private List<ModelReport> modelReportList = new ArrayList<>();
     private int[] drawableArray = new int[]{R.drawable.ic_ic_traffic_jam, R.drawable.ic_ic_police, R.drawable.ic_ic_accident, R.drawable.ic_ic_caution, R.drawable.ic_ic_road_closer, R.drawable.ic_ic_roadside_help, R.drawable.ic_ic_info};
     private String[] reportStrings = new String[]{"Traffic", "Police", "Crash", "Hazard", "Closure", "Roadside\n help", "Info"};
+    String startLoc, endLoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,19 @@ public class SendReportActivity extends AppCompatActivity implements ReportAdapt
 
         ReportAdapter reportAdapter = new ReportAdapter(this, modelReportList, this);
         reportRecyclerView.setAdapter(reportAdapter);
+
+        if (getIntent().getExtras() != null) {
+
+            if (getIntent().getExtras().containsKey("startLoc")) {
+
+                startLoc = getIntent().getExtras().getString("startLoc");
+            }
+
+            if (getIntent().getExtras().containsKey("endLoc")) {
+
+                endLoc = getIntent().getExtras().getString("endLoc");
+            }
+        }
     }
 
     @Override
@@ -57,10 +71,12 @@ public class SendReportActivity extends AppCompatActivity implements ReportAdapt
 
             Intent intent = new Intent(this, SendReportDetailActivity.class);
             intent.putExtra("type", modelReport.getActionName());
+            intent.putExtra("startLoc", startLoc);
+            intent.putExtra("endLoc", endLoc);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityForResult(intent, REQUEST_CODE);
         } else
-            Utils.sendReportToServer(SendReportActivity.this, "", modelReport.getActionName(), "");
+            Utils.sendReportToServer(SendReportActivity.this, startLoc, endLoc, modelReport.getActionName(), "");
     }
 
     @Override

@@ -20,6 +20,11 @@ public class ModelUserDriverDetails {
     public int vehicleYear;
     @SerializedName("vehicleColor")
     public String vehicleColor;
+    @SerializedName("driver_license_number")
+    public String driver_license_number;
+
+    @SerializedName("driver_license_state")
+    public String driver_license_state;
 
     public boolean isSmoke() {
         return smoke;
@@ -85,6 +90,22 @@ public class ModelUserDriverDetails {
         this.vehicleColor = vehicleColor;
     }
 
+    public String getDriver_license_number() {
+        return driver_license_number;
+    }
+
+    public void setDriver_license_number(String driver_license_number) {
+        this.driver_license_number = driver_license_number;
+    }
+
+    public String getDriver_license_state() {
+        return driver_license_state;
+    }
+
+    public void setDriver_license_state(String driver_license_state) {
+        this.driver_license_state = driver_license_state;
+    }
+
     @Override
     public String toString() {
         return "ModelUserDriverDetails{" +
@@ -96,6 +117,8 @@ public class ModelUserDriverDetails {
                 ", vehicleNumber='" + vehicleNumber + '\'' +
                 ", vehicleYear=" + vehicleYear +
                 ", vehicleColor='" + vehicleColor + '\'' +
+                ", driver_license_number='" + driver_license_number + '\'' +
+                ", driver_license_state='" + driver_license_state + '\'' +
                 '}';
     }
 }

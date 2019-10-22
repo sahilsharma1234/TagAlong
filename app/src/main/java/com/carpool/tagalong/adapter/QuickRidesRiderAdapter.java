@@ -12,7 +12,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
-import com.carpool.tagalong.models.emergencysos.ModelGetEmergencyRidesResponse;
 
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class QuickRidesRiderAdapter extends RecyclerView.Adapter<QuickRidesRider
         if(onBoards.get(position).getStatus() == Constants.ACCEPTED){
 
             holder.riderStatus.setText("PICKUP");
-        }else{
+        } else if (onBoards.get(position).getStatus() == Constants.PICKUP) {
             holder.riderStatus.setText("DROP");
         }
 

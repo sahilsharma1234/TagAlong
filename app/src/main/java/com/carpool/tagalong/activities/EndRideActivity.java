@@ -128,6 +128,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 endPin.setVisibility(View.VISIBLE);
+                sendReportActionButton.setVisibility(View.VISIBLE);
                 getLatLongByPlace(placeIdList.get(position), Constants.END_RIDE);
             }
         });
@@ -160,6 +161,7 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        sendReportActionButton.setVisibility(View.GONE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_backxhdpi, null));
@@ -393,6 +395,8 @@ public class EndRideActivity extends BaseActivity implements View.OnClickListene
     private void handleReportActionButtonClick() {
 
         Intent intent = new Intent(context, SendReportActivity.class);
+        intent.putExtra("startLoc", startLocation);
+        intent.putExtra("endLoc", endRide.getText().toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

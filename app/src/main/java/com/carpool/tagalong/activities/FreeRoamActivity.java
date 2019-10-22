@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,6 +58,7 @@ import com.carpool.tagalong.utils.Utils;
 import com.carpool.tagalong.views.RegularEditText;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.ncorti.slidetoact.SlideToActView;
+import com.sinch.android.rtc.SinchClient;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -86,6 +86,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     LinearLayout rootll;
     ArgbEvaluator argbEvaluator;
     TextView txt;
+    TextView waitingTxt;
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
     private Context context;
@@ -100,7 +101,7 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
         }
     };
     private RelativeLayout riderDtlsLyt;
-    TextView waitingTxt ;
+    private SinchClient sinchClient;
     private ModelGetCurrentRideResponse.RideData rideData = null;
     private BroadcastReceiver riderListener = new BroadcastReceiver() {
 
@@ -548,12 +549,22 @@ public class FreeRoamActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onCallUserClick(ModelGetCurrentRideResponse.OnBoard onboard) {
 
-        Intent call = new Intent(Intent.ACTION_CALL);
-        call.setData(Uri.parse("tel:" + onboard.getMobileNo()));
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        startActivity(call);
+//        Intent call = new Intent(Intent.ACTION_CALL);
+//        call.setData(Uri.parse("tel:" + onboard.getMobileNo()));
+//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        startActivity(call);
+
+        openPlaceCallActivity(onboard);
+    }
+
+    private void openPlaceCallActivity(ModelGetCurrentRideResponse.OnBoard onboard) {
+        Intent mainActivity = new Intent(this, PlaceCallActivity.class);
+        mainActivity.putExtra("callerId", onboard.getUserId());
+        mainActivity.putExtra("recepientName", onboard.getUserName());
+        mainActivity.putExtra("recepientImage", onboard.getProfile_pic());
+        startActivity(mainActivity);
     }
 
     private void showDialogAlert(final ModelGetCurrentRideResponse.OnBoard onBoard) {

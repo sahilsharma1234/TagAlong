@@ -393,13 +393,14 @@ public class Utils {
         notificationManager.cancelAll();
     }
 
-    public static void sendReportToServer(final Activity context, String rideId, String reportTitle, String reportDesc) {
+    public static void sendReportToServer(final Activity context, String startLocation, String endLocation, String reportTitle, String reportDesc) {
 
         try {
             if (Utils.isNetworkAvailable(context)) {
 
                 ModelSendReportRequest modelSendReportRequest = new ModelSendReportRequest();
-                modelSendReportRequest.setRideId(rideId);
+                modelSendReportRequest.setStartLocation(startLocation);
+                modelSendReportRequest.setEndLocation(endLocation);
                 modelSendReportRequest.setReportTitle(reportTitle);
                 modelSendReportRequest.setReportDescription(reportDesc);
 

@@ -242,6 +242,8 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
             return;
         }
         startActivity(call);
+
+        openPlaceCallActivity(ride);
     }
 
     @Override
@@ -317,5 +319,13 @@ public class EmergencyRideActivity extends AppCompatActivity implements OnMapRea
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void openPlaceCallActivity(ModelGetEmergencyRidesResponse.RiderList onboard) {
+        Intent mainActivity = new Intent(this, PlaceCallActivity.class);
+        mainActivity.putExtra("callerId", onboard.get_id());
+        mainActivity.putExtra("recepientName", onboard.getUserName());
+        mainActivity.putExtra("recepientImage", onboard.getProfile_pic());
+        startActivity(mainActivity);
     }
 }

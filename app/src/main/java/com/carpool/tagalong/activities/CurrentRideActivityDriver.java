@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -345,7 +346,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void uploadPic() {
 
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("video/*, image/*");
+//        intent.setType("video/* image/*");
+        intent.setType("image/*");
         startActivityForResult(intent, IMAGE_PICK_REQUEST);
     }
 
@@ -421,10 +423,21 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == IMAGE_PICK_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
             Uri uri = data.getData();
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.putExtra("image_uri", uri.toString());
-            startActivityForResult(intent, Constants.IMAGE_FILTER_CODE);
+
+            if (uri.toString().toLowerCase().contains("images/media")) {
+
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("image_uri", uri.toString());
+                startActivityForResult(intent, Constants.IMAGE_FILTER_CODE);
+            } else {
+                selectImageForPost.setVisibility(View.GONE);
+                selectedImageForPost.setVisibility(View.VISIBLE);
+                selectedImageForPost.setImageBitmap(getThumbnailFromVideoUri(uri));
+                postPath = getPath(uri);
+            }
+
         } else if (requestCode == Constants.IMAGE_FILTER_CODE && resultCode == RESULT_OK && data != null) {
 
             if (data.getExtras() != null) {
@@ -918,7 +931,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 @Override
                 public void onClick(View v) {
 
-                    rateRider(onBoard, feedBackComments.getText().toString(),String.valueOf(ratingBar.getRating()));
+                    rateRider(onBoard, feedBackComments.getText().toString(), String.valueOf(ratingBar.getRating()));
                     finalAlertDialog.cancel();
                 }
             });
@@ -1125,11 +1138,20 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 File file = new File(getPath(Uri.parse(mediaPath)));
 
                 RequestBody type = RequestBody.create(MediaType.parse("text/plain"), Constants.TYPE_IMAGE);
-
                 RequestBody rideId = RequestBody.create(MediaType.parse("text/plain"), modelGetRideDetailsResponse.getRideData().get_id());
 
-                // Create a request body with file and image/video media type
-                RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
+                RequestBody fileReqBody =
+                        RequestBody.create(
+                                MediaType.parse(getContentResolver().getType(Uri.parse(mediaPath))),
+                                file
+                        );
+//
+//                if(mediatype.equalsIgnoreCase("video")){
+//                    fileReqBody = RequestBody.create(MediaType.parse("video/*"), file);
+//                }
+//                else {
+//                    fileReqBody = RequestBody.create(MediaType.parse("image/png"), file);
+//                }
 
                 // Create MultipartBody.Part using file request-body,file name and part name
                 MultipartBody.Part part = MultipartBody.Part.createFormData("media", file.getName(), fileReqBody);
@@ -1376,13 +1398,13 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     .load(joinRequest.getProfile_pic())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);
-            rating.setText(joinRequest.getRating()+"");
+            rating.setText(joinRequest.getRating() + "");
 
             name.setText(joinRequest.getUserName());
             source_loc.setText(joinRequest.getStartLocation());
             dest_loc.setText(joinRequest.getEndLocation());
             time.setText(joinRequest.getRideDateTime());
-            fare_amount.setText("$ "+joinRequest.getEstimatedFare());
+            fare_amount.setText("$ " + joinRequest.getEstimatedFare());
 
             slideToActView.setVisibility(View.GONE);
 
@@ -1452,7 +1474,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);
 
-            rating.setText(onBoard.getRating()+"");
+            rating.setText(onBoard.getRating() + "");
 
             name.setText(onBoard.getUserName());
             source_loc.setText(onBoard.getStartLocation());
@@ -1749,5 +1771,18 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
         ratingFinal = String.valueOf(rating);
+    }
+
+    private Bitmap getThumbnailFromVideoUri(Uri uri) {
+
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+
+        Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(picturePath, MediaStore.Video.Thumbnails.MICRO_KIND);
+        return bitmap;
     }
 }
