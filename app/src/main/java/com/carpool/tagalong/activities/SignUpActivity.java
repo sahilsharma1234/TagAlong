@@ -90,11 +90,11 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
         register        = findViewById(R.id.register);
         signInText      = findViewById(R.id.signintext);
         callbackManager = CallbackManager.Factory.create();
-//        facebookSignUp  = findViewById(R.id.facebookSignUp);
+//      facebookSignUp  = findViewById(R.id.facebookSignUp);
         loginButton     = new LoginButton(context);
         signupProgressBarLyt    = findViewById(R.id.lytBarSignUp);
         countryCodePicker       = findViewById(R.id.countryCodeSignUp);
-        countryCodePicker.setCustomMasterCountries("us");
+//        countryCodePicker.setCustomMasterCountries("us");
         register.setOnClickListener(this);
         makeSignInTextSpannable();
 //

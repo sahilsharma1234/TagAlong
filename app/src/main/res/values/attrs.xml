@@ -25,4 +25,9 @@
         <attr format="boolean" name="state_filled"/>
         <attr format="boolean" name="rtlTextDirection"/>
     </declare-styleable>
+
+
+    <declare-styleable name="RegularTextView">
+        <attr name="customFont" format="string" />
+    </declare-styleable>
 </resources>

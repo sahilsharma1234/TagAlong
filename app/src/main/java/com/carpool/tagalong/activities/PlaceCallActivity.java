@@ -1,15 +1,7 @@
 package com.carpool.tagalong.activities;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -17,14 +9,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.service.SinchService;
 import com.sinch.android.rtc.calling.Call;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class PlaceCallActivity extends BaseActivityCalling {
@@ -35,7 +25,9 @@ public class PlaceCallActivity extends BaseActivityCalling {
     private OnClickListener buttonClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+
             switch (v.getId()) {
+
                 case R.id.callButton:
                     callButtonClicked();
                     break;
@@ -43,7 +35,6 @@ public class PlaceCallActivity extends BaseActivityCalling {
                 case R.id.stopButton:
                     stopButtonClicked();
                     break;
-
             }
         }
     };
@@ -62,20 +53,16 @@ public class PlaceCallActivity extends BaseActivityCalling {
         stopButton.setOnClickListener(buttonClickListener);
 
         if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().get("callerId") != null) {
 
-                recepientId = getIntent().getExtras().get("callerId").toString();
-
-//                mCallName.setText(getIntent().getExtras().get("callerId").toString());
+            if (getIntent().getExtras().get(Constants.CALLERID) != null) {
+                recepientId = getIntent().getExtras().get(Constants.CALLERID).toString();
             }
-            if (getIntent().getExtras().get("recepientName") != null) {
-
-                recepientname = getIntent().getExtras().get("recepientName").toString();
+            if (getIntent().getExtras().get(Constants.RECEPIENTNAME) != null) {
+                recepientname = getIntent().getExtras().get(Constants.RECEPIENTNAME).toString();
                 mCallName.setText(recepientname);
             }
-            if (getIntent().getExtras().get("recepientImage") != null) {
-
-                recepientImage = getIntent().getExtras().get("recepientImage").toString();
+            if (getIntent().getExtras().get(Constants.RECEPIENTIMAGE) != null) {
+                recepientImage = getIntent().getExtras().get(Constants.RECEPIENTIMAGE).toString();
             }
         }
     }
@@ -83,28 +70,22 @@ public class PlaceCallActivity extends BaseActivityCalling {
     @Override
     protected void onServiceConnected() {
         TextView userName = findViewById(R.id.loggedInName);
-//        userName.setText(getSinchServiceInterface().getUserName());
         userName.setText(TagALongPreferenceManager.getDeviceProfile(this).getUserName());
         mCallButton.setEnabled(true);
     }
 
     @Override
     public void onDestroy() {
-//        if (getSinchServiceInterface() != null) {
-//            getSinchServiceInterface().stopClient();
-//        }
         super.onDestroy();
     }
 
     private void stopButtonClicked() {
-//        if (getSinchServiceInterface() != null) {
-//            getSinchServiceInterface().stopClient();
-//        }
         finish();
     }
 
     private void callButtonClicked() {
 
+/*
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -119,18 +100,17 @@ public class PlaceCallActivity extends BaseActivityCalling {
         Location lastLoc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         Double longitude = lastLoc.getLongitude();
         Double latitude = lastLoc.getLatitude();
-
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+     /*   Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put("callerName", TagALongPreferenceManager.getDeviceProfile(this).getUserName());
-        headers.put("callerImage", TagALongPreferenceManager.getDeviceProfile(this).getProfile_pic());
+        headers.put(Constants.CALLERNAME, TagALongPreferenceManager.getDeviceProfile(this).getUserName());
+        headers.put(Constants.CALLERIMAGE, TagALongPreferenceManager.getDeviceProfile(this).getProfile_pic());
 
 //        String userName = mCallName.getText().toString();
         if (recepientId.isEmpty()) {
@@ -143,8 +123,8 @@ public class PlaceCallActivity extends BaseActivityCalling {
 
         Intent callScreen = new Intent(this, CallScreenActivity.class);
         callScreen.putExtra(SinchService.CALL_ID, callId);
-        callScreen.putExtra("recepientname", recepientname);
-        callScreen.putExtra("recepientImage", recepientImage);
+        callScreen.putExtra(Constants.RECEPIENTNAME, recepientname);
+        callScreen.putExtra(Constants.RECEPIENTIMAGE, recepientImage);
         startActivity(callScreen);
     }
 }

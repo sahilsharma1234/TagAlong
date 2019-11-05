@@ -62,4 +62,9 @@ public class Constants {
     public static final String LAUNCH_CURRENT_RIDE_FRAGMENT = "launchCurrentRideFragment";
     public static final String SINCH_KEY = "b36d023d-4349-463a-a1ba-ad07fb7675d9";
     public static final String SINCH_SECRET = "SBbKAwHqjEq1EK/7QdJI5w==";
+    public static final String RECEPIENTNAME = "recepientName";
+    public static final String RECEPIENTIMAGE = "recepientImage";
+    public static final String CALLERID = "callerId";
+    public static final String CALLERNAME = "callerName";
+    public static final String CALLERIMAGE = "callerImage";
 }

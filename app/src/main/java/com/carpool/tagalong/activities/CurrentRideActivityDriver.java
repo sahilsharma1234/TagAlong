@@ -44,7 +44,6 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.carpool.tagalong.R;
@@ -339,8 +338,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 .placeholder(R.drawable.avatar_avatar_12)
                 .error(R.drawable.avatar_avatar_12);
 
-        Glide.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(profilePic);
-        Glide.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(postPic);
+        GlideApp.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(profilePic);
+        GlideApp.with(context).load(modelGetRideDetailsResponse.getRideData().getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(postPic);
     }
 
     private void uploadPic() {
@@ -919,7 +918,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                     .placeholder(R.drawable.avatar_avatar_12)
                     .error(R.drawable.avatar_avatar_12);
 
-            Glide.with(context).load(onBoard.getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(user_image);
+            GlideApp.with(context).load(onBoard.getProfile_pic()).diskCacheStrategy(DiskCacheStrategy.ALL).apply(options).into(user_image);
 
             iv_userName.setText(onBoard.getUserName());
 
@@ -1394,7 +1393,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
             seats_selected.setText(seatMap.get(joinRequest.getNoOfSeats()));
             driver_address.setText(joinRequest.getAddress());
 
-            Glide.with(context)
+            GlideApp.with(context)
                     .load(joinRequest.getProfile_pic())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profilePic);

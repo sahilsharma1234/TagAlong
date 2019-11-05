@@ -69,7 +69,6 @@ import static android.app.Activity.RESULT_OK;
 public class DrivingProfileFragment extends Fragment implements View.OnClickListener, DocumentListAdapter.drivinginteraction {
 
     private static final int MY_PERMISSIONS_REQUEST = 133;
-    private static final int IMAGE_PICK_REQUEST = 135;
     private static final int GALLERY_PICTURE = 125;
     private static final int CAMERA_PICTURE = 126;
     private com.carpool.tagalong.views.RegularTextView vehicleTxt, vehicleRegistrationTxt, vehicleYearTxt, vehicleColorTxt, vehicleModelTxt, driving_lic_number_txt, driving_lic_state_txt;
@@ -144,7 +143,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-
                     DataManager.getModelUserProfileData().getDriverDetails().setSmoke(true);
                 } else {
                     DataManager.getModelUserProfileData().getDriverDetails().setSmoke(false);
@@ -465,9 +463,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         if (data != null) {
             //brand set
             for (int i = 0; i < vehicleBrandArrayList.size(); i++) {
-
                 if (data.getDriverDetails().getVehicleBrand().equalsIgnoreCase(vehicleBrandArrayList.get(i))) {
-
                     vehicleBrandSpinner.setSelection(i);
                     break;
                 }
@@ -475,11 +471,8 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             // model set
             for (int i = 0; i < vehicleModelArrayList.size(); i++) {
-
                 if (data.getDriverDetails().getVehicle() != null) {
-
                     if (data.getDriverDetails().getVehicle().equalsIgnoreCase(vehicleModelArrayList.get(i))) {
-
                         vehicleModelSpinner.setSelection(i);
                         break;
                     }
@@ -488,7 +481,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             // year set
             for (int i = 0; i < vehicleYearArrayList.size(); i++) {
-
                 if (data.getDriverDetails().getVehicleYear() == vehicleYearArrayList.get(i)) {
                     vehicleYearSpinner.setSelection(i);
                     break;
@@ -497,13 +489,12 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
             // color set
             for (int i = 0; i < vehicleColorArrayList.size(); i++) {
-
                 if (data.getDriverDetails().getVehicleColor().equalsIgnoreCase(vehicleColorArrayList.get(i))) {
-
                     vehicleColorSpinner.setSelection(i);
                     break;
                 }
             }
+
             vehicleRegNumEdt.setText(vehicleRegistrationTxt.getText().toString());
             driving_lic_state_edt.setText(driving_lic_state_txt.getText().toString());
             driving_lic_number_edt.setText(driving_lic_number_txt.getText().toString());
@@ -573,7 +564,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
                 handleStartSetup();
             }
         });
-
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -614,21 +604,16 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             Bitmap bitmap;
 
             if (code == 0) {
-
                 if (data != null) {
                     Uri uri = data.getData();
-
                     bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-
                     if (bitmap != null) {
-
                         uploadDocToServer(uri);
                     }
                 }
             } else {
                 bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoURi);
                 if (bitmap != null) {
-
                     uploadDocToServer(null);
                 }
             }
@@ -657,9 +642,11 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
         if (Utils.isNetworkAvailable(getActivity())) {
 
             progressBarLyt.setVisibility(View.VISIBLE);
+
             RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
 
             if (restClientRetrofitService != null) {
+
                 restClientRetrofitService.uploadDocuments(TagALongPreferenceManager.getToken(getActivity()), part, type).enqueue(new Callback<ModelDocumentStatus>() {
 
                     @Override
@@ -740,6 +727,7 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
                         if (response.body() != null) {
                             Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
 
@@ -868,7 +856,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
             ArrayAdapter<String> brandAdapter = new ArrayAdapter<String>
                     (getActivity(), android.R.layout.simple_spinner_item,
                             vehicleBrandArrayList); //selected item will look like a spinner set from XML
-
             brandAdapter.setDropDownViewResource(android.R.layout
                     .simple_spinner_dropdown_item);
 
@@ -878,7 +865,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
     @Override
     public void deleteDocument(String documentId, int index) {
-
         deleteDocumentFromServer(documentId);
         documentsList.remove(index);
         documentListAdapter.notifyDataSetChanged();
@@ -896,7 +882,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
-
                         if (response.body() != null) {
                             Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                             Utils.getUserProfile(getActivity());
@@ -907,7 +892,6 @@ public class DrivingProfileFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
-
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();
                         }

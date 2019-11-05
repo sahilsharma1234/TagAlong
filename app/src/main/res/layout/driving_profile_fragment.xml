@@ -483,6 +483,7 @@
                         android:backgroundTint="@color/colorGold"
                         android:imeOptions="actionDone"
                         android:singleLine="true"
+                        android:maxLength="20"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:visibility="gone" />
@@ -519,6 +520,7 @@
                         android:backgroundTint="@color/colorGold"
                         android:imeOptions="actionDone"
                         android:singleLine="true"
+                        android:maxLength="10"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:visibility="gone" />

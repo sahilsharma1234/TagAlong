@@ -69,7 +69,7 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
         forgotPassword = findViewById(R.id.forgotPassword);
         progressBarLayout = findViewById(R.id.lytBarSignIn);
         countryCodePickerSignIn = findViewById(R.id.countryCodeSignIn);
-        countryCodePickerSignIn.setCustomMasterCountries("us");
+//        countryCodePickerSignIn.setCustomMasterCountries("us");
 
         login.setOnClickListener(this);
         forgotPassword.setOnClickListener(this);

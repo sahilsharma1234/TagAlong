@@ -1163,9 +1163,7 @@ public class CurrentRideActivity extends AppCompatActivity implements View.OnCli
             final View dialogView = inflater.inflate(R.layout.welcome_onboard, null);
             dialogBuilder.setCancelable(false);
             dialogBuilder.setView(dialogView);
-
             alertDialog = dialogBuilder.create();
-
             okButton = dialogView.findViewById(R.id.ok);
 
             okButton.setOnClickListener(new View.OnClickListener() {

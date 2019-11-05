@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.constants.Constants;
 import com.carpool.tagalong.glide.GlideApp;
 import com.carpool.tagalong.service.SinchService;
 import com.sinch.android.rtc.PushPair;
@@ -58,8 +59,8 @@ public class CallScreenActivity extends BaseActivityCalling {
         });
         mCallStart = System.currentTimeMillis();
         mCallId = getIntent().getStringExtra(SinchService.CALL_ID);
-        remoteCallerName = getIntent().getStringExtra("recepientname");
-        image = getIntent().getStringExtra("recepientImage");
+        remoteCallerName = getIntent().getStringExtra(Constants.RECEPIENTNAME);
+        image = getIntent().getStringExtra(Constants.RECEPIENTIMAGE);
         profileImage = findViewById(R.id.profileImage);
 
         GlideApp.with(this).asBitmap().load(image).dontAnimate().diskCacheStrategy(DiskCacheStrategy.ALL).into(profileImage);

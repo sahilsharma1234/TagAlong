@@ -1053,9 +1053,9 @@ public class QuickSearchRideActivity extends BaseActivity implements View.OnClic
 
     private void openPlaceCallActivity(ModelQuickRideBookResponse modelQuickRideBookResponse) {
         Intent mainActivity = new Intent(this, PlaceCallActivity.class);
-        mainActivity.putExtra("callerId", modelQuickRideBookResponse.getDriverDetails().get_id());
-        mainActivity.putExtra("recepientName", modelQuickRideBookResponse.getDriverDetails().getUserName());
-        mainActivity.putExtra("recepientImage", modelQuickRideBookResponse.getDriverDetails().getProfile_pic());
+        mainActivity.putExtra(Constants.CALLERID, modelQuickRideBookResponse.getDriverDetails().get_id());
+        mainActivity.putExtra(Constants.RECEPIENTNAME, modelQuickRideBookResponse.getDriverDetails().getUserName());
+        mainActivity.putExtra(Constants.RECEPIENTIMAGE, modelQuickRideBookResponse.getDriverDetails().getProfile_pic());
         startActivity(mainActivity);
     }
 

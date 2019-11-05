@@ -15,13 +15,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.carpool.tagalong.R;
+import com.carpool.tagalong.glide.GlideApp;
 import com.carpool.tagalong.models.ModelDocuments;
 
 import java.io.ByteArrayOutputStream;
@@ -60,7 +60,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
             public void run() {
                 myViewHolder.progressBar.setVisibility(View.VISIBLE);
 
-                Glide.with(context).asBitmap().load(documentsList.get(i).getUrl())
+                GlideApp.with(context).asBitmap().load(documentsList.get(i).getUrl())
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .listener(new RequestListener<Bitmap>() {
 
@@ -145,7 +145,6 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
             delete_document    = view.findViewById(R.id.delete);
             refresh_document   = view.findViewById(R.id.reload);
             progressBar        = view.findViewById(R.id.documentBar);
-
         }
     }
 
