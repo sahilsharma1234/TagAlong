@@ -1,19 +1,19 @@
 package com.carpool.tagalong.views;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.carpool.tagalong.R;
-
 
 public class RegularTextView extends android.support.v7.widget.AppCompatTextView {
-    private static final String asset = "fonts/roboto/roboto_regular.ttf";
+    private static final String asset = "fonts/roboto_regular.ttf";
 
     public RegularTextView(Context context) {
         super(context);
+        Typeface face = Typeface.createFromAsset(context.getAssets(), asset);
+        setTypeface(face);
+
     }
 
     public RegularTextView(Context context, AttributeSet attrs) {
@@ -28,10 +28,10 @@ public class RegularTextView extends android.support.v7.widget.AppCompatTextView
 
     public void setCustomFont(Context ctx, AttributeSet attrs) {
 
-        TypedArray a = ctx.obtainStyledAttributes(attrs, R.styleable.RegularTextView);
-        String customFont = a.getString(R.styleable.RegularTextView_customFont);
-        setCustomFont(ctx, customFont);
-        a.recycle();
+//        TypedArray a = ctx.obtainStyledAttributes(attrs, R.styleable.RegularTextView);
+//        String customFont = a.getString(R.styleable.RegularTextView_customFont);
+        setCustomFont(ctx, asset);
+//        a.recycle();
     }
 
     public boolean setCustomFont(Context ctx, String asset) {

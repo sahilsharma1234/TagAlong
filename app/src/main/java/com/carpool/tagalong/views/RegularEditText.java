@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 
 
 public class RegularEditText extends android.support.v7.widget.AppCompatEditText {
-    private static final String asset = "fonts/roboto/roboto_regular.ttf";
+    private static final String asset = "fonts/roboto_regular.ttf";
 
     public RegularEditText(Context context) {
         super(context);

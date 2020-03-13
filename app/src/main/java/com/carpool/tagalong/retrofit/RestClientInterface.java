@@ -6,10 +6,12 @@ import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelForgotPasswordRequest;
 import com.carpool.tagalong.models.ModelForgotPasswordResponse;
+import com.carpool.tagalong.models.ModelGetAccessTokenResponse;
 import com.carpool.tagalong.models.ModelGetAllRidesResponse;
 import com.carpool.tagalong.models.ModelGetCarBrandModelResponse;
 import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
+import com.carpool.tagalong.models.ModelGetCountryListResponse;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetDriverProfileResponse;
 import com.carpool.tagalong.models.ModelGetEstimatedFareRequest;
@@ -18,9 +20,11 @@ import com.carpool.tagalong.models.ModelGetNearbyDriversRequest;
 import com.carpool.tagalong.models.ModelGetNearbyDriversResponse;
 import com.carpool.tagalong.models.ModelGetRecentRidesResponse;
 import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
+import com.carpool.tagalong.models.ModelGetRiderCreditCardDetails;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
 import com.carpool.tagalong.models.ModelGetUserLocationResponse;
+import com.carpool.tagalong.models.ModelInitializePayementTransaction;
 import com.carpool.tagalong.models.ModelLogoutResponse;
 import com.carpool.tagalong.models.ModelPickupRider;
 import com.carpool.tagalong.models.ModelQuickRideBookResponse;
@@ -69,6 +73,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -79,7 +84,7 @@ public interface RestClientInterface {
 
     @Multipart
     @retrofit2.http.POST("user/user_register")
-    Call<ModelSignUpResponse> registerUser(@Part(Constants.USERNAME) RequestBody userName, @Part(Constants.EMAIL) RequestBody email, @Part(Constants.MOBILENO) RequestBody mobileNo, @Part(Constants.ADDRESS) RequestBody address, @Part(Constants.PASSWORD) RequestBody password, @Part(Constants.REPASSWORD) RequestBody rePassword, @Part(Constants.DEVICE_TOKEN_STRING) RequestBody deviceToken, @Part(Constants.DEVICE_TYPE_STRING) RequestBody deviceType);
+    Call<ModelSignUpResponse> registerUser(@Part(Constants.USERNAME) RequestBody userName, @Part(Constants.EMAIL) RequestBody email, @Part(Constants.MOBILENO) RequestBody mobileNo, @Part(Constants.ADDRESS) RequestBody address, @Part(Constants.PASSWORD) RequestBody password, @Part(Constants.REPASSWORD) RequestBody rePassword, @Part(Constants.DEVICE_TOKEN_STRING) RequestBody deviceToken, @Part(Constants.DEVICE_TYPE_STRING) RequestBody deviceType, @Part(Constants.COUNTRYID) RequestBody countryID, @Part(Constants.USER_TYPE) RequestBody type);
 
     @retrofit2.http.POST("user/signin")
     Call<ModelSignInResponse> signIn(@Body ModelSignInRequest getCategoryAlertDataRequest);
@@ -245,4 +250,17 @@ public interface RestClientInterface {
 
     @retrofit2.http.POST("user/send_route_report")
     Call<ModelDocumentStatus> sendRouteReport(@Header("x-auth") String value, @Body ModelSendReportRequest modelSendReportRequest);
+
+    @retrofit2.http.GET("admin/get_country_list")
+    Call<ModelGetCountryListResponse> getCountryList();
+
+    @retrofit2.http.POST("ride/initialize_transaction")
+    Call<ModelGetAccessTokenResponse> initializeTransaction(@Header("x-auth") String value, @Body ModelInitializePayementTransaction modelInitializePayementTransaction);
+
+    @retrofit2.http.GET("ride/get_rider_credit_card/{id}")
+    Call<ModelGetRiderCreditCardDetails> getRiderCreditCard(@Header("x-auth") String value, @Path(value = "id") String userId);
+
+    @retrofit2.http.GET("ride/verify_transaction/{reference}")
+    Call<ModelDocumentStatus> verifyTransaction(@Header("x-auth") String value, @Path(value = "reference") String reference);
+
 }

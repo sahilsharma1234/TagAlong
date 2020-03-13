@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 
 public class TextViewLight extends android.support.v7.widget.AppCompatTextView{
 
-    private final String fontFamily = "grotesk_light.otf";
+    private final String fontFamily = "fonts/grotesk_light.otf";
 
     public TextViewLight(Context context) {
         super(context);

@@ -84,6 +84,7 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
 
     private static final int FACEBOOK_SHARE_REQUEST_CODE = 106;
     private static final int LOCATION_REQUEST_CODE = 178;
+    public static SinchClient sinchClient;
     private static HomeActivity homeActivity;
     boolean doubleBackToExitPressedOnce = false;
     private LinearLayout toolbarLayout;
@@ -99,7 +100,6 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
     private CircleImageView userImage;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-    public static SinchClient sinchClient;
     private BroadcastReceiver listener = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -199,8 +199,6 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
         if (TagALongPreferenceManager.getDeviceProfile(this) != null) {
             userName.setText(TagALongPreferenceManager.getDeviceProfile(context).getUserName());
             address.setText(TagALongPreferenceManager.getDeviceProfile(context).getAddress());
-
-//            registerSinchClient(TagALongPreferenceManager.getDeviceProfile(context));
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()
@@ -355,18 +353,15 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
                         handleProfileLayoutClick(ProfileFragment.ID_PERSONAL);
                     }
                 });
-
                 break;
 
             case R.id.home_layout:
-
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
                         handleHomeLayoutClick();
                     }
                 });
-
                 break;
 
             case R.id.recent_ride_layout:
@@ -387,8 +382,6 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
                         handleCurrentAndUpcomingRideLayoutClick();
                     }
                 });
-//                handleCurrentRideLayoutClick();
-
                 break;
 
             case R.id.profile_layout:
@@ -416,7 +409,6 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
                         handleHelpAndSupportLyt();
                     }
                 });
-
                 break;
 
             case R.id.about_us:
@@ -426,7 +418,6 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
                         handleAboutUsLyt();
                     }
                 });
-
                 break;
         }
     }
@@ -489,10 +480,8 @@ public class HomeActivity extends BaseActivityCalling implements SinchService.St
                                 DataManager.setModelSearchRideRequest(null);
                                 TagALongPreferenceManager.setDocumentUploadedStatus(context, false);
                                 if (Utils.isJobServiceOn(context)) {
-
                                     JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
                                     jobScheduler.cancel(3);
-
                                 }
                             }
                         }

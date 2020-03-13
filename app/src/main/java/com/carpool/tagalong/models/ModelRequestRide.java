@@ -34,6 +34,16 @@ public class ModelRequestRide {
     public double estimatedFare;
     @SerializedName("distBtwSrcDest")
     public double distBtwSrcDest;
+    @SerializedName("payMethod")
+    public String payMethod;
+
+    public String getPayMethod() {
+        return payMethod;
+    }
+
+    public void setPayMethod(String payMethod) {
+        this.payMethod = payMethod;
+    }
 
     public String getRideId() {
         return rideId;
@@ -155,7 +165,6 @@ public class ModelRequestRide {
         this.distBtwSrcDest = distBtwSrcDest;
     }
 
-
     @Override
     public String toString() {
         return "ModelRequestRide{" +
@@ -174,6 +183,7 @@ public class ModelRequestRide {
                 ", bags=" + bags +
                 ", estimatedFare=" + estimatedFare +
                 ", distBtwSrcDest=" + distBtwSrcDest +
+                ", payMethod='" + payMethod + '\'' +
                 '}';
     }
 }

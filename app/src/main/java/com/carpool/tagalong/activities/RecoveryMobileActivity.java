@@ -50,7 +50,6 @@ public class RecoveryMobileActivity extends AppCompatActivity {
         sendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 handleSendButtonClick();
             }
         });

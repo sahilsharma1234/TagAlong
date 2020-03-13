@@ -302,7 +302,6 @@
                         app:backgroundTint="#bf9b30"
                         app:ccp_autoDetectCountry="true"
                         app:ccp_autoDetectLanguage="true"
-                        app:ccp_countryAutoDetectionPref="SIM_NETWORK_LOCALE"
                         app:ccp_showFlag="false"
                         app:ccp_showFullName="false"
                         app:ccp_showNameCode="false"

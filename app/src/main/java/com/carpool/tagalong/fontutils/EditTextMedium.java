@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 
 public class EditTextMedium extends android.support.v7.widget.AppCompatEditText {
 
-    private final String fontFamily = "grotesk_medium.otf";
+    private final String fontFamily = "fonts/grotesk_medium.otf";
 
     public EditTextMedium(Context context) {
         super(context);

@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.constants.Constants;
+import com.carpool.tagalong.managers.DataManager;
+import com.carpool.tagalong.models.CountryData;
 import com.carpool.tagalong.models.ModelSignUpResponse;
 import com.carpool.tagalong.preferences.TagALongPreferenceManager;
 import com.carpool.tagalong.retrofit.ApiClient;
@@ -30,6 +32,7 @@ import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.hbb20.CountryCodePicker;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
@@ -199,9 +202,7 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
     public void onClick(View v) {
 
         int id = v.getId();
-
         switch (id){
-
             case R.id.register:
                 handleSignUp();
                 break;
@@ -209,9 +210,7 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
     }
 
     private void handleSignUp() {
-
         UIUtils.hideSoftKeyboard(this);
-
         if(validateSignUpData()){
             signUp();
         }
@@ -256,6 +255,21 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
         RequestBody repassword   = RequestBody.create(MediaType.parse("text/plain"), reneterPasswordString);
         RequestBody deviceToken  = RequestBody.create(MediaType.parse("text/plain"), TagALongPreferenceManager.getDeviceToken(context));
         RequestBody deviceType   = RequestBody.create(MediaType.parse("text/plain"), Constants.DEVICE_TYPE);
+        RequestBody user_type = RequestBody.create(MediaType.parse("text/plain"), Constants.USER_TYPE_VALUE);
+
+        RequestBody countryID = null;
+
+        List<CountryData> countryDataList = DataManager.getCountryList();
+
+        if (countryDataList != null && countryDataList.size() > 0) {
+
+            for (CountryData countryData : countryDataList) {
+
+                if (countryCodePicker.getSelectedCountryNameCode().equalsIgnoreCase(countryData.getCode())) {
+                    countryID = RequestBody.create(MediaType.parse("text/plain"), countryData.get_id());
+                }
+            }
+        }
 
         if(Utils.isNetworkAvailable(context)){
 
@@ -265,7 +279,7 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
 
             if (restClientRetrofitService != null) {
 
-                restClientRetrofitService.registerUser(userName,email,mobileNumber,address,password,repassword,deviceToken,deviceType).enqueue(new Callback<ModelSignUpResponse>() {
+                restClientRetrofitService.registerUser(userName, email, mobileNumber, address, password, repassword, deviceToken, deviceType, countryID, user_type).enqueue(new Callback<ModelSignUpResponse>() {
                     @Override
                     public void onResponse(Call<ModelSignUpResponse> call, Response<ModelSignUpResponse> response) {
 
@@ -275,9 +289,7 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
                             if (response.body().getStatus() == 1) {
 
                                 Log.i(TAG, "Sign Up response is: "+response.body().toString());
-
                                 Toast.makeText(context, "Successfully Registered!!", Toast.LENGTH_LONG).show();
-
                                 Intent intent;
                                 intent = new Intent(context, VerificationActivity.class);
                                 intent.putExtra(Constants.FROM, Constants.SIGNUP);
@@ -286,7 +298,6 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
 
                                 TagALongPreferenceManager.saveToken(context, response.body().getToken());
                                 finish();
-
                             } else {
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -313,7 +324,6 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
     }
 
     private boolean isValidEmaillId(String email) {
-
         return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
                 + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
                 + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
@@ -323,7 +333,6 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
     }
 
     private boolean isValidPassword(String password) {
-
         return Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,18})").matcher(password).matches();
     }
 }

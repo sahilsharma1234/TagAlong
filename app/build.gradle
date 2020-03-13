@@ -32,7 +32,7 @@ dependencies {
     }
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
-    implementation 'com.hbb20:ccp:2.1.9'
+    implementation 'com.hbb20:ccp:2.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
@@ -67,5 +67,10 @@ dependencies {
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation (name:'sinch-android-rtc', version:'+', ext:'aar')
+    implementation 'io.michaelrocks:libphonenumber-android:8.10.22'
+
+    implementation 'com.marlonmafra.android.widget:edittext-password:1.0.0'
+    implementation 'co.paystack.android.design.widget:pinpad:1.0.1'
+    implementation 'co.paystack.android:paystack:3.0.12'
 }
 apply plugin: 'com.google.gms.google-services'

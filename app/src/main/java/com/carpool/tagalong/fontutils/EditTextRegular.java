@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 
 public class EditTextRegular extends android.support.v7.widget.AppCompatEditText {
 
-    private final String fontFamily = "grotesk_regular.otf";
+    private final String fontFamily = "fonts/grotesk_regular.otf";
 
     public EditTextRegular(Context context) {
         super(context);

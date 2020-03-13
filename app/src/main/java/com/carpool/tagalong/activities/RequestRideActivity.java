@@ -40,13 +40,14 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 
     private LinearLayout toolbarLayout;
     private Toolbar toolbar;
-    private Button onlinePaymentBtn, requestRide;
+    private Button onlinePaymentBtn, cashBtn, requestRide;
     private com.carpool.tagalong.views.RegularTextView profileDriver, name, startLocation, endLocation, startTime, estimatedCost, seats, bags, kids, ratings, smokesStatus;
     private CircleImageView profile_pic;
     private Context context;
     private RelativeLayout progressBarLayout;
     private ModelSearchRideResponseData modelSearchRideResponseData;
     private String TAG = RequestRideActivity.this.getClass().getSimpleName();
+    private ModelRequestRide modelRequestRide = new ModelRequestRide();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,25 +61,27 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         ImageView titleImage = toolbarLayout.findViewById(R.id.title);
         toolbar = toolbarLayout.findViewById(R.id.toolbar);
         onlinePaymentBtn = findViewByIdAndCast(R.id.online_payment);
-        requestRide      = findViewByIdAndCast(R.id.request_ride_btn);
-        profileDriver    = findViewByIdAndCast(R.id.profile_driver_txt);
+        requestRide = findViewByIdAndCast(R.id.request_ride_btn);
+        profileDriver = findViewByIdAndCast(R.id.profile_driver_txt);
 
         name = findViewById(R.id.profile_main_name);
         startLocation = findViewById(R.id.start_point_source_name);
-        endLocation   = findViewById(R.id.end_point_dest_name);
-        startTime     = findViewById(R.id.ride_start_timing);
-        profile_pic   = findViewById(R.id.image_profile_user);
+        endLocation = findViewById(R.id.end_point_dest_name);
+        startTime = findViewById(R.id.ride_start_timing);
+        profile_pic = findViewById(R.id.image_profile_user);
         estimatedCost = findViewById(R.id.estimated_cost);
-        seats   = findViewById(R.id.noOfSeats);
-        bags    = findViewById(R.id.noOfBags);
-        kids    = findViewById(R.id.noOfKids);
+        seats = findViewById(R.id.noOfSeats);
+        bags = findViewById(R.id.noOfBags);
+        kids = findViewById(R.id.noOfKids);
         ratings = findViewById(R.id.ratings);
         progressBarLayout = findViewById(R.id.requestRideProgressBar);
-        smokesStatus      = findViewById(R.id.smoke_status);
+        smokesStatus = findViewById(R.id.smoke_status);
+        cashBtn = findViewById(R.id.cash_payment);
 
         profileDriver.setOnClickListener(this);
         onlinePaymentBtn.setOnClickListener(this);
         requestRide.setOnClickListener(this);
+        cashBtn.setOnClickListener(this);
 
         title.setText("Request Ride");
         title.setVisibility(View.VISIBLE);
@@ -105,7 +108,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
                     .load(modelSearchRideResponseData.getProfile_pic())
                     .into(profile_pic);
 
-            estimatedCost.setText("$ "+String.valueOf(modelSearchRideResponseData.getEstimatedFare()));
+            estimatedCost.setText("$ " + String.valueOf(modelSearchRideResponseData.getEstimatedFare()));
             ratings.setText(modelSearchRideResponseData.getRating() + "");
 
             if (modelSearchRideRequest != null) {
@@ -132,25 +135,63 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 
         int id = v.getId();
 
-        if (id == R.id.request_ride_btn) {
+        switch (id) {
 
-            if (DataManager.getModelUserProfileData().getCard().size() > 0) {
+            case R.id.request_ride_btn:
 
-                requestRide();
-            } else {
-                UIUtils.alertBox(context, "Firstly please add your credit card details in profile!!");
-            }
+                if (DataManager.getModelUserProfileData().getCard().size() > 0) {
+                    requestRide();
+                } else {
+                    UIUtils.alertBox(context, "Firstly please add your credit card details in profile!!");
+                }
 
-        } else if (id == R.id.profile_driver_txt) {
+                break;
 
-            Intent intent;
-            intent = new Intent(RequestRideActivity.this, DriverProfileActivity.class);
-            intent.putExtra(Constants.DRIVER_DATA, modelSearchRideResponseData.getUserId());
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            case R.id.profile_driver_txt:
 
-        } else {
+                Intent intent;
+                intent = new Intent(RequestRideActivity.this, DriverProfileActivity.class);
+                intent.putExtra(Constants.DRIVER_DATA, modelSearchRideResponseData.getUserId());
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                break;
+
+            case R.id.cash_payment:
+
+                onlinePaymentBtn.setBackground(null);
+                onlinePaymentBtn.setTextColor(RequestRideActivity.this.getResources().getColor(R.color.darker_gray));
+
+                cashBtn.setBackground(RequestRideActivity.this.getResources().getDrawable(R.drawable.button_shape_payment));
+                cashBtn.setTextColor(RequestRideActivity.this.getResources().getColor(R.color.payment_btn_color));
+                modelRequestRide.setPayMethod("cash");
+                break;
+
+            case R.id.online_payment:
+
+                cashBtn.setBackground(null);
+                cashBtn.setTextColor(RequestRideActivity.this.getResources().getColor(R.color.darker_gray));
+
+                onlinePaymentBtn.setBackground(RequestRideActivity.this.getResources().getDrawable(R.drawable.button_shape_payment));
+                onlinePaymentBtn.setTextColor(RequestRideActivity.this.getResources().getColor(R.color.payment_btn_color));
+                modelRequestRide.setPayMethod("online");
+                break;
+        }
+
+//        if (id == R.id.request_ride_btn) {
+//
+//
+//        } else if (id == R.id.profile_driver_txt) {
+//
+//            Intent intent;
+//            intent = new Intent(RequestRideActivity.this, DriverProfileActivity.class);
+//            intent.putExtra(Constants.DRIVER_DATA, modelSearchRideResponseData.getUserId());
+//            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//
+//        } else {
 //
 //            Button button = (Button) v;
 //            onlinePaymentBtn.setBackground(null);
@@ -161,7 +202,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 //
 //            button.setBackground(RequestRideActivity.this.getResources().getDrawable(R.drawable.button_shape_payment));
 //            button.setTextColor(RequestRideActivity.this.getResources().getColor(R.color.payment_btn_color));
-        }
+//        }
     }
 
     private void handleRequestRide() {
@@ -175,7 +216,7 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
 
     private void requestRide() {
 
-        ModelRequestRide modelRequestRide = new ModelRequestRide();
+//        ModelRequestRide modelRequestRide = new ModelRequestRide();
 
         modelRequestRide.setRideId(modelSearchRideResponseData.getRideId());
         modelRequestRide.setDriverId(modelSearchRideResponseData.getUserId());
@@ -185,7 +226,6 @@ public class RequestRideActivity extends AppCompatActivity implements View.OnCli
         modelRequestRide.setEndLat(modelSearchRideRequest.getEndLat());
         modelRequestRide.setStartLong(modelSearchRideRequest.getStartLong());
         modelRequestRide.setEndLong(modelSearchRideRequest.getEndLong());
-
         modelRequestRide.setRideDateTime(modelSearchRideRequest.getRideDateTime());
         modelRequestRide.setNoOfSeats(modelSearchRideRequest.getNoOfSeats());
         modelRequestRide.setAllowKids(modelSearchRideRequest.isAllowKids());

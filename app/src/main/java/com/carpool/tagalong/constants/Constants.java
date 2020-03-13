@@ -67,4 +67,12 @@ public class Constants {
     public static final String CALLERID = "callerId";
     public static final String CALLERNAME = "callerName";
     public static final String CALLERIMAGE = "callerImage";
+    public static final String COUNTRYID = "countryId";
+
+    public static final String USER_TYPE = "type";
+    public static final String USER_TYPE_VALUE = "1";
+    public static final String PAYSTACK_PUBLIC_KEY = "pk_test_d744d29182ae76cad0d100a8957a72650ec53610";
+    public static final String PAYSTACK_SECRET_TEST_KEY = "sk_test_2cb84f17214112f48dae9f939c42d684812791fa";
+
+
 }

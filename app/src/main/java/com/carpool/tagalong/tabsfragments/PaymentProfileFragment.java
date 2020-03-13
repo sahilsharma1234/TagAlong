@@ -86,7 +86,7 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
         registerOnwePay.setOnClickListener(this);
         verify.setOnClickListener(this);
 
-//        handleWePayRegistrationDetails();
+        handleWePayRegistrationDetails();
 
         return view;
     }
@@ -152,7 +152,6 @@ public class PaymentProfileFragment extends Fragment implements View.OnClickList
                     verify.setVisibility(View.VISIBLE);
                     registerOnwePay.setVisibility(View.GONE);
                 } else {
-
                     register.setVisibility(View.GONE);
                     verifyTxt.setVisibility(View.GONE);
                     verify.setVisibility(View.GONE);

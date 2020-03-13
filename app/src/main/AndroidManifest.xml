@@ -42,6 +42,12 @@
         android:theme="@style/MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace=" android:allowBackup">
+
+        <meta-data
+            android:name="co.paystack.android.PublicKey"
+            android:value="pk_test_d744d29182ae76cad0d100a8957a72650ec53610" />
+
+
         <activity android:name=".activities.SendReportDetailActivity"></activity>
         <activity android:name=".activities.SendReportActivity" />
         <activity

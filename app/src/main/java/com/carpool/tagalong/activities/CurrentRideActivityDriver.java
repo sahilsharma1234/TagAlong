@@ -58,10 +58,14 @@ import com.carpool.tagalong.managers.DataManager;
 import com.carpool.tagalong.models.ModelAcceptRideRequest;
 import com.carpool.tagalong.models.ModelCancelOwnRideRequest;
 import com.carpool.tagalong.models.ModelDocumentStatus;
+import com.carpool.tagalong.models.ModelGetAccessTokenResponse;
 import com.carpool.tagalong.models.ModelGetCurrentRideResponse;
 import com.carpool.tagalong.models.ModelGetRideDetailsRequest;
+import com.carpool.tagalong.models.ModelGetRiderCreditCardDetails;
+import com.carpool.tagalong.models.ModelGetRiderCreditCardDetailsResponse;
 import com.carpool.tagalong.models.ModelGetTimelineRequest;
 import com.carpool.tagalong.models.ModelGetTimelineResponse;
+import com.carpool.tagalong.models.ModelInitializePayementTransaction;
 import com.carpool.tagalong.models.ModelPickupRider;
 import com.carpool.tagalong.models.ModelRateRiderequest;
 import com.carpool.tagalong.models.ModelStartRideRequest;
@@ -85,13 +89,21 @@ import com.facebook.share.widget.ShareDialog;
 import com.ncorti.slidetoact.SlideToActView;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import co.paystack.android.Paystack;
+import co.paystack.android.PaystackSdk;
+import co.paystack.android.Transaction;
+import co.paystack.android.exceptions.ExpiredAccessCodeException;
+import co.paystack.android.model.Card;
+import co.paystack.android.model.Charge;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -137,6 +149,8 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         }
     };
     private String ratingFinal;
+    private Charge charge;
+    private Transaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +165,10 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         emergency_icon = toolbarLayout.findViewById(R.id.emergency);
         shareIcon.setVisibility(View.VISIBLE);
         emergency_icon.setVisibility(View.VISIBLE);
+
+        PaystackSdk.setPublicKey(Constants.PAYSTACK_PUBLIC_KEY);
+
+        PaystackSdk.initialize(getApplicationContext());
 
         title.setText("Current Ride");
         title.setVisibility(View.VISIBLE);
@@ -787,6 +805,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                             if (response.body() != null) {
 
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+
                                 if (response.body().getStatus() == 1) {
                                     textToSpeech.speak("Welcome" + onBoard.getUserName() + "in TagAlong Ride. Have a happy journey!!", TextToSpeech.QUEUE_FLUSH, null);
                                     getRideDetails(rideID);
@@ -854,8 +873,10 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
                                 if (response.body().getStatus() == 1) {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
-                                    textToSpeech.speak("Thanks" + onBoard.getUserName() + "for using TagAlong Ride.  Have a good time ahead!!", TextToSpeech.QUEUE_FLUSH, null);
-                                    showSubmitReviewDialog(onBoard);
+                                    startAFreshCharge(true, onBoard);
+
+//                                    textToSpeech.speak("Thanks" + onBoard.getUserName() + "for using TagAlong Ride.  Have a good time ahead!!", TextToSpeech.QUEUE_FLUSH, null);
+//                                    showSubmitReviewDialog(onBoard);
                                 } else {
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 }
@@ -1230,6 +1251,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
     private void getPost() {
 
         try {
+
             postPath = "";
             ModelGetTimelineRequest modelGetTimelineRequest = new ModelGetTimelineRequest();
             modelGetTimelineRequest.setRideId(modelGetRideDetailsResponse.getRideData().get_id());
@@ -1248,7 +1270,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                         public void onResponse(Call<ModelGetTimelineResponse> call, Response<ModelGetTimelineResponse> response) {
 
                             ProgressDialogLoader.progressDialogDismiss();
-
 
                             if (response.body() != null) {
 
@@ -1279,7 +1300,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
-
             ProgressDialogLoader.progressDialogDismiss();
             e.printStackTrace();
         }
@@ -1327,7 +1347,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
         RegularTextView reject = delayDialog.findViewById(R.id.tv_Reject);
         RegularTextView driver_address = delayDialog.findViewById(R.id.tv_driver_address);
         RegularTextView rating = delayDialog.findViewById(R.id.tv_driver_Ratings);
-
 
         final RegularEditText otpView = delayDialog.findViewById(R.id.otp_pickup);
         final SlideToActView slideToActView = delayDialog.findViewById(R.id.tv_slider);
@@ -1414,7 +1433,7 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 reject.setVisibility(View.GONE);
                 cancel.setVisibility(View.VISIBLE);
                 otpView.setVisibility(View.VISIBLE);
-                slideToActView.setVisibility(View.GONE);
+                slideToActView.setVisibility(View.VISIBLE);
                 slideToActView.setText("SLIDE TO PICKUP");
 
             } else if (joinRequest.getStatus() == Constants.REQUESTED) {
@@ -1494,6 +1513,9 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 slideToActView.setText("SLIDE TO PICKUP");
                 otpView.setVisibility(View.VISIBLE);
                 slideToActView.setVisibility(View.GONE);
+            } else if (onBoard.getStatus() == Constants.DROP) {
+                slideToActView.setVisibility(View.GONE);
+                otpView.setVisibility(View.GONE);
             }
 
             accept.setOnClickListener(new View.OnClickListener() {
@@ -1697,7 +1719,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
             buttonNegative = dialogView.findViewById(R.id.no_cancel_ride);
             buttonPositive = dialogView.findViewById(R.id.cancel_ride);
-
             alertDialog = dialogBuilder.create();
 
             final AlertDialog finalAlertDialog = alertDialog;
@@ -1745,7 +1766,6 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
                 finish();
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -1783,5 +1803,309 @@ public class CurrentRideActivityDriver extends AppCompatActivity implements View
 
         Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(picturePath, MediaStore.Video.Thumbnails.MICRO_KIND);
         return bitmap;
+    }
+
+    private void startAFreshCharge(boolean local, ModelGetCurrentRideResponse.OnBoard onBoard) {
+        // initialize the charge
+        charge = new Charge();
+
+        ProgressDialogLoader.progressDialogCreation(this, "Performing payment!! Please wait...");
+
+        if (local) {
+            // Set transaction params directly in app (note that these params
+            // are only used if an access_code is not set. In debug mode,
+            // setting them after setting an access code would throw an exception
+
+            charge.setCard(loadCardFromForm());
+            charge.setAmount(100);
+            charge.setEmail(DataManager.getModelUserProfileData().getEmail());
+            charge.setReference("ChargedFromAndroid_" + Calendar.getInstance().getTimeInMillis());
+            try {
+                charge.putCustomField("Charged From", "Android SDK");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            chargeCard(onBoard);
+        } else {
+
+            loadCardFromForm(onBoard);
+            // Perform transaction/initialize on our server to get an access code
+            // documentation: https://developers.paystack.co/reference#initialize-a-transaction
+//            new fetchAccessCodeFromServer().execute(backend_url + "/new-access-code");
+        }
+    }
+
+    private void initializePaymentTransaction(final ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        try {
+
+            ModelInitializePayementTransaction modelInitializePayementTransaction = new ModelInitializePayementTransaction();
+            modelInitializePayementTransaction.setAmount(Integer.valueOf(String.valueOf(onBoard.getEstimatedFare())));
+            modelInitializePayementTransaction.setEmail(onBoard.getEmail());
+            modelInitializePayementTransaction.setReference(onBoard.getUserId() + "_" + Calendar.getInstance().getTimeInMillis());
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+//                    ProgressDialogLoader.progressDialogCreation(this, getString(R.string.please_wait));
+
+                    restClientRetrofitService.initializeTransaction(TagALongPreferenceManager.getToken(context), modelInitializePayementTransaction).enqueue(new Callback<ModelGetAccessTokenResponse>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetAccessTokenResponse> call, Response<ModelGetAccessTokenResponse> response) {
+
+//                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+                                    chargeCard(onBoard);
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetAccessTokenResponse> call, Throwable t) {
+
+//                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Cancel Rider Own Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
+    }
+
+    private Card loadCardFromForm() {
+        //validate fields
+        Card card;
+
+        String cardNum = "507850785078507812";
+        String sMonth = "05";
+        String cvc = "081";
+
+        //build card object with ONLY the number, update the other fields later
+        card = new Card.Builder(cardNum, 0, 0, "").build();
+        //update the cvc field of the card
+        card.setCvc(cvc);
+
+        //validate expiry month;
+        int month = 0;
+        try {
+            month = Integer.parseInt(sMonth);
+        } catch (Exception ignored) {
+        }
+
+        card.setExpiryMonth(month);
+
+        String sYear = "2026";
+        int year = 0;
+        try {
+            year = Integer.parseInt(sYear);
+        } catch (Exception ignored) {
+        }
+        card.setExpiryYear(year);
+
+        return card;
+    }
+
+    private void loadCardFromForm(final ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        try {
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    restClientRetrofitService.getRiderCreditCard(TagALongPreferenceManager.getToken(context), onBoard.getUserId()).enqueue(new Callback<ModelGetRiderCreditCardDetails>() {
+
+                        @Override
+                        public void onResponse(Call<ModelGetRiderCreditCardDetails> call, Response<ModelGetRiderCreditCardDetails> response) {
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+                                    prepareCard(response.body().getData(), onBoard);
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelGetRiderCreditCardDetails> call, Throwable t) {
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Cancel Rider Own Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
+    }
+
+    private void prepareCard(ModelGetRiderCreditCardDetailsResponse data, ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        //build card object with ONLY the number, update the other fields later
+        //validate fields
+        Card card;
+
+        String cardNum = data.getNumber().trim();
+
+        //build card object with ONLY the number, update the other fields later
+        card = new Card.Builder(cardNum, 0, 0, "").build();
+        card.setCvc("202");
+
+        //validate expiry month;
+        String sMonth = data.getExp_month();
+        int month = 0;
+        try {
+            month = Integer.parseInt(sMonth);
+        } catch (Exception ignored) {
+        }
+
+        card.setExpiryMonth(month);
+
+        String sYear = data.getExp_year();
+        int year = 0;
+        try {
+            year = Integer.parseInt(sYear);
+        } catch (Exception ignored) {
+        }
+        card.setExpiryYear(year);
+
+        charge.setCard(card);
+
+        initializePaymentTransaction(onBoard);
+
+    }
+
+    private void chargeCard(final ModelGetCurrentRideResponse.OnBoard onBoard) {
+
+        transaction = null;
+        PaystackSdk.chargeCard(CurrentRideActivityDriver.this, charge, new Paystack.TransactionCallback() {
+            // This is called only after transaction is successful
+            @Override
+            public void onSuccess(Transaction transaction) {
+
+                CurrentRideActivityDriver.this.transaction = transaction;
+//                ProgressDialogLoader.progressDialogDismiss();
+
+                Toast.makeText(context, transaction.getReference(), Toast.LENGTH_LONG).show();
+                textToSpeech.speak("Thanks" + onBoard.getUserName() + "for using TagAlong Ride.  Have a good time ahead!!", TextToSpeech.QUEUE_FLUSH, null);
+                showSubmitReviewDialog(onBoard);
+//                updateTextViews();
+//                new verifyOnServer().execute(transaction.getReference());
+                verfifyTransaction(transaction.getReference());
+            }
+
+            // This is called only before requesting OTP
+            // Save reference so you may send to server if
+            // error occurs with OTP
+            // No need to dismiss dialog
+            @Override
+            public void beforeValidate(Transaction transaction) {
+
+                CurrentRideActivityDriver.this.transaction = transaction;
+                Toast.makeText(context, transaction.getReference(), Toast.LENGTH_LONG).show();
+//                updateTextViews();
+            }
+
+            @Override
+            public void onError(Throwable error, Transaction transaction) {
+                // If an access code has expired, simply ask your server for a new one
+                // and restart the charge instead of displaying error
+                CurrentRideActivityDriver.this.transaction = transaction;
+                if (error instanceof ExpiredAccessCodeException) {
+//                    startAFreshCharge(false);
+//                    MainActivity.this.chargeCard();
+                    return;
+                }
+
+                ProgressDialogLoader.progressDialogDismiss();
+
+                if (transaction.getReference() != null) {
+                    Toast.makeText(context, transaction.getReference() + " concluded with error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+//                    mTextError.setText(String.format("%s  concluded with error: %s %s", transaction.getReference(), error.getClass().getSimpleName(), error.getMessage()));
+//                    new verifyOnServer().execute(transaction.getReference());
+                    verfifyTransaction(transaction.getReference());
+                } else {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+//                    mTextError.setText(String.format("Error: %s %s", error.getClass().getSimpleName(), error.getMessage()));
+                }
+//                updateTextViews();
+            }
+        });
+    }
+
+    private void verfifyTransaction(String referenceNumber) {
+
+        try {
+
+            if (Utils.isNetworkAvailable(context)) {
+
+                RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+                if (restClientRetrofitService != null) {
+
+                    restClientRetrofitService.verifyTransaction(TagALongPreferenceManager.getToken(context), referenceNumber).enqueue(new Callback<ModelDocumentStatus>() {
+
+                        @Override
+                        public void onResponse(Call<ModelDocumentStatus> call, Response<ModelDocumentStatus> response) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (response.body() != null) {
+
+                                if (response.body().getStatus() == 1) {
+                                    Toast.makeText(context, "Payment is successful and verified!!!", Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ModelDocumentStatus> call, Throwable t) {
+
+                            ProgressDialogLoader.progressDialogDismiss();
+
+                            if (t != null && t.getMessage() != null) {
+                                t.printStackTrace();
+                            }
+                            Log.e("Cancel Rider Own Ride", "FAILURE verification");
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(context, "Please check internet connection!!", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            ProgressDialogLoader.progressDialogDismiss();
+            e.printStackTrace();
+        }
     }
 }

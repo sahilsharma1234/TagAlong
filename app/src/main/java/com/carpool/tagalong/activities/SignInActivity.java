@@ -33,6 +33,7 @@ import com.carpool.tagalong.utils.Utils;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.hbb20.CountryCodePicker;
+import com.marlonmafra.android.widget.EditTextPassword;
 import com.sinch.android.rtc.SinchError;
 
 import retrofit2.Call;
@@ -46,7 +47,8 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
     private LoginButton loginButton;
     private Context context;
     private LinearLayout facebookSignin, twitterSignIn, login;
-    private TextInputEditText userName, password;
+    private EditTextPassword password;
+    private TextInputEditText userName;
     private String usernameString, passwordString;
     private com.carpool.tagalong.views.RegularTextView signUpText, forgotPassword;
     private RelativeLayout progressBarLayout;
@@ -238,9 +240,7 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
                             TagALongPreferenceManager.saveDeviceProfile(context, response.body().getData());
 
                             if (!getSinchServiceInterface().isStarted()) {
-
                                 getSinchServiceInterface().startClient(response.body().getData().get_id());
-
                             }
 
                             if (response.body().getData().isVerifyMobile()) {
@@ -253,7 +253,6 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
                                 new Handler().post(new Runnable() {
                                     @Override
                                     public void run() {
-
                                         // this is done here and to be used in driving fragment to get year list once the user login into app
                                         Utils.getYearsList(context);
                                         // this is done here and to be used in driving fragment to get color list once the user login into app
@@ -267,15 +266,10 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             }
-
                             finish();
-
                         } else if (response.body() != null && response.body().getStatus() == 0) {
-
                             if (response.body().getData() != null) {
-
                                 if (response.body().getData().verifyMobile) {
-
                                     Intent intent;
                                     intent = new Intent(context, VerificationOTPActivity.class);
                                     startActivity(intent);
@@ -285,7 +279,6 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
                                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
-
                                 Log.i(TAG, response.body().toString());
                                 Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -307,7 +300,6 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
                 });
             }
         } else {
-
             Toast.makeText(context, getString(R.string.check_internet), Toast.LENGTH_LONG).show();
         }
     }
@@ -375,7 +367,6 @@ public class SignInActivity extends BaseActivityCalling implements SinchService.
 
     @Override
     public void onStarted() {
-
         Log.d("Calling", "Successful connection");
     }
 

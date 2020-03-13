@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 
 
 public class MediumEditText extends android.support.v7.widget.AppCompatEditText {
-    private static final String asset = "fonts/roboto/roboto_medium.ttf";
+    private static final String asset = "fonts/roboto_medium.ttf";
 
     public MediumEditText(Context context) {
         super(context);

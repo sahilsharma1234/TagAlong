@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 
 public class EditTextLight extends android.support.v7.widget.AppCompatEditText {
 
-    private final String fontFamily = "grotesk_light.otf";
+    private final String fontFamily = "fonts/grotesk_light.otf";
 
     public EditTextLight(Context context) {
         super(context);

@@ -65,6 +65,9 @@ public class ModelUpdateProfileRequest {
     @SerializedName("driver_license_state")
     public String driver_license_state;
 
+    @SerializedName("payStack")
+    public ModelPaystackDetails payStack;
+
     public String getCity() {
         return city;
     }
@@ -299,6 +302,14 @@ public class ModelUpdateProfileRequest {
         this.driver_license_state = driver_license_state;
     }
 
+    public ModelPaystackDetails getPayStack() {
+        return payStack;
+    }
+
+    public void setPayStack(ModelPaystackDetails payStack) {
+        this.payStack = payStack;
+    }
+
     @Override
     public String toString() {
         return "ModelUpdateProfileRequest{" +
@@ -331,6 +342,7 @@ public class ModelUpdateProfileRequest {
                 ", original_device='" + original_device + '\'' +
                 ", driver_license_number='" + driver_license_number + '\'' +
                 ", driver_license_state='" + driver_license_state + '\'' +
+                ", payStack=" + payStack +
                 '}';
     }
 }

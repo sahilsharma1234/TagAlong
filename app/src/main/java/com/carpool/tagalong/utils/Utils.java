@@ -19,9 +19,11 @@ import android.widget.Toast;
 import com.carpool.tagalong.R;
 import com.carpool.tagalong.activities.SendReportActivity;
 import com.carpool.tagalong.managers.DataManager;
+import com.carpool.tagalong.models.CountryData;
 import com.carpool.tagalong.models.ModelDocumentStatus;
 import com.carpool.tagalong.models.ModelGetCarColorsListResponse;
 import com.carpool.tagalong.models.ModelGetCarYearList;
+import com.carpool.tagalong.models.ModelGetCountryListResponse;
 import com.carpool.tagalong.models.ModelSendReportRequest;
 import com.carpool.tagalong.models.ModelUserProfile;
 import com.carpool.tagalong.models.emergencysos.ModelUpdateCoordinates;
@@ -176,6 +178,47 @@ public class Utils {
 
                     @Override
                     public void onFailure(Call<ModelGetCarColorsListResponse> call, Throwable t) {
+
+                        if (t != null && t.getMessage() != null) {
+                            t.printStackTrace();
+                        }
+                        Log.e(TAG, "FAILURE SAVING PROFILE");
+                    }
+                });
+            }
+        } else {
+            Toast.makeText(context, "Please check your internet connection!!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public static void getCountriesList(final Context context) {
+
+        if (Utils.isNetworkAvailable(context)) {
+
+            RestClientInterface restClientRetrofitService = new ApiClient().getApiService();
+
+            if (restClientRetrofitService != null) {
+
+                restClientRetrofitService.getCountryList().enqueue(new Callback<ModelGetCountryListResponse>() {
+
+                    @Override
+                    public void onResponse(Call<ModelGetCountryListResponse> call, Response<ModelGetCountryListResponse> response) {
+
+                        if (response.body() != null) {
+//                            Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                            List<CountryData> data = response.body().getData();
+
+                            if (data != null && data.size() > 0) {
+                                DataManager.setCountryList(data);
+                            }
+
+                        } else {
+                            Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ModelGetCountryListResponse> call, Throwable t) {
 
                         if (t != null && t.getMessage() != null) {
                             t.printStackTrace();

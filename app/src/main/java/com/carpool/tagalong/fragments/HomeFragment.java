@@ -124,31 +124,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void handleRiding() {
 
-        if(DataManager.ridingstatus){
+        if (DataManager.ridingstatus) {
             showRidingAlert();
-        }else {
-            UIUtils.alertBox(getActivity(),"Please add credit card first in profile!!");
+        } else {
+            UIUtils.alertBox(getActivity(), "Please add credit card first in profile!!");
         }
     }
-
-//    private void handleCardSearchingClick() {
-//
-////        Intent intent;
-////        intent = new Intent(getActivity(), SearchRideActivity.class);
-////        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT |Intent.FLAG_ACTIVITY_CLEAR_TOP);
-////        startActivity(intent);
-////        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//
-//    }
 
     private void isDocumentUploaded() {
 
         if (TagALongPreferenceManager.getDocumentUploadedStatus(getActivity())) {
 
             if(DataManager.bookingStatus || (!DataManager.getModelUserProfileData().getDriverDetails().getVehicleNumber().equals("") && !DataManager.getModelUserProfileData().getDriverDetails().getVehicle().equals(""))) {
+
+//            if (!DataManager.getModelUserProfileData().getDriverDetails().getVehicleNumber().equals("") && !DataManager.getModelUserProfileData().getDriverDetails().getVehicle().equals("")) {
                 showRoamingAlert();
-            }else {
-                UIUtils.alertBox(getActivity(),"Please register as a driver in profile section first!!");
+            } else {
+                UIUtils.alertBox(getActivity(), "Please register as a driver in profile section first!!");
             }
         } else {
             showDocumentAlert();
@@ -265,15 +257,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 public void onClick(View v) {
 
                     alert.cancel();
-
                     Intent intent = new Intent(getActivity(), StartRideActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                 }
             });
-
             alert.show();
         } catch (Exception exception) {
             exception.printStackTrace();

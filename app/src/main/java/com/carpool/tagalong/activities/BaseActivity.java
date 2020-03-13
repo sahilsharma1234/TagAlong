@@ -60,12 +60,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
     private static LatLng source;
     GoogleMap mMap;
     Location userLocation;
+    ValueAnimator animator;
     private FusedLocationProviderClient mFusedLocationClient;
     private List<LatLng> listLatLng = new ArrayList<>();
     private Polyline blackPolyLine, greyPolyLine;
-
-    ValueAnimator animator;
-
     Animator.AnimatorListener polyLineAnimationListener = new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animator) {
@@ -93,12 +91,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
 
         @Override
         public void onAnimationCancel(Animator animator) {
-
         }
 
         @Override
         public void onAnimationRepeat(Animator animator) {
-
         }
     };
 
@@ -107,7 +103,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -123,10 +118,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
 
         mMap = googleMap;
         mMap.setMaxZoomPreference(20);
-
-//        MapStyleOptions style = MapStyleOptions.loadRawResourceStyle(
-//                this, R.raw.maps_style);
-//        googleMap.setMapStyle(style);
 
         if (checkPermission()) onLocationPermissionGranted();
     }
@@ -194,14 +185,13 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
     public Location getUserLocation() {
         if (userLocation != null)
             return userLocation;
-        else{
+        else {
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
                                 userLocation = location;
-
                             } else {
                                 userLocation = null;
                             }
@@ -243,12 +233,9 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 destination = place.getLatLng();
-//                setUpPolyLine();
-
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Toast.makeText(this, "Error " + status, Toast.LENGTH_SHORT).show();
-
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
@@ -324,7 +311,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 final Integer val = (Integer) valueAnimator.getAnimatedValue();
                 groundOverlay.setDimensions(val);
-
             }
         });
 
@@ -420,7 +406,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
                     (((double) lng / 1E5)));
             poly.add(p);
         }
-
         return poly;
     }
 
@@ -446,10 +431,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnMapRea
                 double lat = Double.parseDouble(point.get("lat"));
                 double lng = Double.parseDouble(point.get("lng"));
                 LatLng position = new LatLng(lat, lng);
-
                 points.add(position);
             }
-
             this.listLatLng.addAll(points);
         }
 

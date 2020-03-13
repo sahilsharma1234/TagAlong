@@ -237,6 +237,9 @@ public class ModelGetCurrentRideResponse implements Serializable {
         @SerializedName("payStatus")
         public boolean payStatus;
 
+        @SerializedName("email")
+        public String email;
+
         @SerializedName("mobileNo")
         public String mobileNo;
 
@@ -376,6 +379,13 @@ public class ModelGetCurrentRideResponse implements Serializable {
             this.rating = rating;
         }
 
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
     }
 
     public class Timeline implements Serializable {

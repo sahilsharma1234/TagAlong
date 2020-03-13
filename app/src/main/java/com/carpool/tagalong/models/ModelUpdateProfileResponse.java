@@ -30,6 +30,9 @@ public class ModelUpdateProfileResponse {
     @SerializedName("bankName")
     public String bankName;
 
+    @SerializedName("payStack")
+    public ModelPaystackDetails payStack;
+
     public String getUserName() {
         return userName;
     }
@@ -126,6 +129,14 @@ public class ModelUpdateProfileResponse {
         this.bankName = bankName;
     }
 
+    public ModelPaystackDetails getPayStack() {
+        return payStack;
+    }
+
+    public void setPayStack(ModelPaystackDetails payStack) {
+        this.payStack = payStack;
+    }
+
     @Override
     public String toString() {
         return "ModelUpdateProfileResponse{" +
@@ -141,6 +152,7 @@ public class ModelUpdateProfileResponse {
                 ", accountNumber='" + accountNumber + '\'' +
                 ", shortCode='" + shortCode + '\'' +
                 ", bankName='" + bankName + '\'' +
+                ", payStack=" + payStack +
                 '}';
     }
 }

@@ -324,44 +324,66 @@
                 android:background="@android:color/white"
                 android:elevation="4dp"
                 android:paddingLeft="25dp"
-                android:paddingTop="15dp"
-                android:paddingRight="25dp"
-                android:paddingBottom="15dp">
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp">
 
                 <com.carpool.tagalong.views.RegularTextView
-                    android:id="@+id/modepay"
+                    android:id="@+id/modepayonlinestring"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/only_accepting_credit_card" />
+                    android:text="@string/only_accepting_credit_card"
+                    android:visibility="invisible" />
+
+                <com.carpool.tagalong.views.RegularTextView
+                    android:id="@+id/modepayoptionstring"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_of_payment" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/modepayonlinestring"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:weightSum="3">
 
                 <Button
                     android:id="@+id/online_payment"
-                    android:layout_width="120dp"
+                    android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:layout_below="@id/modepay"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
                     android:background="@drawable/button_shape_payment"
                     android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="30dp"
                     android:text="Online"
+                    android:layout_weight="1.5"
                     android:textAllCaps="false" />
 
-                <!--<Button-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="0.5"-->
-                <!--android:visibility="invisible" />-->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="0.5"
+                        android:gravity="center"
+                        android:visibility="visible" />
 
-                <!--<Button-->
-                <!--android:id="@+id/cash_payment"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:height="70dp"-->
-                <!--android:background="@null"-->
-                <!--android:text="Cash"-->
-                <!--android:textAllCaps="false"-->
-                <!--android:textColor="@android:color/darker_gray" />-->
+                    <Button
+                        android:id="@+id/cash_payment"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="30dp"
+                        android:layout_weight="1.5"
+                        android:background="@null"
+                        android:gravity="center"
+                        android:text="Cash"
+                        android:textAllCaps="false"
+                        android:textColor="@color/darker_gray" />
+
+                </LinearLayout>
 
             </RelativeLayout>
 

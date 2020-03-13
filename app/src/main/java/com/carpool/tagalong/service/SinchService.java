@@ -188,5 +188,4 @@ public class SinchService extends Service {
             SinchService.this.startActivity(intent);
         }
     }
-
 }

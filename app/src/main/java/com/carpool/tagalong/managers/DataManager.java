@@ -1,5 +1,7 @@
 package com.carpool.tagalong.managers;
 
+import com.carpool.tagalong.models.CountryData;
+import com.carpool.tagalong.models.ModelGetCountryListResponse;
 import com.carpool.tagalong.models.ModelSearchRideRequest;
 import com.carpool.tagalong.models.ModelSearchRideResponseData;
 import com.carpool.tagalong.models.ModelUserProfileData;
@@ -22,6 +24,16 @@ public class DataManager {
     public static boolean ridingstatus = false;
     private  static List<Integer> yearList = null;
     private  static List<String> colorList = null;
+    private static List<CountryData> countryList = null;
+    private static ModelGetCountryListResponse modelGetCountryListResponse = null;
+
+    public static List<CountryData> getCountryList() {
+        return countryList;
+    }
+
+    public static void setCountryList(List<CountryData> countryList) {
+        DataManager.countryList = countryList;
+    }
 
     public static boolean isIsDocumentUploaded() {
         return isDocumentUploaded;
@@ -88,5 +100,13 @@ public class DataManager {
     public static List<String> getColorList() {
 
         return  colorList ;
+    }
+
+    public static ModelGetCountryListResponse getModelGetCountryListResponse() {
+        return modelGetCountryListResponse;
+    }
+
+    public static void setModelGetCountryListResponse(ModelGetCountryListResponse modelGetCountryListResponse) {
+        DataManager.modelGetCountryListResponse = modelGetCountryListResponse;
     }
 }
